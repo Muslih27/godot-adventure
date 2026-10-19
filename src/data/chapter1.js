@@ -1,6 +1,8 @@
 // Konten Bab 1. Materi mengacu pada Godot Engine 4.x.
 export const chapter1 = {
   id: 1,
+  keys: { read: 'read', sim: 'sim', quiz: 'quiz' },
+  badge: 'Pemula Gim',
   title: 'Dasar Pengembangan Gim',
   story:
     'Lampu di halaman sekolah berkedip. Profesor Pixel berlari menghampirimu: "Sistem akademi rusak karena Godot Crystal pertama retak. Untuk memperbaikinya, kamu harus paham bagaimana sebuah gim dibuat dari nol."',

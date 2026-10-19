@@ -157,16 +157,16 @@ class UIManager {
     q('#hcr').textContent = d.crystals;
     const aq = QuestManager.active();
     const side = QuestManager.all().find((x) => x.type === 'Sampingan' && !QuestManager.isDone(x));
-    q('#hq').innerHTML = (aq ? `<b>${esc(aq.title)}</b><span>${esc(aq.steps ? aq.steps.find((s) => !s.done(d))?.t || '' : aq.desc)}</span>` : '<b>Semua quest Fase 1 selesai</b>')
+    q('#hq').innerHTML = (aq ? `<b>${esc(aq.title)}</b><span>${esc(aq.steps ? aq.steps.find((s) => !s.done(d))?.t || '' : aq.desc)}</span>` : '<b>Semua quest yang tersedia sudah selesai</b>')
       + (side ? `<small>${esc(side.title)}: ${side.progress(d)}</small>` : '');
   }
-  drawMinimap(px, py) {
-    const c = this.mm, k = 120 / 960;
-    c.fillStyle = '#2f7d4c'; c.fillRect(0, 0, 120, 80);
-    c.fillStyle = '#d9c79a'; c.fillRect(432 * k, 150 * k, 96 * k, 490 * k);
-    c.fillStyle = '#2c5d8f'; c.fillRect(0, 0, 120, 18 * 1.1);
-    c.fillStyle = '#ffb347'; c.fillRect(480 * k - 2, 330 * k - 2, 4, 4);
+  drawMinimap(px, py, W, H, bg) {
+    const c = this.mm, k = Math.min(120 / W, 80 / H);
+    c.fillStyle = '#000'; c.fillRect(0, 0, 120, 80);
+    c.save(); c.translate((120 - W * k) / 2, (80 - H * k) / 2);
+    if (bg) bg(c, k);
     c.fillStyle = '#fff'; c.fillRect(px * k - 2, py * k - 2, 4, 4);
+    c.restore();
   }
 
   /* ---------- Kontrol sentuh ---------- */

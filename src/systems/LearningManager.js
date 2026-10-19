@@ -1,15 +1,18 @@
-// LearningManager: materi, simulasi, kuis, dan dialog mentor untuk Bab 1.
+// LearningManager: materi, simulasi, kuis, dan dialog mentor. Generik untuk semua bab.
 import { $, esc, shuffle } from '../core/util.js';
-import { chapter1 as ch } from '../data/chapter1.js';
+import { chapter1 } from '../data/chapter1.js';
+import { chapter2 } from '../data/chapter2.js';
 import { state } from './GameState.js';
 import { QuestManager } from './QuestManager.js';
 import { AudioManager as A } from './AudioManager.js';
+import { bus } from '../core/bus.js';
 
 const PROF = { name: 'Profesor Pixel', portrait: 'prof' };
+const KAK = { name: 'Kak Syntax', portrait: 'kak' };
 
 /* ---------- Materi ---------- */
-export function openChapter1(ui) {
-  const m = ui.openModal({ title: `Bab 1: ${ch.title}`, wide: true });
+export function openChapter(ui, ch) {
+  const m = ui.openModal({ title: `Bab ${ch.id}: ${ch.title}`, wide: true });
   let i = -1; // -1 = cerita pengantar & tujuan
   const total = ch.pages.length;
   const render = () => {
@@ -37,7 +40,7 @@ export function openChapter1(ui) {
     }));
   };
   const finish = () => {
-    if (state.setFlag('read')) { state.addXp(30); ui.toast('+30 XP: materi selesai dibaca', 'good'); }
+    if (state.setFlag(ch.keys.read)) { state.addXp(30); ui.toast('+30 XP: materi selesai dibaca', 'good'); }
     m.body.innerHTML = `<h3>Ringkasan</h3><ul>${ch.summary.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
       <h3>Mini project</h3><p>${esc(ch.mini)}</p><h3>Indikator penguasaan</h3>
       <ul class="ind">${ch.indicators.map(([k, t]) => `<li class="${state.hasFlag(k) ? 'ok' : ''}">${esc(t)}</li>`).join('')}</ul>
@@ -57,8 +60,20 @@ function codeBlock(c) {
     <dt>Kesalahan umum</dt><dd>${esc(c.mistake)}</dd><dt>Perbaikan</dt><dd>${esc(c.fix)}</dd></dl></div>`;
 }
 
-/* ---------- Simulasi game loop ---------- */
-export function openSim(ui) {
+/* ---------- Simulasi ---------- */
+function simDone(ui, ch, m, tries, listHtml) {
+  if (state.setFlag(ch.keys.sim)) { state.addXp(40); ui.toast('+40 XP: simulasi selesai', 'good'); }
+  m.body.innerHTML = `<h3>Selesai!</h3>${listHtml}<p class="fb good">Selesai dengan ${tries} kesalahan.</p>
+    <div class="nav"><span></span><button class="btn primary" data-close="1">Tutup</button></div>`;
+  m.body.querySelector('[data-close]').onclick = () => m.close();
+  QuestManager.check();
+}
+
+export function openSim(ui, ch) {
+  return ch.sim.type === 'match' ? openMatch(ui, ch) : openOrder(ui, ch);
+}
+
+function openOrder(ui, ch) {
   const s = ch.sim;
   const m = ui.openModal({ title: s.title, wide: true });
   const order = [];
@@ -74,30 +89,57 @@ export function openSim(ui) {
   const pick = (idx) => {
     if (idx === order.length) {
       order.push(idx); A.sfx('ok');
-      if (order.length === s.steps.length) return win();
+      if (order.length === s.steps.length) {
+        return simDone(ui, ch, m, tries, `<ol>${s.steps.map((x) => `<li>${esc(x.t)}<br><small class="muted">${esc(x.why)}</small></li>`).join('')}</ol>`);
+      }
       render('Tepat! ' + s.steps[idx].why);
     } else {
       tries++; A.sfx('bad');
       render(`Belum tepat. Pikirkan: apa yang harus terjadi lebih dulu sebelum langkah itu? (Langkah ke-${order.length + 1} yang dicari.)`, false);
     }
   };
-  const win = () => {
-    if (state.setFlag('sim')) { state.addXp(40); ui.toast('+40 XP: simulasi selesai', 'good'); }
-    m.body.innerHTML = `<h3>Urutan benar!</h3><ol>${s.steps.map((x) => `<li>${esc(x.t)}<br><small class="muted">${esc(x.why)}</small></li>`).join('')}</ol>
-      <p class="fb good">Selesai dengan ${tries} kesalahan.</p><div class="nav"><button class="btn primary" data-close="1">Tutup</button></div>`;
-    m.body.querySelector('[data-close]').onclick = () => m.close();
-    QuestManager.check();
+  render();
+  return m.closed;
+}
+
+function openMatch(ui, ch) {
+  const s = ch.sim;
+  const m = ui.openModal({ title: s.title, wide: true });
+  const done = new Set();
+  let sel = null, tries = 0;
+  const defs = shuffle(s.pairs.map((p, i) => ({ i, d: p.d })));
+  const render = (msg = '', good = true) => {
+    m.body.innerHTML = `<p>${esc(s.intro)}</p><div class="match">
+      <div class="col">${s.pairs.map((p, i) => `<button class="btn ${done.has(i) ? 'right' : ''} ${sel === i ? 'sel' : ''}" data-l="${i}" ${done.has(i) ? 'disabled' : ''}>${esc(p.t)}</button>`).join('')}</div>
+      <div class="col">${defs.map((d) => `<button class="btn ${done.has(d.i) ? 'right' : ''}" data-r="${d.i}" ${done.has(d.i) ? 'disabled' : ''}>${esc(d.d)}</button>`).join('')}</div></div>
+      <p class="fb ${good ? 'good' : 'bad'}">${esc(msg)}</p>`;
+    m.body.querySelectorAll('[data-l]').forEach((b) => (b.onclick = () => { A.sfx('click'); sel = Number(b.dataset.l); render(); }));
+    m.body.querySelectorAll('[data-r]').forEach((b) => (b.onclick = () => {
+      const i = Number(b.dataset.r);
+      if (sel === null) { A.sfx('bad'); return render('Pilih node di kolom kiri terlebih dahulu.', false); }
+      if (i === sel) {
+        A.sfx('ok'); done.add(sel);
+        const why = s.pairs[sel].why; sel = null;
+        if (done.size === s.pairs.length) {
+          return simDone(ui, ch, m, tries, `<ul>${s.pairs.map((p) => `<li><b>${esc(p.t)}</b>: ${esc(p.d)}<br><small class="muted">${esc(p.why)}</small></li>`).join('')}</ul>`);
+        }
+        render('Tepat! ' + why);
+      } else {
+        tries++; A.sfx('bad');
+        render(`Belum cocok: ${s.pairs[sel].t} bukan untuk fungsi itu. Baca lagi deskripsi fungsinya.`, false);
+      }
+    }));
   };
   render();
   return m.closed;
 }
 
 /* ---------- Kuis ---------- */
-export function openQuiz(ui) {
-  const m = ui.openModal({ title: 'Kuis Bab 1', wide: true });
+export function openQuiz(ui, ch) {
+  const m = ui.openModal({ title: `Kuis Bab ${ch.id}`, wide: true });
   const qs = ch.quiz.map((q) => {
-    const opts = shuffle(q.a.map((t, i) => ({ t, ok: i === q.c })));
-    return q.a.length === 2 ? { ...q, opts: q.a.map((t, i) => ({ t, ok: i === q.c })) } : { ...q, opts };
+    const opts = q.a.map((t, i) => ({ t, ok: i === q.c }));
+    return { ...q, opts: q.a.length === 2 ? opts : shuffle(opts) };
   });
   let n = 0, score = 0;
   const ask = () => {
@@ -110,21 +152,26 @@ export function openQuiz(ui) {
     const ok = q.opts[i].ok;
     if (ok) score++;
     A.sfx(ok ? 'ok' : 'bad');
-    m.body.querySelectorAll('[data-i]').forEach((b, k) => { b.disabled = true; b.classList.add(q.opts[k].ok ? 'right' : k === i ? 'wrong' : ''); });
+    m.body.querySelectorAll('[data-i]').forEach((b, k) => {
+      b.disabled = true;
+      if (q.opts[k].ok) b.classList.add('right');
+      else if (k === i) b.classList.add('wrong');
+    });
     const fb = m.body.querySelector('.fb');
     fb.className = 'fb ' + (ok ? 'good' : 'bad');
     fb.textContent = (ok ? 'Benar! ' : `Belum tepat. Jawaban benar: ${q.opts.find((o) => o.ok).t}. `) + q.why;
     const next = $(`<div class="nav"><span></span><button class="btn primary">${n === qs.length - 1 ? 'Lihat hasil' : 'Soal berikutnya'}</button></div>`);
-    next.querySelector('button').onclick = () => { n++; n < qs.length ? ask() : result(); };
+    next.querySelector('button').onclick = () => { n++; if (n < qs.length) ask(); else result(); };
     m.body.append(next);
   };
   const result = () => {
     const pass = score >= ch.passScore;
-    const first = pass && !state.hasFlag('quiz');
-    if (score > (state.data.scores.ch1 || 0)) { state.data.scores.ch1 = score; state.commit(); }
-    if (first) { state.setFlag('quiz'); state.addXp(score * 10); state.addBadge('Pemula Gim'); }
+    const first = pass && !state.hasFlag(ch.keys.quiz);
+    const sk = 'ch' + ch.id;
+    if (score > (state.data.scores[sk] || 0)) { state.data.scores[sk] = score; state.commit(); }
+    if (first) { state.setFlag(ch.keys.quiz); state.addXp(score * 10); state.addBadge(ch.badge); }
     m.body.innerHTML = `<h3>${pass ? 'Kamu lulus!' : 'Belum lulus, coba lagi!'}</h3><p>Skor: <b>${score} / ${qs.length}</b></p>
-      <p>${pass ? (first ? `+${score * 10} XP dan Badge "Pemula Gim".` : 'Kamu sudah menguasai bab ini.') : `Butuh minimal ${ch.passScore} benar. Baca ulang materi lalu ulangi kuis. Tidak ada hukuman.`}</p>
+      <p>${pass ? (first ? `+${score * 10} XP dan Badge "${esc(ch.badge)}".` : 'Kamu sudah menguasai bab ini.') : `Butuh minimal ${ch.passScore} benar. Baca ulang materi lalu ulangi kuis. Tidak ada hukuman.`}</p>
       <div class="nav"><button class="btn" data-retry="1">${pass ? 'Ulangi kuis' : 'Coba lagi'}</button><button class="btn primary" data-close="1">Tutup</button></div>`;
     m.body.querySelector('[data-retry]').onclick = () => { n = 0; score = 0; ask(); };
     m.body.querySelector('[data-close]').onclick = () => m.close();
@@ -134,10 +181,28 @@ export function openQuiz(ui) {
   return m.closed;
 }
 
+/* ---------- Alur mentor (materi -> simulasi -> kuis) ---------- */
+async function stageFlow(ui, who, ch, doneLine) {
+  const k = ch.keys, f = (x) => state.hasFlag(x);
+  const stages = [
+    [!f(k.read), `Kamu belum menyelesaikan materi Bab ${ch.id}. Mau lanjut membaca?`, 'Buka materi', () => openChapter(ui, ch)],
+    [!f(k.sim), 'Materi sudah dibaca. Sekarang buktikan pemahamanmu lewat simulasi.', 'Mulai simulasi', () => openSim(ui, ch)],
+    [!f(k.quiz), 'Simulasi selesai! Tinggal satu langkah: kuis.', 'Mulai kuis', () => openQuiz(ui, ch)],
+  ];
+  const st = stages.find((s) => s[0]);
+  if (st) {
+    const c = await ui.dialog({ who, pages: [st[1]], choices: [st[2], 'Nanti saja'] });
+    if (c === 0) await st[3]();
+    return;
+  }
+  const c = await ui.dialog({ who, pages: [doneLine], choices: ['Baca ulang materi', 'Ulangi kuis', 'Tutup'] });
+  if (c === 0) await openChapter(ui, ch);
+  if (c === 1) await openQuiz(ui, ch);
+}
+
 /* ---------- NPC dan objek interaktif ---------- */
 export async function interactProf(ui) {
-  const f = (k) => state.hasFlag(k);
-  if (!f('met')) {
+  if (!state.hasFlag('met')) {
     const c = await ui.dialog({
       who: PROF,
       pages: [
@@ -148,38 +213,37 @@ export async function interactProf(ui) {
       choices: ['Siap belajar!', 'Nanti dulu'],
     });
     state.setFlag('met'); QuestManager.check();
-    if (c === 0) await openChapter1(ui);
+    if (c === 0) await openChapter(ui, chapter1);
     return;
   }
-  const stages = [
-    [!f('read'), 'Kamu belum menyelesaikan materi Bab 1. Mau lanjut membaca?', 'Buka materi', openChapter1],
-    [!f('sim'), 'Materi sudah dibaca. Sekarang buktikan pemahamanmu: susun urutan game loop.', 'Mulai simulasi', openSim],
-    [!f('quiz'), 'Simulasi selesai! Tinggal satu langkah: kuis 5 soal.', 'Mulai kuis', openQuiz],
-  ];
-  const st = stages.find((s) => s[0]);
-  if (st) {
-    const c = await ui.dialog({ who: PROF, pages: [st[1]], choices: [st[2], 'Nanti saja'] });
-    if (c === 0) await st[3](ui);
+  await stageFlow(ui, PROF, chapter1, 'Hebat! Godot Crystal pertama sudah menyala. Pintu Ruang Kelas kini terbuka. Kak Syntax menunggumu di dalam.');
+}
+
+export async function interactKak(ui) {
+  if (!state.hasFlag('kak_met')) {
+    const c = await ui.dialog({
+      who: KAK,
+      pages: [
+        `Hai, ${state.data.name}! Aku Kak Syntax, mentor di kelas ini.`,
+        'Sebelum menulis kode, kamu harus kenal "dapur kerjanya": Godot Editor. Kita bahas Scene, Node, Scene Tree, Inspector, dan FileSystem.',
+        'Siap mulai Bab 2?',
+      ],
+      choices: ['Siap!', 'Nanti dulu'],
+    });
+    state.setFlag('kak_met');
+    if (c === 0) await openChapter(ui, chapter2);
     return;
   }
-  const c = await ui.dialog({
-    who: PROF,
-    pages: ['Hebat! Godot Crystal pertama sudah menyala. Pintu Ruang Kelas kini terbuka, tetapi isinya baru hadir di pembaruan berikutnya.'],
-    choices: ['Baca ulang materi', 'Ulangi kuis', 'Tutup'],
-  });
-  if (c === 0) await openChapter1(ui);
-  if (c === 1) await openQuiz(ui);
+  await stageFlow(ui, KAK, chapter2, 'Mantap! Kamu sudah mengenal Godot Editor dan Godot Crystal kedua menyala. Bab 3 (GDScript) hadir di pembaruan berikutnya.');
 }
 
 export async function interactDoor(ui) {
-  const open = state.hasFlag('quest_q_ch1');
   const who = { name: 'Pintu Ruang Kelas', portrait: 'prof' };
-  if (!open) {
+  if (!state.hasFlag('quest_q_ch1')) {
     A.sfx('bad');
     await ui.dialog({ who, pages: ['Pintu terkunci oleh sistem sekolah. Selesaikan Misi Bab 1 dari Profesor Pixel untuk membukanya.'] });
   } else {
-    A.sfx('door');
-    await ui.dialog({ who, pages: ['Pintu terbuka! Ruang Kelas (Bab 2 dst.) belum tersedia di versi prototype ini. Tunggu pembaruan berikutnya.'] });
+    bus.emit('goto:scene', 'Classroom');
   }
 }
 

@@ -4,6 +4,7 @@ import BootScene from './scenes/BootScene.js';
 import PreloadScene from './scenes/PreloadScene.js';
 import MainMenuScene from './scenes/MainMenuScene.js';
 import SchoolScene from './scenes/SchoolScene.js';
+import ClassroomScene from './scenes/ClassroomScene.js';
 
 new Phaser.Game({
   type: Phaser.AUTO,
@@ -14,5 +15,5 @@ new Phaser.Game({
   backgroundColor: '#071a30',
   scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
   physics: { default: 'arcade', arcade: { debug: false } },
-  scene: [BootScene, PreloadScene, MainMenuScene, SchoolScene],
+  scene: [BootScene, PreloadScene, MainMenuScene, SchoolScene, ClassroomScene],
 });

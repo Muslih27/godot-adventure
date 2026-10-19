@@ -5,7 +5,8 @@ import { QuestManager } from '../systems/QuestManager.js';
 import { AudioManager as A } from '../systems/AudioManager.js';
 import { curriculum, locations } from '../data/curriculum.js';
 import { bus } from '../core/bus.js';
-import { openChapter1 } from '../systems/LearningManager.js';
+import { openChapter } from '../systems/LearningManager.js';
+import { chapterById } from '../data/chapters.js';
 
 export function openQuestLog(ui) {
   const m = ui.openModal({ title: 'Quest Log' });
@@ -24,8 +25,8 @@ export function openMap(ui) {
   const m = ui.openModal({ title: 'Peta Sekolah', wide: true });
   const unlocked = { gate: 1, school: 1, classroom: QuestManager.isDone(QuestManager.all()[1]) ? 1 : 0 };
   m.body.innerHTML = `<div class="map">${locations.map((l) => {
-    const cur = l.id === 'school', ok = unlocked[l.id], target = l.id === 'classroom' && ok;
-    const label = cur ? 'Lokasi sekarang' : target ? 'Dituju (belum tersedia di Fase 1)' : ok ? 'Terbuka' : 'Terkunci';
+    const cur = l.id === state.data.location, ok = unlocked[l.id], target = l.id === 'classroom' && ok && !state.hasFlag('classroom');
+    const label = cur ? 'Lokasi sekarang' : target ? 'Dituju' : ok ? 'Terbuka' : 'Terkunci';
     return `<div class="loc ${cur ? 'cur' : ok ? 'open' : 'lock'}"><b>${esc(l.name)}</b><span>${label}</span></div>`;
   }).join('')}</div><p class="muted">Area baru terbuka setelah menyelesaikan misi bab.</p>`;
 }
@@ -33,14 +34,17 @@ export function openMap(ui) {
 export function openProgress(ui) {
   const m = ui.openModal({ title: 'Materi & Progres', wide: true });
   const d = state.data;
-  const pct = (['read', 'sim', 'quiz'].filter((k) => d.flags[k]).length / 3) * 100;
+  const pct = (n) => {
+    const k = chapterById(n)?.keys;
+    return k ? ([k.read, k.sim, k.quiz].filter((x) => d.flags[x]).length / 3) * 100 : 0;
+  };
   m.body.innerHTML = `<div class="chap-list">${curriculum.map((c) => {
-    const p = c.available ? pct : 0;
+    const p = c.available ? pct(c.n) : 0;
     return `<div class="chap ${c.available ? '' : 'soon'}"><div><b>Bab ${c.n}: ${esc(c.title)}</b><small>${c.level}</small>
       <div class="bar"><i style="width:${p}%"></i></div></div>
-      ${c.available ? '<button class="btn primary" data-open="1">Buka materi</button>' : '<span class="muted">Segera hadir</span>'}</div>`;
+      ${c.available ? '<button class="btn primary" data-open="${c.n}">Buka materi</button>' : '<span class="muted">Segera hadir</span>'}</div>`;
   }).join('')}</div>`;
-  m.body.querySelector('[data-open]').onclick = () => { m.close(); openChapter1(ui); };
+  m.body.querySelectorAll('[data-open]').forEach((b) => (b.onclick = () => { m.close(); openChapter(ui, chapterById(Number(b.dataset.open))); }));
 }
 
 export function openPause(ui) {

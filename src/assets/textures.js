@@ -6,6 +6,7 @@ const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
 const LOOKS = {
   player0: { skin: '#f1c27d', hair: '#2b1b0e', shirt: '#22d3ee', pants: '#1e3a8a' },
   player1: { skin: '#c68642', hair: '#111827', shirt: '#ff8a3d', pants: '#14532d', long: true },
+  kak: { skin: '#c68642', hair: '#7c3aed', shirt: '#34d399', pants: '#1f2937' },
   prof: { skin: '#f1c27d', hair: '#d1d5db', shirt: '#ffffff', pants: '#334155', glasses: true, coat: true },
 };
 
@@ -98,6 +99,31 @@ export function generateTextures(scene) {
     c.fillStyle = '#fff3c4'; c.fillRect(5, 4, 2, 4);
   });
   canvasTex(scene, 'spark', 4, 4, (c) => { c.fillStyle = '#fff'; c.fillRect(0, 0, 4, 4); });
+
+  canvasTex(scene, 'floor', 32, 32, (c) => {
+    c.fillStyle = '#8fb3d1'; c.fillRect(0, 0, 32, 32);
+    c.fillStyle = '#7aa0c0'; c.fillRect(0, 0, 32, 1); c.fillRect(0, 0, 1, 32);
+  });
+  canvasTex(scene, 'cwall', 800, 110, (c) => {
+    c.fillStyle = '#2c5d8f'; c.fillRect(0, 0, 800, 110);
+    c.fillStyle = '#1b3e66'; c.fillRect(0, 100, 800, 10);
+    c.fillStyle = '#7a4a21'; c.fillRect(236, 14, 328, 68);
+    c.fillStyle = '#1f5a46'; c.fillRect(242, 20, 316, 56);
+    c.fillStyle = '#e8f6ff'; c.font = 'bold 14px monospace'; c.textAlign = 'center';
+    c.fillText('Scene > Node > Script', 400, 54);
+    [[40, 24], [660, 24]].forEach(([x, y]) => { c.fillStyle = '#12304f'; c.fillRect(x - 2, y - 2, 104, 64); c.fillStyle = '#7ee7ff'; c.fillRect(x, y, 100, 60); c.fillStyle = '#c8f6ff'; c.fillRect(x + 8, y + 8, 24, 20); });
+    c.fillStyle = '#22d3ee'; c.beginPath(); c.moveTo(160, 30); c.lineTo(176, 52); c.lineTo(160, 76); c.lineTo(144, 52); c.fill();
+  });
+  canvasTex(scene, 'desk', 48, 34, (c) => {
+    c.fillStyle = '#7a4a21'; c.fillRect(4, 22, 4, 12); c.fillRect(40, 22, 4, 12);
+    c.fillStyle = '#c7783a'; c.fillRect(0, 12, 48, 12);
+    c.fillStyle = '#111'; c.fillRect(14, 0, 20, 13); c.fillStyle = '#22d3ee'; c.fillRect(16, 2, 16, 9);
+  });
+  canvasTex(scene, 'cdoor', 64, 34, (c) => {
+    c.fillStyle = '#ff8a3d'; c.fillRect(0, 0, 64, 34);
+    c.fillStyle = '#173a5c'; c.fillRect(6, 6, 52, 28);
+    c.fillStyle = '#fff'; c.font = 'bold 9px monospace'; c.textAlign = 'center'; c.fillText('KELUAR', 32, 22);
+  });
 
   for (const key of Object.keys(LOOKS)) {
     const t = canvasTex(scene, key, 72, 32, (c) => [0, 1, 2].forEach((f) => person(c, f * 24, 0, LOOKS[key], f)));

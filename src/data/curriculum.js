@@ -1,7 +1,7 @@
 // Kerangka 15 bab. Hanya bab dengan available:true yang sudah dapat dimainkan.
 export const curriculum = [
   { n: 1, level: 'Level 1 — Pemula', title: 'Dasar Pengembangan Gim', available: true },
-  { n: 2, level: 'Level 1 — Pemula', title: 'Mengenal Godot Editor' },
+  { n: 2, level: 'Level 1 — Pemula', title: 'Mengenal Godot Editor', available: true },
   { n: 3, level: 'Level 1 — Pemula', title: 'Dasar GDScript' },
   { n: 4, level: 'Level 2 — Dasar Menengah', title: 'Logika Pemrograman' },
   { n: 5, level: 'Level 2 — Dasar Menengah', title: 'Karakter dan Gerakan' },

@@ -132,3 +132,9 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--cyan-soft);
   .code dl { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { .burst { animation: none; } .xp i { transition: none; } }
+
+.match { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.match .col { display: grid; gap: 8px; align-content: start; }
+.match .btn { width: 100%; }
+.btn.sel { border-color: var(--orange); background: #7a4a1f; }
+@media (max-width: 640px) { .match { grid-template-columns: 1fr; } }
