@@ -1,0 +1,35 @@
+// Kerangka 15 bab. Hanya bab dengan available:true yang sudah dapat dimainkan.
+export const curriculum = [
+  { n: 1, level: 'Level 1 — Pemula', title: 'Dasar Pengembangan Gim', available: true },
+  { n: 2, level: 'Level 1 — Pemula', title: 'Mengenal Godot Editor' },
+  { n: 3, level: 'Level 1 — Pemula', title: 'Dasar GDScript' },
+  { n: 4, level: 'Level 2 — Dasar Menengah', title: 'Logika Pemrograman' },
+  { n: 5, level: 'Level 2 — Dasar Menengah', title: 'Karakter dan Gerakan' },
+  { n: 6, level: 'Level 2 — Dasar Menengah', title: 'Sprite dan Animasi' },
+  { n: 7, level: 'Level 3 — Menengah', title: 'Scene, Instancing, dan Signal' },
+  { n: 8, level: 'Level 3 — Menengah', title: 'UI dan Sistem Permainan' },
+  { n: 9, level: 'Level 3 — Menengah', title: 'Desain Level dan Interaksi' },
+  { n: 10, level: 'Level 4 — Lanjutan', title: 'Arsitektur Gameplay' },
+  { n: 11, level: 'Level 4 — Lanjutan', title: 'AI dan NPC' },
+  { n: 12, level: 'Level 4 — Lanjutan', title: 'Audio dan Efek Visual' },
+  { n: 13, level: 'Level 5 — Mahir', title: 'Save System' },
+  { n: 14, level: 'Level 5 — Mahir', title: 'Debugging dan Optimasi' },
+  { n: 15, level: 'Level 5 — Mahir', title: 'Export dan Proyek Akhir' },
+];
+
+export const locations = [
+  { id: 'gate', name: 'Gerbang Sekolah' },
+  { id: 'school', name: 'Halaman Sekolah' },
+  { id: 'classroom', name: 'Ruang Kelas' },
+  { id: 'lab', name: 'Laboratorium Komputer' },
+  { id: 'library', name: 'Perpustakaan' },
+  { id: 'anim', name: 'Studio Animasi' },
+  { id: 'arena', name: 'Arena Gim' },
+  { id: 'code', name: 'Ruang Pemrograman' },
+  { id: 'level', name: 'Ruang Desain Level' },
+  { id: 'ai', name: 'Laboratorium AI' },
+  { id: 'audio', name: 'Ruang Audio' },
+  { id: 'test', name: 'Ruang Pengujian' },
+  { id: 'server', name: 'Server Room' },
+  { id: 'final', name: 'Ruang Final Project' },
+];
