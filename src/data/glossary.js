@@ -24,4 +24,8 @@ export const glossary = [
   { ch: 6, t: 'AnimatedSprite2D', d: 'Node yang memutar animasi frame dari resource SpriteFrames.' },
   { ch: 6, t: 'SpriteFrames', d: 'Resource yang menyimpan daftar animasi bernama beserta frame-nya.' },
   { ch: 6, t: 'AnimationPlayer', d: 'Node yang menganimasikan banyak properti memakai keyframe pada garis waktu.' },
+  { ch: 7, t: 'PackedScene', d: 'Scene yang sudah dimuat dan siap dijadikan cetakan untuk membuat instance.' },
+  { ch: 7, t: 'Instancing', d: 'Membuat salinan (instance) dari sebuah scene lewat instantiate().' },
+  { ch: 7, t: 'Signal', d: 'Pengumuman yang dipancarkan node ketika sesuatu terjadi, dihubungkan dengan connect().' },
+  { ch: 7, t: 'Custom signal', d: 'Signal buatan sendiri yang dideklarasikan dengan signal dan dipancarkan dengan emit().' },
 ];

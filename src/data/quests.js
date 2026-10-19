@@ -117,6 +117,25 @@ export const quests = [
     reward: { xp: 100, coins: 45, crystals: 1 },
   },
   {
+    id: 'q_lib', type: 'Utama', title: 'Masuki Perpustakaan',
+    desc: 'Pintu PUSTAKA di Studio Animasi kini terbuka. Temui Pustakawan Data.',
+    requires: 'q_ch6',
+    done: (s) => !!s.flags.libRoom,
+    reward: { xp: 10 },
+  },
+  {
+    id: 'q_ch7', type: 'Utama', title: 'Misi Bab 7: Scene, Instancing, dan Signal',
+    desc: 'Pulihkan Godot Crystal ketujuh dengan menguasai perakitan scene dan komunikasi node.',
+    requires: 'q_lib',
+    steps: [
+      { t: 'Baca materi Bab 7', done: (s) => !!s.flags.read7 },
+      { t: 'Pasangkan signal dengan pemicunya', done: (s) => !!s.flags.sim7 },
+      { t: 'Lulus kuis (minimal 4 dari 6 benar)', done: (s) => !!s.flags.quiz7 },
+    ],
+    done: (s) => !!(s.flags.read7 && s.flags.sim7 && s.flags.quiz7),
+    reward: { xp: 110, coins: 50, crystals: 1 },
+  },
+  {
     id: 'q_coins', type: 'Sampingan', title: 'Koin Berserakan',
     desc: 'Temukan 3 Koin Akademi yang tersebar di halaman sekolah.',
     progress: (s) => `${coinsFound(s)}/3 koin`,

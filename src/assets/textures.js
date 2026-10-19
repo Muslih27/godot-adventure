@@ -10,6 +10,7 @@ const LOOKS = {
   robo: { skin: '#9ca3af', hair: '#22d3ee', shirt: '#4b5563', pants: '#374151', glasses: true },
   coach: { skin: '#f1c27d', hair: '#ff8a3d', shirt: '#ff8a3d', pants: '#1e3a8a' },
   bu: { skin: '#f1c27d', hair: '#0e7490', shirt: '#fbbf24', pants: '#7c3aed' },
+  pus: { skin: '#c68642', hair: '#6b7280', shirt: '#0e7490', pants: '#334155', glasses: true },
   prof: { skin: '#f1c27d', hair: '#d1d5db', shirt: '#ffffff', pants: '#334155', glasses: true, coat: true },
 };
 
@@ -200,6 +201,32 @@ export function generateTextures(scene) {
     c.fillStyle = '#fbbf24'; c.fillRect(0, 0, 48, 34);
     c.fillStyle = '#173a5c'; c.fillRect(5, 5, 38, 29);
     c.fillStyle = '#fff'; c.font = 'bold 9px monospace'; c.textAlign = 'center'; c.fillText('STUDIO', 24, 24);
+  });
+
+  canvasTex(scene, 'bwall', 800, 110, (c) => {
+    c.fillStyle = '#2d3f55'; c.fillRect(0, 0, 800, 110);
+    const cols = ['#ff8a3d', '#22d3ee', '#34d399', '#7ee7ff', '#ffb347', '#a7f3d0'];
+    for (let r = 0; r < 2; r++) {
+      c.fillStyle = '#7a4a21'; c.fillRect(0, 30 + r * 40, 800, 4);
+      for (let x = 6; x < 790; x += 12) { c.fillStyle = cols[Math.floor(rnd() * cols.length)]; c.fillRect(x, 8 + r * 40 + Math.floor(rnd() * 6), 8, 22 - Math.floor(rnd() * 6)); }
+    }
+    c.fillStyle = '#16304a'; c.fillRect(0, 100, 800, 10);
+    c.fillStyle = '#7a4a21'; c.fillRect(300, 40, 200, 28);
+    c.fillStyle = '#ffb347'; c.font = 'bold 14px monospace'; c.textAlign = 'center'; c.fillText('PERPUSTAKAAN', 400, 60);
+  });
+  canvasTex(scene, 'bdoor', 48, 34, (c) => {
+    c.fillStyle = '#a7f3d0'; c.fillRect(0, 0, 48, 34);
+    c.fillStyle = '#173a5c'; c.fillRect(5, 5, 38, 29);
+    c.fillStyle = '#fff'; c.font = 'bold 8px monospace'; c.textAlign = 'center'; c.fillText('PUSTAKA', 24, 24);
+  });
+  canvasTex(scene, 'shelf', 64, 56, (c) => {
+    c.fillStyle = '#5a3a1a'; c.fillRect(0, 0, 64, 56);
+    c.fillStyle = '#7a4a21'; c.fillRect(3, 3, 58, 50);
+    const cols = ['#ff8a3d', '#22d3ee', '#34d399', '#ffb347'];
+    for (let r = 0; r < 3; r++) {
+      c.fillStyle = '#5a3a1a'; c.fillRect(3, 18 + r * 17, 58, 3);
+      for (let x = 6; x < 58; x += 7) { c.fillStyle = cols[Math.floor(rnd() * cols.length)]; c.fillRect(x, 5 + r * 17, 5, 12); }
+    }
   });
 
   for (const key of Object.keys(LOOKS)) {

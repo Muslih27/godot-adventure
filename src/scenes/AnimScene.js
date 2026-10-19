@@ -2,7 +2,7 @@ import { ui } from '../systems/UIManager.js';
 import { state } from '../systems/GameState.js';
 import { QuestManager } from '../systems/QuestManager.js';
 import { bus } from '../core/bus.js';
-import { interactBu } from '../systems/LearningManager.js';
+import { interactBu, interactLibDoor } from '../systems/LearningManager.js';
 import WorldScene from './WorldScene.js';
 
 export default class AnimScene extends WorldScene {
@@ -29,9 +29,11 @@ export default class AnimScene extends WorldScene {
     this.tweens.add({ targets: bu, y: 207, duration: 600, yoyo: true, repeat: -1 });
     this.wall(390, 200, 20, 10);
 
+    this.add.image(640, 102, 'bdoor').setOrigin(0.5, 1).setDepth(151);
     this.coinDefs = [['n1', 40, 440], ['n2', 760, 150]];
     this.things = [
       { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Bu Animasi', run: () => interactBu(ui) },
+      { x: 640, y: 125, r: 55, hy: 95, label: 'Masuk Perpustakaan', run: () => interactLibDoor(ui) },
       { x: 400, y: 450, r: 50, hy: 415, label: 'Kembali ke Arena Gim', run: () => bus.emit('goto:scene', 'Arena', { x: 640, y: 135 }) },
     ];
     this.mmBg = (c, k) => {

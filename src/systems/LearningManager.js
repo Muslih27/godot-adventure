@@ -6,6 +6,7 @@ import { chapter3 } from '../data/chapter3.js';
 import { chapter4 } from '../data/chapter4.js';
 import { chapter5 } from '../data/chapter5.js';
 import { chapter6 } from '../data/chapter6.js';
+import { chapter7 } from '../data/chapter7.js';
 import { state } from './GameState.js';
 import { QuestManager } from './QuestManager.js';
 import { AudioManager as A } from './AudioManager.js';
@@ -16,6 +17,7 @@ const KAK = { name: 'Kak Syntax', portrait: 'kak' };
 const ROBO = { name: 'RoboGuard', portrait: 'robo' };
 const COACH = { name: 'Coach Vektor', portrait: 'coach' };
 const BU = { name: 'Bu Animasi', portrait: 'bu' };
+const PUS = { name: 'Pustakawan Data', portrait: 'pus' };
 
 /* ---------- Materi ---------- */
 export function openChapter(ui, ch) {
@@ -374,6 +376,34 @@ export async function interactBu(ui) {
     return;
   }
   await stageFlow(ui, BU, chapter6, 'Animasimu luwes! Godot Crystal keenam menyala. Bab 7 (Scene, Instancing, dan Signal) hadir di pembaruan berikutnya.');
+}
+
+export async function interactPus(ui) {
+  if (!state.hasFlag('pus_met')) {
+    const c = await ui.dialog({
+      who: PUS,
+      pages: [
+        `Selamat datang di Perpustakaan Akademi, ${state.data.name}. Aku Pustakawan Data.`,
+        'Aku mengelola materi dan glosarium. Catatan dan istilah yang sudah kamu pelajari tersimpan di tombol Jurnal.',
+        'Hari ini kita belajar merakit scene dan membuat node saling berkomunikasi. Siap mulai Bab 7?',
+      ],
+      choices: ['Siap!', 'Nanti dulu'],
+    });
+    state.setFlag('pus_met');
+    if (c === 0) await openChapter(ui, chapter7);
+    return;
+  }
+  await stageFlow(ui, PUS, chapter7, 'Rakitan scene-mu rapi! Godot Crystal ketujuh menyala. Bab 8 (UI dan Sistem Permainan) hadir di pembaruan berikutnya.');
+}
+
+export async function interactLibDoor(ui) {
+  const who = { name: 'Pintu Perpustakaan', portrait: 'bu' };
+  if (!state.hasFlag('quest_q_ch6')) {
+    A.sfx('bad');
+    await ui.dialog({ who, pages: ['Pintu terkunci. Selesaikan Misi Bab 6 dari Bu Animasi untuk membukanya.'] });
+  } else {
+    bus.emit('goto:scene', 'Library');
+  }
 }
 
 export async function interactAnimDoor(ui) {
