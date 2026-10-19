@@ -136,6 +136,25 @@ export const quests = [
     reward: { xp: 110, coins: 50, crystals: 1 },
   },
   {
+    id: 'q_level', type: 'Utama', title: 'Masuki Ruang Desain Level',
+    desc: 'Pintu LEVEL di Perpustakaan kini terbuka. Temui Mas Level.',
+    requires: 'q_ch7',
+    done: (s) => !!s.flags.levelRoom,
+    reward: { xp: 10 },
+  },
+  {
+    id: 'q_ch8', type: 'Utama', title: 'Misi Bab 8: UI dan Sistem Permainan',
+    desc: 'Pulihkan Godot Crystal kedelapan dengan merancang antarmuka permainan.',
+    requires: 'q_level',
+    steps: [
+      { t: 'Baca materi Bab 8', done: (s) => !!s.flags.read8 },
+      { t: 'Perbaiki tiga bug antarmuka', done: (s) => !!s.flags.sim8 },
+      { t: 'Lulus kuis (minimal 4 dari 6 benar)', done: (s) => !!s.flags.quiz8 },
+    ],
+    done: (s) => !!(s.flags.read8 && s.flags.sim8 && s.flags.quiz8),
+    reward: { xp: 120, coins: 55, crystals: 1 },
+  },
+  {
     id: 'q_coins', type: 'Sampingan', title: 'Koin Berserakan',
     desc: 'Temukan 3 Koin Akademi yang tersebar di halaman sekolah.',
     progress: (s) => `${coinsFound(s)}/3 koin`,

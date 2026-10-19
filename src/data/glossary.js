@@ -28,4 +28,8 @@ export const glossary = [
   { ch: 7, t: 'Instancing', d: 'Membuat salinan (instance) dari sebuah scene lewat instantiate().' },
   { ch: 7, t: 'Signal', d: 'Pengumuman yang dipancarkan node ketika sesuatu terjadi, dihubungkan dengan connect().' },
   { ch: 7, t: 'Custom signal', d: 'Signal buatan sendiri yang dideklarasikan dengan signal dan dipancarkan dengan emit().' },
+  { ch: 8, t: 'Control', d: 'Node dasar untuk antarmuka (UI); Label dan Button adalah turunannya.' },
+  { ch: 8, t: 'Container', d: 'Node yang menata child-nya otomatis, misalnya VBoxContainer dan HBoxContainer.' },
+  { ch: 8, t: 'CanvasLayer', d: 'Lapisan gambar terpisah dari kamera, cocok untuk HUD yang tetap di layar.' },
+  { ch: 8, t: 'process_mode', d: 'Pengaturan kapan node berjalan; PROCESS_MODE_ALWAYS tetap berjalan saat gim dijeda.' },
 ];

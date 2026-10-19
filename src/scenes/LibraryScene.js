@@ -2,7 +2,7 @@ import { ui } from '../systems/UIManager.js';
 import { state } from '../systems/GameState.js';
 import { QuestManager } from '../systems/QuestManager.js';
 import { bus } from '../core/bus.js';
-import { interactPus } from '../systems/LearningManager.js';
+import { interactPus, interactLevelDoor } from '../systems/LearningManager.js';
 import WorldScene from './WorldScene.js';
 
 const SHELVES = [[100, 230], [100, 330], [700, 230], [700, 330]];
@@ -32,9 +32,11 @@ export default class LibraryScene extends WorldScene {
     this.tweens.add({ targets: pus, y: 208, duration: 800, yoyo: true, repeat: -1 });
     this.wall(390, 200, 20, 10);
 
+    this.add.image(620, 102, 'tdoor').setOrigin(0.5, 1).setDepth(151);
     this.coinDefs = [['b1', 40, 440], ['b2', 760, 150]];
     this.things = [
       { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Pustakawan Data', run: () => interactPus(ui) },
+      { x: 620, y: 125, r: 55, hy: 95, label: 'Masuk Ruang Desain Level', run: () => interactLevelDoor(ui) },
       { x: 400, y: 450, r: 50, hy: 415, label: 'Kembali ke Studio Animasi', run: () => bus.emit('goto:scene', 'Anim', { x: 640, y: 135 }) },
     ];
     this.mmBg = (c, k) => {

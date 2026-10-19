@@ -7,6 +7,7 @@ import { chapter4 } from '../data/chapter4.js';
 import { chapter5 } from '../data/chapter5.js';
 import { chapter6 } from '../data/chapter6.js';
 import { chapter7 } from '../data/chapter7.js';
+import { chapter8 } from '../data/chapter8.js';
 import { state } from './GameState.js';
 import { QuestManager } from './QuestManager.js';
 import { AudioManager as A } from './AudioManager.js';
@@ -18,6 +19,7 @@ const ROBO = { name: 'RoboGuard', portrait: 'robo' };
 const COACH = { name: 'Coach Vektor', portrait: 'coach' };
 const BU = { name: 'Bu Animasi', portrait: 'bu' };
 const PUS = { name: 'Pustakawan Data', portrait: 'pus' };
+const LVL = { name: 'Mas Level', portrait: 'lvl' };
 
 /* ---------- Materi ---------- */
 export function openChapter(ui, ch) {
@@ -394,6 +396,34 @@ export async function interactPus(ui) {
     return;
   }
   await stageFlow(ui, PUS, chapter7, 'Rakitan scene-mu rapi! Godot Crystal ketujuh menyala. Bab 8 (UI dan Sistem Permainan) hadir di pembaruan berikutnya.');
+}
+
+export async function interactLevel(ui) {
+  if (!state.hasFlag('lvl_met')) {
+    const c = await ui.dialog({
+      who: LVL,
+      pages: [
+        `Halo, ${state.data.name}! Aku Mas Level, perancang level dan antarmuka akademi.`,
+        'Pemain butuh tahu skor, nyawa, dan cara menjeda gim. Itu semua dirancang lewat UI, dan hari ini kamu belajar membuatnya.',
+        'Siap mulai Bab 8?',
+      ],
+      choices: ['Siap!', 'Nanti dulu'],
+    });
+    state.setFlag('lvl_met');
+    if (c === 0) await openChapter(ui, chapter8);
+    return;
+  }
+  await stageFlow(ui, LVL, chapter8, 'Antarmukamu rapi dan jelas! Godot Crystal kedelapan menyala. Bab 9 (Desain Level dan Interaksi) hadir di pembaruan berikutnya, dan aku akan membimbingmu lagi di sini.');
+}
+
+export async function interactLevelDoor(ui) {
+  const who = { name: 'Pintu Ruang Desain Level', portrait: 'pus' };
+  if (!state.hasFlag('quest_q_ch7')) {
+    A.sfx('bad');
+    await ui.dialog({ who, pages: ['Pintu terkunci. Selesaikan Misi Bab 7 dari Pustakawan Data untuk membukanya.'] });
+  } else {
+    bus.emit('goto:scene', 'Level');
+  }
 }
 
 export async function interactLibDoor(ui) {
