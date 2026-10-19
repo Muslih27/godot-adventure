@@ -3,6 +3,7 @@ import { chapter2 } from './chapter2.js';
 import { chapter3 } from './chapter3.js';
 import { chapter4 } from './chapter4.js';
 import { chapter5 } from './chapter5.js';
+import { chapter6 } from './chapter6.js';
 // Daftar bab yang sudah dapat dimainkan. Tambahkan bab baru di sini.
-export const chapters = [chapter1, chapter2, chapter3, chapter4, chapter5];
+export const chapters = [chapter1, chapter2, chapter3, chapter4, chapter5, chapter6];
 export const chapterById = (n) => chapters.find((c) => c.id === n);

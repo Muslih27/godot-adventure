@@ -140,3 +140,5 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--cyan-soft);
 @media (max-width: 640px) { .match { grid-template-columns: 1fr; } }
 
 .slots code, .pool code { white-space: pre; font-family: ui-monospace, Menlo, Consolas, monospace; }
+
+.loc .btn { margin-top: 6px; padding: 6px 10px; font-size: 13px; }

@@ -2,7 +2,7 @@ import { ui } from '../systems/UIManager.js';
 import { state } from '../systems/GameState.js';
 import { QuestManager } from '../systems/QuestManager.js';
 import { bus } from '../core/bus.js';
-import { interactCoach } from '../systems/LearningManager.js';
+import { interactCoach, interactAnimDoor } from '../systems/LearningManager.js';
 import WorldScene from './WorldScene.js';
 
 // Rintangan balok: [x, y, jumlah, arah]
@@ -32,9 +32,11 @@ export default class ArenaScene extends WorldScene {
     this.tweens.add({ targets: coach, y: 207, duration: 500, yoyo: true, repeat: -1 });
     this.wall(390, 200, 20, 10);
 
+    this.add.image(640, 102, 'sdoor').setOrigin(0.5, 1).setDepth(151);
     this.coinDefs = [['a1', 60, 300], ['a2', 740, 200]];
     this.things = [
       { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Coach Vektor', run: () => interactCoach(ui) },
+      { x: 640, y: 125, r: 55, hy: 95, label: 'Masuk Studio Animasi', run: () => interactAnimDoor(ui) },
       { x: 400, y: 450, r: 50, hy: 415, label: 'Kembali ke Ruang Pemrograman', run: () => bus.emit('goto:scene', 'Code', { x: 600, y: 135 }) },
     ];
     this.mmBg = (c, k) => {

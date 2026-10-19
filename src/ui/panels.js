@@ -24,13 +24,16 @@ export function openQuestLog(ui) {
 export function openMap(ui) {
   const m = ui.openModal({ title: 'Peta Sekolah', wide: true });
   const done = (id) => QuestManager.isDone(QuestManager.all().find((q) => q.id === id));
-  const unlocked = { gate: 1, school: 1, classroom: done('q_ch1') ? 1 : 0, lab: done('q_ch2') ? 1 : 0, code: done('q_ch3') ? 1 : 0, arena: done('q_ch4') ? 1 : 0 };
-  const visit = { classroom: 'classroom', lab: 'lab', code: 'codeRoom', arena: 'arena' };
+  const unlocked = { gate: 1, school: 1, classroom: done('q_ch1') ? 1 : 0, lab: done('q_ch2') ? 1 : 0, code: done('q_ch3') ? 1 : 0, arena: done('q_ch4') ? 1 : 0, anim: done('q_ch5') ? 1 : 0 };
+  const scenes = { school: 'School', classroom: 'Classroom', lab: 'Lab', code: 'Code', arena: 'Arena', anim: 'Anim' };
+  const visit = { classroom: 'classroom', lab: 'lab', code: 'codeRoom', arena: 'arena', anim: 'animRoom' };
+  const seen = (id) => id === 'school' || (visit[id] && state.hasFlag(visit[id]));
   m.body.innerHTML = `<div class="map">${locations.map((l) => {
     const cur = l.id === state.data.location, ok = unlocked[l.id], target = !!(visit[l.id] && ok && !state.hasFlag(visit[l.id]));
     const label = cur ? 'Lokasi sekarang' : target ? 'Dituju' : ok ? 'Terbuka' : 'Terkunci';
-    return `<div class="loc ${cur ? 'cur' : ok ? 'open' : 'lock'}"><b>${esc(l.name)}</b><span>${label}</span></div>`;
-  }).join('')}</div><p class="muted">Area baru terbuka setelah menyelesaikan misi bab.</p>`;
+    return `<div class="loc ${cur ? 'cur' : ok ? 'open' : 'lock'}"><b>${esc(l.name)}</b><span>${label}</span>${scenes[l.id] && !cur && seen(l.id) ? `<button class="btn" data-go="${scenes[l.id]}">Pergi ke sini</button>` : ''}</div>`;
+  }).join('')}</div><p class="muted">Area baru terbuka setelah menyelesaikan misi bab. Ruangan yang sudah pernah dikunjungi bisa dituju langsung dengan tombol "Pergi ke sini".</p>`;
+  m.body.querySelectorAll('[data-go]').forEach((b) => (b.onclick = () => { m.close(); bus.emit('goto:scene', b.dataset.go); }));
 }
 
 export function openProgress(ui) {

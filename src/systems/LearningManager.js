@@ -5,6 +5,7 @@ import { chapter2 } from '../data/chapter2.js';
 import { chapter3 } from '../data/chapter3.js';
 import { chapter4 } from '../data/chapter4.js';
 import { chapter5 } from '../data/chapter5.js';
+import { chapter6 } from '../data/chapter6.js';
 import { state } from './GameState.js';
 import { QuestManager } from './QuestManager.js';
 import { AudioManager as A } from './AudioManager.js';
@@ -14,6 +15,7 @@ const PROF = { name: 'Profesor Pixel', portrait: 'prof' };
 const KAK = { name: 'Kak Syntax', portrait: 'kak' };
 const ROBO = { name: 'RoboGuard', portrait: 'robo' };
 const COACH = { name: 'Coach Vektor', portrait: 'coach' };
+const BU = { name: 'Bu Animasi', portrait: 'bu' };
 
 /* ---------- Materi ---------- */
 export function openChapter(ui, ch) {
@@ -181,7 +183,7 @@ function openMatch(ui, ch) {
     m.body.querySelectorAll('[data-l]').forEach((b) => (b.onclick = () => { A.sfx('click'); sel = Number(b.dataset.l); render(); }));
     m.body.querySelectorAll('[data-r]').forEach((b) => (b.onclick = () => {
       const i = Number(b.dataset.r);
-      if (sel === null) { A.sfx('bad'); return render('Pilih node di kolom kiri terlebih dahulu.', false); }
+      if (sel === null) { A.sfx('bad'); return render('Pilih salah satu item di kolom kiri terlebih dahulu.', false); }
       if (i === sel) {
         A.sfx('ok'); done.add(sel);
         const why = s.pairs[sel].why; sel = null;
@@ -191,7 +193,7 @@ function openMatch(ui, ch) {
         render('Tepat! ' + why);
       } else {
         tries++; A.sfx('bad');
-        render(`Belum cocok: ${s.pairs[sel].t} bukan untuk fungsi itu. Baca lagi deskripsi fungsinya.`, false);
+        render(`Belum cocok. "${s.pairs[sel].t}" tidak berpasangan dengan itu. Baca lagi deskripsinya.`, false);
       }
     }));
   };
@@ -354,6 +356,34 @@ export async function interactCoach(ui) {
     return;
   }
   await stageFlow(ui, COACH, chapter5, 'Gerakanmu lincah! Godot Crystal kelima menyala. Bab 6 (Sprite dan Animasi) hadir di pembaruan berikutnya.');
+}
+
+export async function interactBu(ui) {
+  if (!state.hasFlag('bu_met')) {
+    const c = await ui.dialog({
+      who: BU,
+      pages: [
+        `Selamat datang di Studio Animasi, ${state.data.name}! Aku Bu Animasi.`,
+        'Di sini kamu belajar membuat karakter terasa hidup: sprite, sprite sheet, dan animasi idle serta berjalan.',
+        'Siap mulai Bab 6?',
+      ],
+      choices: ['Siap!', 'Nanti dulu'],
+    });
+    state.setFlag('bu_met');
+    if (c === 0) await openChapter(ui, chapter6);
+    return;
+  }
+  await stageFlow(ui, BU, chapter6, 'Animasimu luwes! Godot Crystal keenam menyala. Bab 7 (Scene, Instancing, dan Signal) hadir di pembaruan berikutnya.');
+}
+
+export async function interactAnimDoor(ui) {
+  const who = { name: 'Pintu Studio Animasi', portrait: 'coach' };
+  if (!state.hasFlag('quest_q_ch5')) {
+    A.sfx('bad');
+    await ui.dialog({ who, pages: ['Pintu terkunci. Selesaikan Misi Bab 5 dari Coach Vektor untuk membukanya.'] });
+  } else {
+    bus.emit('goto:scene', 'Anim');
+  }
 }
 
 export async function interactArenaDoor(ui) {

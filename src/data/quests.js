@@ -98,6 +98,25 @@ export const quests = [
     reward: { xp: 90, coins: 40, crystals: 1 },
   },
   {
+    id: 'q_anim', type: 'Utama', title: 'Masuki Studio Animasi',
+    desc: 'Pintu STUDIO di Arena Gim kini terbuka. Temui Bu Animasi.',
+    requires: 'q_ch5',
+    done: (s) => !!s.flags.animRoom,
+    reward: { xp: 10 },
+  },
+  {
+    id: 'q_ch6', type: 'Utama', title: 'Misi Bab 6: Sprite dan Animasi',
+    desc: 'Pulihkan Godot Crystal keenam dengan membuat karakter terasa hidup.',
+    requires: 'q_anim',
+    steps: [
+      { t: 'Baca materi Bab 6', done: (s) => !!s.flags.read6 },
+      { t: 'Urutkan langkah membuat animasi berjalan', done: (s) => !!s.flags.sim6 },
+      { t: 'Lulus kuis (minimal 4 dari 6 benar)', done: (s) => !!s.flags.quiz6 },
+    ],
+    done: (s) => !!(s.flags.read6 && s.flags.sim6 && s.flags.quiz6),
+    reward: { xp: 100, coins: 45, crystals: 1 },
+  },
+  {
     id: 'q_coins', type: 'Sampingan', title: 'Koin Berserakan',
     desc: 'Temukan 3 Koin Akademi yang tersebar di halaman sekolah.',
     progress: (s) => `${coinsFound(s)}/3 koin`,
