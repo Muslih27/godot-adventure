@@ -3,6 +3,7 @@ import { ui } from '../systems/UIManager.js';
 import { state } from '../systems/GameState.js';
 import { AudioManager as A } from '../systems/AudioManager.js';
 import { getAudioPref } from '../systems/SaveManager.js';
+import { AchievementManager } from '../systems/AchievementManager.js';
 
 export default class MainMenuScene extends Phaser.Scene {
   constructor() { super('MainMenu'); }
@@ -26,6 +27,7 @@ export default class MainMenuScene extends Phaser.Scene {
   go() {
     A.setEnabled(state.data.settings.audio);
     A.startMusic();
+    AchievementManager.check();
     this.scene.start({ school: 'School', classroom: 'Classroom', lab: 'Lab', code: 'Code', arena: 'Arena', anim: 'Anim' }[state.data.location] || 'School');
   }
 }

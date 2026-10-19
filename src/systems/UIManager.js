@@ -7,6 +7,7 @@ import { AudioManager as A } from './AudioManager.js';
 import { hasSave, setAudioPref } from './SaveManager.js';
 import { portraits } from '../assets/textures.js';
 import { openQuestLog, openMap, openProgress, openPause } from '../ui/panels.js';
+import { openProfile, openJournal } from '../ui/profile.js';
 
 class UIManager {
   constructor() {
@@ -30,6 +31,11 @@ class UIManager {
     window.addEventListener('keydown', (e) => this.onKey(e));
     bus.on('state', () => this.refreshHud());
     bus.on('levelup', (lv) => { A.sfx('levelup'); this.toast(`Naik ke Level ${lv}!`, 'good'); });
+    bus.on('achievement', (list) => {
+      A.sfx('quest');
+      if (list.length > 3) this.toast(`${list.length} prestasi baru terbuka! Lihat di Profil.`, 'good');
+      else list.forEach((a) => this.toast(`Prestasi: ${a.title}`, 'good'));
+    });
     bus.on('quest:complete', (q) => {
       A.sfx('quest');
       this.toast(`Quest selesai: ${q.title}`, 'good');
@@ -128,7 +134,7 @@ class UIManager {
         <div class="hud-res"><span><i class="ico coin"></i><b id="hc">0</b></span><span><i class="ico crystal"></i><b id="hcr">0</b></span></div>
         <div class="hud-btns">
           <button data-a="quest">Quest</button><button data-a="map">Peta</button>
-          <button data-a="learn">Materi</button><button data-a="pause">Jeda</button>
+          <button data-a="learn">Materi</button><button data-a="journal">Jurnal</button><button data-a="profile">Profil</button><button data-a="pause">Jeda</button>
         </div>
       </div>
       <div class="questbox" id="hq"></div>
@@ -145,6 +151,8 @@ class UIManager {
     if (a === 'quest') openQuestLog(this);
     if (a === 'map') openMap(this);
     if (a === 'learn') openProgress(this);
+    if (a === 'journal') openJournal(this);
+    if (a === 'profile') openProfile(this);
     if (a === 'pause') openPause(this);
   }
   showHud(on) { this.hudEl.classList.toggle('hidden', !on); this.inGame = on; if (on) this.refreshHud(); this.touchEl.classList.toggle('hidden', !on); }

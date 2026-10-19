@@ -3,12 +3,15 @@ import Phaser from 'phaser';
 import BootScene from './scenes/BootScene.js';
 import PreloadScene from './scenes/PreloadScene.js';
 import MainMenuScene from './scenes/MainMenuScene.js';
+import { AchievementManager } from './systems/AchievementManager.js';
 import SchoolScene from './scenes/SchoolScene.js';
 import ClassroomScene from './scenes/ClassroomScene.js';
 import LabScene from './scenes/LabScene.js';
 import CodeScene from './scenes/CodeScene.js';
 import ArenaScene from './scenes/ArenaScene.js';
 import AnimScene from './scenes/AnimScene.js';
+
+AchievementManager.init();
 
 new Phaser.Game({
   type: Phaser.AUTO,

@@ -33,6 +33,7 @@ class GameState {
   setFlag(k) { if (!this.data.flags[k]) { this.data.flags[k] = true; this.commit(); return true; } return false; }
   hasFlag(k) { return !!this.data.flags[k]; }
   collect(id) { if (!this.data.collected.includes(id)) { this.data.collected.push(id); this.commit(); } }
+  setCosmetic(c) { this.data.cosmetic = c; this.commit(); bus.emit('cosmetic', c); }
   addBadge(b) { if (!this.data.badges.includes(b)) { this.data.badges.push(b); this.commit(); } }
 }
 export const state = new GameState();

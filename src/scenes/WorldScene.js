@@ -4,6 +4,7 @@ import { state } from '../systems/GameState.js';
 import { QuestManager } from '../systems/QuestManager.js';
 import { AudioManager as A } from '../systems/AudioManager.js';
 import { bus } from '../core/bus.js';
+import { cosmetics } from '../data/cosmetics.js';
 
 // Kelas dasar semua area yang dapat dijelajahi.
 // Subclass mengisi build(): this.W, this.H, this.minY, this.spawn, this.things, this.coinDefs, this.mmBg.
@@ -33,6 +34,12 @@ export default class WorldScene extends Phaser.Scene {
     this.player.setCollideWorldBounds(true);
     this.solids.forEach((z) => this.physics.add.collider(this.player, z));
     this.cameras.main.startFollow(this.player, true, 0.12, 0.12).setRoundPixels(true);
+    const applyCos = () => {
+      const c = cosmetics.find((x) => x.id === state.data.cosmetic);
+      if (c && c.tint) this.player.setTint(c.tint); else this.player.clearTint();
+    };
+    applyCos();
+    bus.on('cosmetic', applyCos);
 
     this.coinDefs.forEach(([id, x, y]) => {
       if (state.data.collected.includes(id)) return;
@@ -56,6 +63,7 @@ export default class WorldScene extends Phaser.Scene {
     this.events.once('shutdown', () => {
       bus.off('goto:menu', toMenu);
       bus.off('goto:scene', travel);
+      bus.off('cosmetic', applyCos);
       this.input.keyboard.clearCaptures();
       ui.showHud(false);
       ui.touch = { x: 0, y: 0 };
