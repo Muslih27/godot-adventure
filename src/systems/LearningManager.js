@@ -2,6 +2,7 @@
 import { $, esc, shuffle } from '../core/util.js';
 import { chapter1 } from '../data/chapter1.js';
 import { chapter2 } from '../data/chapter2.js';
+import { chapter3 } from '../data/chapter3.js';
 import { state } from './GameState.js';
 import { QuestManager } from './QuestManager.js';
 import { AudioManager as A } from './AudioManager.js';
@@ -79,10 +80,11 @@ function openOrder(ui, ch) {
   const order = [];
   let tries = 0;
   const pool = shuffle(s.steps.map((st, idx) => ({ ...st, idx })));
+  const fmt = (t) => (s.code ? `<code>${esc(t)}</code>` : esc(t));
   const render = (msg = '', good = true) => {
     m.body.innerHTML = `<p>${esc(s.intro)}</p>
-      <ol class="slots">${s.steps.map((_, k) => `<li class="${order[k] !== undefined ? 'filled' : ''}">${order[k] !== undefined ? esc(s.steps[order[k]].t) : `Langkah ${k + 1}`}</li>`).join('')}</ol>
-      <div class="pool">${pool.filter((p) => !order.includes(p.idx)).map((p) => `<button class="btn" data-i="${p.idx}">${esc(p.t)}</button>`).join('')}</div>
+      <ol class="slots">${s.steps.map((_, k) => `<li class="${order[k] !== undefined ? 'filled' : ''}">${order[k] !== undefined ? fmt(s.steps[order[k]].t) : `Langkah ${k + 1}`}</li>`).join('')}</ol>
+      <div class="pool">${pool.filter((p) => !order.includes(p.idx)).map((p) => `<button class="btn" data-i="${p.idx}">${fmt(p.t)}</button>`).join('')}</div>
       <p class="fb ${good ? 'good' : 'bad'}">${esc(msg)}</p>`;
     m.body.querySelectorAll('[data-i]').forEach((b) => (b.onclick = () => pick(Number(b.dataset.i))));
   };
@@ -90,7 +92,7 @@ function openOrder(ui, ch) {
     if (idx === order.length) {
       order.push(idx); A.sfx('ok');
       if (order.length === s.steps.length) {
-        return simDone(ui, ch, m, tries, `<ol>${s.steps.map((x) => `<li>${esc(x.t)}<br><small class="muted">${esc(x.why)}</small></li>`).join('')}</ol>`);
+        return simDone(ui, ch, m, tries, `<ol>${s.steps.map((x) => `<li>${fmt(x.t)}<br><small class="muted">${esc(x.why)}</small></li>`).join('')}</ol>`);
       }
       render('Tepat! ' + s.steps[idx].why);
     } else {
@@ -234,7 +236,35 @@ export async function interactKak(ui) {
     if (c === 0) await openChapter(ui, chapter2);
     return;
   }
-  await stageFlow(ui, KAK, chapter2, 'Mantap! Kamu sudah mengenal Godot Editor dan Godot Crystal kedua menyala. Bab 3 (GDScript) hadir di pembaruan berikutnya.');
+  await stageFlow(ui, KAK, chapter2, 'Mantap! Kamu sudah mengenal Godot Editor dan Godot Crystal kedua menyala. Ayo ke Laboratorium Komputer lewat pintu di sisi kanan papan tulis. Aku tunggu di sana!');
+}
+
+export async function interactKakLab(ui) {
+  if (!state.hasFlag('kak_lab_met')) {
+    const c = await ui.dialog({
+      who: KAK,
+      pages: [
+        `Selamat datang di Laboratorium Komputer, ${state.data.name}!`,
+        'Di sini kita belajar GDScript: komentar, variabel, tipe data, operator, dan fungsi. Ingat, GDScript sangat teliti soal indentasi.',
+        'Siap mulai Bab 3?',
+      ],
+      choices: ['Siap!', 'Nanti dulu'],
+    });
+    state.setFlag('kak_lab_met');
+    if (c === 0) await openChapter(ui, chapter3);
+    return;
+  }
+  await stageFlow(ui, KAK, chapter3, 'Hebat! Godot Crystal ketiga menyala. Bab 4 (Logika Pemrograman) hadir di pembaruan berikutnya.');
+}
+
+export async function interactLabDoor(ui) {
+  const who = { name: 'Pintu Laboratorium', portrait: 'kak' };
+  if (!state.hasFlag('quest_q_ch2')) {
+    A.sfx('bad');
+    await ui.dialog({ who, pages: ['Pintu laboratorium terkunci. Selesaikan Misi Bab 2 dari Kak Syntax untuk membukanya.'] });
+  } else {
+    bus.emit('goto:scene', 'Lab');
+  }
 }
 
 export async function interactDoor(ui) {

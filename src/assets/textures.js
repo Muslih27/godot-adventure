@@ -125,6 +125,25 @@ export function generateTextures(scene) {
     c.fillStyle = '#fff'; c.font = 'bold 9px monospace'; c.textAlign = 'center'; c.fillText('KELUAR', 32, 22);
   });
 
+  canvasTex(scene, 'lwall', 800, 110, (c) => {
+    c.fillStyle = '#14304f'; c.fillRect(0, 0, 800, 110);
+    c.fillStyle = '#0c2036'; c.fillRect(0, 100, 800, 10);
+    [30, 670].forEach((x) => {
+      c.fillStyle = '#0b1f36'; c.fillRect(x, 10, 100, 90);
+      for (let i = 0; i < 5; i++) { c.fillStyle = '#071423'; c.fillRect(x + 6, 16 + i * 17, 88, 13); c.fillStyle = i % 2 ? '#34d399' : '#22d3ee'; c.fillRect(x + 10, 20 + i * 17, 4, 4); }
+    });
+    c.fillStyle = '#7a4a21'; c.fillRect(236, 12, 328, 74);
+    c.fillStyle = '#031020'; c.fillRect(242, 18, 316, 62);
+    c.font = 'bold 13px monospace'; c.textAlign = 'left';
+    c.fillStyle = '#34d399'; c.fillText('var nyawa: int = 3', 256, 42);
+    c.fillStyle = '#22d3ee'; c.fillText('func _ready() -> void:', 256, 62);
+  });
+  canvasTex(scene, 'ldoor', 48, 34, (c) => {
+    c.fillStyle = '#22d3ee'; c.fillRect(0, 0, 48, 34);
+    c.fillStyle = '#173a5c'; c.fillRect(5, 5, 38, 29);
+    c.fillStyle = '#fff'; c.font = 'bold 10px monospace'; c.textAlign = 'center'; c.fillText('LAB', 24, 24);
+  });
+
   for (const key of Object.keys(LOOKS)) {
     const t = canvasTex(scene, key, 72, 32, (c) => [0, 1, 2].forEach((f) => person(c, f * 24, 0, LOOKS[key], f)));
     if (t) [0, 1, 2].forEach((f) => t.add('f' + f, 0, f * 24, 0, 24, 32));

@@ -138,3 +138,5 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--cyan-soft);
 .match .btn { width: 100%; }
 .btn.sel { border-color: var(--orange); background: #7a4a1f; }
 @media (max-width: 640px) { .match { grid-template-columns: 1fr; } }
+
+.slots code, .pool code { white-space: pre; font-family: ui-monospace, Menlo, Consolas, monospace; }

@@ -50,7 +50,7 @@ export default class WorldScene extends Phaser.Scene {
     ui.showHud(true);
     this.time.addEvent({ delay: 5000, loop: true, callback: () => this.savePos() });
     const toMenu = () => { this.savePos(); this.leaving = true; this.cameras.main.fadeOut(300); this.time.delayedCall(300, () => this.scene.start('MainMenu')); };
-    const travel = (target) => this.travel(target);
+    const travel = (target, pos) => this.travel(target, pos);
     bus.once('goto:menu', toMenu);
     bus.on('goto:scene', travel);
     this.events.once('shutdown', () => {
@@ -63,12 +63,12 @@ export default class WorldScene extends Phaser.Scene {
     this.onReady?.();
   }
 
-  travel(target) {
+  travel(target, pos) {
     if (this.leaving) return;
     this.leaving = true;
     A.sfx('door');
-    state.data.location = target === 'School' ? 'school' : 'classroom';
-    state.data.pos = target === 'School' ? { x: 480, y: 200 } : null;
+    state.data.location = { School: 'school', Classroom: 'classroom', Lab: 'lab' }[target];
+    state.data.pos = pos || null;
     state.save();
     this.cameras.main.fadeOut(300);
     this.time.delayedCall(300, () => this.scene.start(target));

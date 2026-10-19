@@ -26,6 +26,6 @@ export default class MainMenuScene extends Phaser.Scene {
   go() {
     A.setEnabled(state.data.settings.audio);
     A.startMusic();
-    this.scene.start(state.data.location === 'classroom' ? 'Classroom' : 'School');
+    this.scene.start({ school: 'School', classroom: 'Classroom', lab: 'Lab' }[state.data.location] || 'School');
   }
 }

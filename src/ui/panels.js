@@ -23,9 +23,10 @@ export function openQuestLog(ui) {
 
 export function openMap(ui) {
   const m = ui.openModal({ title: 'Peta Sekolah', wide: true });
-  const unlocked = { gate: 1, school: 1, classroom: QuestManager.isDone(QuestManager.all()[1]) ? 1 : 0 };
+  const done = (id) => QuestManager.isDone(QuestManager.all().find((q) => q.id === id));
+  const unlocked = { gate: 1, school: 1, classroom: done('q_ch1') ? 1 : 0, lab: done('q_ch2') ? 1 : 0 };
   m.body.innerHTML = `<div class="map">${locations.map((l) => {
-    const cur = l.id === state.data.location, ok = unlocked[l.id], target = l.id === 'classroom' && ok && !state.hasFlag('classroom');
+    const cur = l.id === state.data.location, ok = unlocked[l.id], target = ((l.id === 'classroom' && !state.hasFlag('classroom')) || (l.id === 'lab' && !state.hasFlag('lab'))) && ok;
     const label = cur ? 'Lokasi sekarang' : target ? 'Dituju' : ok ? 'Terbuka' : 'Terkunci';
     return `<div class="loc ${cur ? 'cur' : ok ? 'open' : 'lock'}"><b>${esc(l.name)}</b><span>${label}</span></div>`;
   }).join('')}</div><p class="muted">Area baru terbuka setelah menyelesaikan misi bab.</p>`;

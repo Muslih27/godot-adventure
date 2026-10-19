@@ -41,6 +41,25 @@ export const quests = [
     reward: { xp: 60, coins: 25, crystals: 1 },
   },
   {
+    id: 'q_lab', type: 'Utama', title: 'Masuki Laboratorium Komputer',
+    desc: 'Pintu di sisi kanan papan tulis kini terbuka. Temui Kak Syntax di laboratorium.',
+    requires: 'q_ch2',
+    done: (s) => !!s.flags.lab,
+    reward: { xp: 10 },
+  },
+  {
+    id: 'q_ch3', type: 'Utama', title: 'Misi Bab 3: Dasar GDScript',
+    desc: 'Pulihkan Godot Crystal ketiga dengan menguasai dasar bahasa GDScript.',
+    requires: 'q_lab',
+    steps: [
+      { t: 'Baca materi Bab 3', done: (s) => !!s.flags.read3 },
+      { t: 'Susun kode GDScript yang teracak', done: (s) => !!s.flags.sim3 },
+      { t: 'Lulus kuis (minimal 4 dari 6 benar)', done: (s) => !!s.flags.quiz3 },
+    ],
+    done: (s) => !!(s.flags.read3 && s.flags.sim3 && s.flags.quiz3),
+    reward: { xp: 70, coins: 30, crystals: 1 },
+  },
+  {
     id: 'q_coins', type: 'Sampingan', title: 'Koin Berserakan',
     desc: 'Temukan 3 Koin Akademi yang tersebar di halaman sekolah.',
     progress: (s) => `${coinsFound(s)}/3 koin`,
