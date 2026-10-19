@@ -4,7 +4,7 @@ export const curriculum = [
   { n: 2, level: 'Level 1 — Pemula', title: 'Mengenal Godot Editor', available: true },
   { n: 3, level: 'Level 1 — Pemula', title: 'Dasar GDScript', available: true },
   { n: 4, level: 'Level 2 — Dasar Menengah', title: 'Logika Pemrograman', available: true },
-  { n: 5, level: 'Level 2 — Dasar Menengah', title: 'Karakter dan Gerakan' },
+  { n: 5, level: 'Level 2 — Dasar Menengah', title: 'Karakter dan Gerakan', available: true },
   { n: 6, level: 'Level 2 — Dasar Menengah', title: 'Sprite dan Animasi' },
   { n: 7, level: 'Level 3 — Menengah', title: 'Scene, Instancing, dan Signal' },
   { n: 8, level: 'Level 3 — Menengah', title: 'UI dan Sistem Permainan' },

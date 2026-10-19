@@ -2,7 +2,7 @@ import { ui } from '../systems/UIManager.js';
 import { state } from '../systems/GameState.js';
 import { QuestManager } from '../systems/QuestManager.js';
 import { bus } from '../core/bus.js';
-import { interactRobo } from '../systems/LearningManager.js';
+import { interactRobo, interactArenaDoor } from '../systems/LearningManager.js';
 import WorldScene from './WorldScene.js';
 
 export default class CodeScene extends WorldScene {
@@ -28,9 +28,11 @@ export default class CodeScene extends WorldScene {
     this.tweens.add({ targets: robo, y: 207, duration: 500, yoyo: true, repeat: -1 });
     this.wall(390, 200, 20, 10);
 
+    this.add.image(600, 102, 'adoor').setOrigin(0.5, 1).setDepth(151);
     this.coinDefs = [['p1', 40, 440], ['p2', 760, 150]];
     this.things = [
       { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan RoboGuard', run: () => interactRobo(ui) },
+      { x: 600, y: 125, r: 55, hy: 95, label: 'Masuk Arena Gim', run: () => interactArenaDoor(ui) },
       { x: 400, y: 450, r: 50, hy: 415, label: 'Kembali ke Laboratorium', run: () => bus.emit('goto:scene', 'Lab', { x: 620, y: 135 }) },
     ];
     this.mmBg = (c, k) => {

@@ -4,6 +4,7 @@ import { chapter1 } from '../data/chapter1.js';
 import { chapter2 } from '../data/chapter2.js';
 import { chapter3 } from '../data/chapter3.js';
 import { chapter4 } from '../data/chapter4.js';
+import { chapter5 } from '../data/chapter5.js';
 import { state } from './GameState.js';
 import { QuestManager } from './QuestManager.js';
 import { AudioManager as A } from './AudioManager.js';
@@ -12,6 +13,7 @@ import { bus } from '../core/bus.js';
 const PROF = { name: 'Profesor Pixel', portrait: 'prof' };
 const KAK = { name: 'Kak Syntax', portrait: 'kak' };
 const ROBO = { name: 'RoboGuard', portrait: 'robo' };
+const COACH = { name: 'Coach Vektor', portrait: 'coach' };
 
 /* ---------- Materi ---------- */
 export function openChapter(ui, ch) {
@@ -75,6 +77,7 @@ function simDone(ui, ch, m, tries, listHtml) {
 export function openSim(ui, ch) {
   if (ch.sim.type === 'match') return openMatch(ui, ch);
   if (ch.sim.type === 'logic') return openLogic(ui, ch);
+  if (ch.sim.type === 'bug') return openBug(ui, ch);
   return openOrder(ui, ch);
 }
 
@@ -105,6 +108,35 @@ function openOrder(ui, ch) {
     }
   };
   render();
+  return m.closed;
+}
+
+function openBug(ui, ch) {
+  const s = ch.sim;
+  const m = ui.openModal({ title: s.title, wide: true });
+  let n = 0, tries = 0, stage = 'line';
+  const show = (msg = '', good = true) => {
+    const r = s.rounds[n];
+    const lines = r.code.map((l, i) => `<button class="btn ${stage === 'fix' && i === r.bug ? 'right' : ''}" data-l="${i}" ${stage === 'fix' ? 'disabled' : ''}><code>${esc(l)}</code></button>`).join('');
+    const fixes = stage === 'fix'
+      ? `<h3>Pilih perbaikan yang tepat</h3><div class="pool col">${r.fixes.map((f, i) => `<button class="btn" data-f="${i}">${esc(f.t)}</button>`).join('')}</div>`
+      : '<p class="muted">Klik baris yang menjadi penyebab masalah.</p>';
+    m.body.innerHTML = `<p>${esc(s.intro)}</p><p class="muted">Kasus ${n + 1} / ${s.rounds.length}</p>
+      <p><b>Gejala:</b> ${esc(r.symptom)}</p><div class="pool col">${lines}</div>${fixes}
+      <p class="fb ${good ? 'good' : 'bad'}">${esc(msg)}</p>`;
+    m.body.querySelectorAll('[data-l]').forEach((b) => (b.onclick = () => {
+      if (Number(b.dataset.l) === r.bug) { A.sfx('ok'); stage = 'fix'; show('Benar, baris itu menjadi sumber masalah.'); }
+      else { tries++; A.sfx('bad'); show('Bukan baris itu. Cocokkan gejala dengan fungsi tiap baris.', false); }
+    }));
+    m.body.querySelectorAll('[data-f]').forEach((b) => (b.onclick = () => {
+      if (r.fixes[Number(b.dataset.f)].ok) {
+        A.sfx('ok'); n++; stage = 'line';
+        if (n === s.rounds.length) return simDone(ui, ch, m, tries, '<p>Semua bug berhasil diperbaiki.</p>');
+        show('Tepat! ' + r.why);
+      } else { tries++; A.sfx('bad'); show('Perbaikan itu belum menyelesaikan masalah. Pikirkan penyebab sebenarnya.', false); }
+    }));
+  };
+  show();
   return m.closed;
 }
 
@@ -304,6 +336,34 @@ export async function interactRobo(ui) {
     return;
   }
   await stageFlow(ui, ROBO, chapter4, 'Logikamu tervalidasi. BEEP! Godot Crystal keempat menyala. Bab 5 (Karakter dan Gerakan) hadir di pembaruan berikutnya.');
+}
+
+export async function interactCoach(ui) {
+  if (!state.hasFlag('coach_met')) {
+    const c = await ui.dialog({
+      who: COACH,
+      pages: [
+        `Halo, ${state.data.name}! Aku Coach Vektor, pelatih Arena Gim.`,
+        'Di sini kamu belajar membuat karakter bergerak: membaca input, mengatur kecepatan, dan menabrak dinding dengan benar.',
+        'Siap latihan Bab 5?',
+      ],
+      choices: ['Siap!', 'Nanti dulu'],
+    });
+    state.setFlag('coach_met');
+    if (c === 0) await openChapter(ui, chapter5);
+    return;
+  }
+  await stageFlow(ui, COACH, chapter5, 'Gerakanmu lincah! Godot Crystal kelima menyala. Bab 6 (Sprite dan Animasi) hadir di pembaruan berikutnya.');
+}
+
+export async function interactArenaDoor(ui) {
+  const who = { name: 'Pintu Arena Gim', portrait: 'robo' };
+  if (!state.hasFlag('quest_q_ch4')) {
+    A.sfx('bad');
+    await ui.dialog({ who, pages: ['Pintu terkunci. Selesaikan Misi Bab 4 dari RoboGuard untuk membukanya.'] });
+  } else {
+    bus.emit('goto:scene', 'Arena');
+  }
 }
 
 export async function interactCodeDoor(ui) {

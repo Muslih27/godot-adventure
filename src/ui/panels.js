@@ -24,8 +24,8 @@ export function openQuestLog(ui) {
 export function openMap(ui) {
   const m = ui.openModal({ title: 'Peta Sekolah', wide: true });
   const done = (id) => QuestManager.isDone(QuestManager.all().find((q) => q.id === id));
-  const unlocked = { gate: 1, school: 1, classroom: done('q_ch1') ? 1 : 0, lab: done('q_ch2') ? 1 : 0, code: done('q_ch3') ? 1 : 0 };
-  const visit = { classroom: 'classroom', lab: 'lab', code: 'codeRoom' };
+  const unlocked = { gate: 1, school: 1, classroom: done('q_ch1') ? 1 : 0, lab: done('q_ch2') ? 1 : 0, code: done('q_ch3') ? 1 : 0, arena: done('q_ch4') ? 1 : 0 };
+  const visit = { classroom: 'classroom', lab: 'lab', code: 'codeRoom', arena: 'arena' };
   m.body.innerHTML = `<div class="map">${locations.map((l) => {
     const cur = l.id === state.data.location, ok = unlocked[l.id], target = !!(visit[l.id] && ok && !state.hasFlag(visit[l.id]));
     const label = cur ? 'Lokasi sekarang' : target ? 'Dituju' : ok ? 'Terbuka' : 'Terkunci';

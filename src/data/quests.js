@@ -79,6 +79,25 @@ export const quests = [
     reward: { xp: 80, coins: 35, crystals: 1 },
   },
   {
+    id: 'q_arena', type: 'Utama', title: 'Masuki Arena Gim',
+    desc: 'Pintu ARENA di Ruang Pemrograman kini terbuka. Temui Coach Vektor.',
+    requires: 'q_ch4',
+    done: (s) => !!s.flags.arena,
+    reward: { xp: 10 },
+  },
+  {
+    id: 'q_ch5', type: 'Utama', title: 'Misi Bab 5: Karakter dan Gerakan',
+    desc: 'Pulihkan Godot Crystal kelima dengan menguasai gerakan karakter dan tabrakan.',
+    requires: 'q_arena',
+    steps: [
+      { t: 'Baca materi Bab 5', done: (s) => !!s.flags.read5 },
+      { t: 'Temukan tiga bug gerakan', done: (s) => !!s.flags.sim5 },
+      { t: 'Lulus kuis (minimal 4 dari 6 benar)', done: (s) => !!s.flags.quiz5 },
+    ],
+    done: (s) => !!(s.flags.read5 && s.flags.sim5 && s.flags.quiz5),
+    reward: { xp: 90, coins: 40, crystals: 1 },
+  },
+  {
     id: 'q_coins', type: 'Sampingan', title: 'Koin Berserakan',
     desc: 'Temukan 3 Koin Akademi yang tersebar di halaman sekolah.',
     progress: (s) => `${coinsFound(s)}/3 koin`,

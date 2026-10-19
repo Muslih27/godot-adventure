@@ -8,6 +8,7 @@ const LOOKS = {
   player1: { skin: '#c68642', hair: '#111827', shirt: '#ff8a3d', pants: '#14532d', long: true },
   kak: { skin: '#c68642', hair: '#7c3aed', shirt: '#34d399', pants: '#1f2937' },
   robo: { skin: '#9ca3af', hair: '#22d3ee', shirt: '#4b5563', pants: '#374151', glasses: true },
+  coach: { skin: '#f1c27d', hair: '#ff8a3d', shirt: '#ff8a3d', pants: '#1e3a8a' },
   prof: { skin: '#f1c27d', hair: '#d1d5db', shirt: '#ffffff', pants: '#334155', glasses: true, coat: true },
 };
 
@@ -159,6 +160,28 @@ export function generateTextures(scene) {
     c.fillStyle = '#34d399'; c.fillRect(0, 0, 48, 34);
     c.fillStyle = '#173a5c'; c.fillRect(5, 5, 38, 29);
     c.fillStyle = '#fff'; c.font = 'bold 10px monospace'; c.textAlign = 'center'; c.fillText('KODE', 24, 24);
+  });
+
+  canvasTex(scene, 'awall', 800, 110, (c) => {
+    c.fillStyle = '#1d3b73'; c.fillRect(0, 0, 800, 110);
+    c.fillStyle = '#ff8a3d'; for (let x = 0; x < 800; x += 40) c.fillRect(x, 0, 20, 8);
+    c.fillStyle = '#122650'; c.fillRect(0, 100, 800, 10);
+    c.fillStyle = '#7a4a21'; c.fillRect(216, 14, 368, 72);
+    c.fillStyle = '#031020'; c.fillRect(222, 20, 356, 60);
+    c.font = 'bold 13px monospace'; c.textAlign = 'left';
+    c.fillStyle = '#22d3ee'; c.fillText('velocity = arah * SPEED', 236, 44);
+    c.fillStyle = '#34d399'; c.fillText('move_and_slide()', 236, 64);
+  });
+  canvasTex(scene, 'adoor', 48, 34, (c) => {
+    c.fillStyle = '#ff8a3d'; c.fillRect(0, 0, 48, 34);
+    c.fillStyle = '#173a5c'; c.fillRect(5, 5, 38, 29);
+    c.fillStyle = '#fff'; c.font = 'bold 9px monospace'; c.textAlign = 'center'; c.fillText('ARENA', 24, 24);
+  });
+  canvasTex(scene, 'block', 32, 32, (c) => {
+    c.fillStyle = '#12304f'; c.fillRect(0, 0, 32, 32);
+    c.fillStyle = '#2c5d8f'; c.fillRect(2, 2, 28, 28);
+    c.fillStyle = '#ff8a3d'; c.fillRect(2, 2, 28, 4);
+    c.fillStyle = '#244d78'; c.fillRect(6, 10, 20, 16);
   });
 
   for (const key of Object.keys(LOOKS)) {

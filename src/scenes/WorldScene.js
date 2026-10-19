@@ -67,7 +67,7 @@ export default class WorldScene extends Phaser.Scene {
     if (this.leaving) return;
     this.leaving = true;
     A.sfx('door');
-    state.data.location = { School: 'school', Classroom: 'classroom', Lab: 'lab', Code: 'code' }[target];
+    state.data.location = { School: 'school', Classroom: 'classroom', Lab: 'lab', Code: 'code', Arena: 'arena' }[target];
     state.data.pos = pos || null;
     state.save();
     this.cameras.main.fadeOut(300);
