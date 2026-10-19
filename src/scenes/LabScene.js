@@ -2,7 +2,7 @@ import { ui } from '../systems/UIManager.js';
 import { state } from '../systems/GameState.js';
 import { QuestManager } from '../systems/QuestManager.js';
 import { bus } from '../core/bus.js';
-import { interactKakLab } from '../systems/LearningManager.js';
+import { interactKakLab, interactCodeDoor } from '../systems/LearningManager.js';
 import WorldScene from './WorldScene.js';
 
 export default class LabScene extends WorldScene {
@@ -28,9 +28,11 @@ export default class LabScene extends WorldScene {
     this.tweens.add({ targets: kak, y: 198, duration: 700, yoyo: true, repeat: -1 });
     this.wall(390, 190, 20, 10);
 
+    this.add.image(620, 102, 'kdoor').setOrigin(0.5, 1).setDepth(151);
     this.coinDefs = [['l1', 40, 150], ['l2', 760, 420]];
     this.things = [
       { x: 400, y: 200, r: 60, hy: 155, label: 'Bicara dengan Kak Syntax', run: () => interactKakLab(ui) },
+      { x: 620, y: 125, r: 55, hy: 95, label: 'Masuk Ruang Pemrograman', run: () => interactCodeDoor(ui) },
       { x: 400, y: 450, r: 50, hy: 415, label: 'Kembali ke Ruang Kelas', run: () => bus.emit('goto:scene', 'Classroom', { x: 610, y: 135 }) },
     ];
     this.mmBg = (c, k) => {

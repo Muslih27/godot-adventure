@@ -7,6 +7,7 @@ const LOOKS = {
   player0: { skin: '#f1c27d', hair: '#2b1b0e', shirt: '#22d3ee', pants: '#1e3a8a' },
   player1: { skin: '#c68642', hair: '#111827', shirt: '#ff8a3d', pants: '#14532d', long: true },
   kak: { skin: '#c68642', hair: '#7c3aed', shirt: '#34d399', pants: '#1f2937' },
+  robo: { skin: '#9ca3af', hair: '#22d3ee', shirt: '#4b5563', pants: '#374151', glasses: true },
   prof: { skin: '#f1c27d', hair: '#d1d5db', shirt: '#ffffff', pants: '#334155', glasses: true, coat: true },
 };
 
@@ -142,6 +143,22 @@ export function generateTextures(scene) {
     c.fillStyle = '#22d3ee'; c.fillRect(0, 0, 48, 34);
     c.fillStyle = '#173a5c'; c.fillRect(5, 5, 38, 29);
     c.fillStyle = '#fff'; c.font = 'bold 10px monospace'; c.textAlign = 'center'; c.fillText('LAB', 24, 24);
+  });
+
+  canvasTex(scene, 'pwall', 800, 110, (c) => {
+    c.fillStyle = '#0f3b3a'; c.fillRect(0, 0, 800, 110);
+    c.fillStyle = '#0a2a29'; c.fillRect(0, 100, 800, 10);
+    [[40, 22], [660, 22]].forEach(([x, y]) => { c.fillStyle = '#031020'; c.fillRect(x, y, 100, 56); c.fillStyle = '#34d399'; for (let i = 0; i < 4; i++) c.fillRect(x + 8, y + 10 + i * 12, 30 + (i * 17) % 50, 4); });
+    c.fillStyle = '#7a4a21'; c.fillRect(236, 12, 328, 74);
+    c.fillStyle = '#031020'; c.fillRect(242, 18, 316, 62);
+    c.font = 'bold 13px monospace'; c.textAlign = 'left';
+    c.fillStyle = '#ffb347'; c.fillText('for i in range(3):', 256, 42);
+    c.fillStyle = '#34d399'; c.fillText('    print(i)', 256, 62);
+  });
+  canvasTex(scene, 'kdoor', 48, 34, (c) => {
+    c.fillStyle = '#34d399'; c.fillRect(0, 0, 48, 34);
+    c.fillStyle = '#173a5c'; c.fillRect(5, 5, 38, 29);
+    c.fillStyle = '#fff'; c.font = 'bold 10px monospace'; c.textAlign = 'center'; c.fillText('KODE', 24, 24);
   });
 
   for (const key of Object.keys(LOOKS)) {

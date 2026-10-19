@@ -60,6 +60,25 @@ export const quests = [
     reward: { xp: 70, coins: 30, crystals: 1 },
   },
   {
+    id: 'q_code', type: 'Utama', title: 'Masuki Ruang Pemrograman',
+    desc: 'Pintu di dinding laboratorium (sebelah kiri rak server kanan) kini terbuka. Temui RoboGuard.',
+    requires: 'q_ch3',
+    done: (s) => !!s.flags.codeRoom,
+    reward: { xp: 10 },
+  },
+  {
+    id: 'q_ch4', type: 'Utama', title: 'Misi Bab 4: Logika Pemrograman',
+    desc: 'Pulihkan Godot Crystal keempat dengan menguasai percabangan, perulangan, dan koleksi data.',
+    requires: 'q_code',
+    steps: [
+      { t: 'Baca materi Bab 4', done: (s) => !!s.flags.read4 },
+      { t: 'Selesaikan simulasi kondisi pintu', done: (s) => !!s.flags.sim4 },
+      { t: 'Lulus kuis (minimal 4 dari 6 benar)', done: (s) => !!s.flags.quiz4 },
+    ],
+    done: (s) => !!(s.flags.read4 && s.flags.sim4 && s.flags.quiz4),
+    reward: { xp: 80, coins: 35, crystals: 1 },
+  },
+  {
     id: 'q_coins', type: 'Sampingan', title: 'Koin Berserakan',
     desc: 'Temukan 3 Koin Akademi yang tersebar di halaman sekolah.',
     progress: (s) => `${coinsFound(s)}/3 koin`,

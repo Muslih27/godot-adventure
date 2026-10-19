@@ -3,6 +3,7 @@ import { $, esc, shuffle } from '../core/util.js';
 import { chapter1 } from '../data/chapter1.js';
 import { chapter2 } from '../data/chapter2.js';
 import { chapter3 } from '../data/chapter3.js';
+import { chapter4 } from '../data/chapter4.js';
 import { state } from './GameState.js';
 import { QuestManager } from './QuestManager.js';
 import { AudioManager as A } from './AudioManager.js';
@@ -10,6 +11,7 @@ import { bus } from '../core/bus.js';
 
 const PROF = { name: 'Profesor Pixel', portrait: 'prof' };
 const KAK = { name: 'Kak Syntax', portrait: 'kak' };
+const ROBO = { name: 'RoboGuard', portrait: 'robo' };
 
 /* ---------- Materi ---------- */
 export function openChapter(ui, ch) {
@@ -71,7 +73,9 @@ function simDone(ui, ch, m, tries, listHtml) {
 }
 
 export function openSim(ui, ch) {
-  return ch.sim.type === 'match' ? openMatch(ui, ch) : openOrder(ui, ch);
+  if (ch.sim.type === 'match') return openMatch(ui, ch);
+  if (ch.sim.type === 'logic') return openLogic(ui, ch);
+  return openOrder(ui, ch);
 }
 
 function openOrder(ui, ch) {
@@ -101,6 +105,33 @@ function openOrder(ui, ch) {
     }
   };
   render();
+  return m.closed;
+}
+
+function openLogic(ui, ch) {
+  const s = ch.sim;
+  const m = ui.openModal({ title: s.title, wide: true });
+  const steps = s.rounds.flatMap((r) => r.cases.map((c) => ({ ...c, rule: r.rule })));
+  let n = 0, tries = 0;
+  const show = (msg = '', good = true) => {
+    const st = steps[n];
+    m.body.innerHTML = `<p>${esc(s.intro)}</p><p class="muted">Kasus ${n + 1} / ${steps.length}</p>
+      <div class="code"><pre><code>${esc(st.rule)}</code></pre></div>
+      <p>Nilai saat ini: ${Object.entries(st.v).map(([k, v]) => `<code>${esc(k)} = ${esc(v)}</code>`).join(' dan ')}</p>
+      <div class="pool"><button class="btn" data-o="1">Pintu terbuka</button><button class="btn" data-o="0">Pintu terkunci</button></div>
+      <p class="fb ${good ? 'good' : 'bad'}">${esc(msg)}</p>`;
+    m.body.querySelectorAll('[data-o]').forEach((b) => (b.onclick = () => {
+      if ((b.dataset.o === '1') === st.open) {
+        A.sfx('ok'); n++;
+        if (n === steps.length) return simDone(ui, ch, m, tries, '<p>Kamu berhasil membaca semua kondisi.</p>');
+        show('Tepat! ' + st.why);
+      } else {
+        tries++; A.sfx('bad');
+        show('Belum tepat. Periksa tiap syarat satu per satu, lalu gabungkan dengan and atau or.', false);
+      }
+    }));
+  };
+  show();
   return m.closed;
 }
 
@@ -255,6 +286,34 @@ export async function interactKakLab(ui) {
     return;
   }
   await stageFlow(ui, KAK, chapter3, 'Hebat! Godot Crystal ketiga menyala. Bab 4 (Logika Pemrograman) hadir di pembaruan berikutnya.');
+}
+
+export async function interactRobo(ui) {
+  if (!state.hasFlag('robo_met')) {
+    const c = await ui.dialog({
+      who: ROBO,
+      pages: [
+        `BEEP. Selamat datang di Ruang Pemrograman, ${state.data.name}. Aku RoboGuard.`,
+        'Sistem keamanan sekolah hanya menurut pada logika yang benar: if, elif, else, perulangan, dan penyimpanan data.',
+        'Buktikan logikamu. Siap memulai Bab 4?',
+      ],
+      choices: ['Siap!', 'Nanti dulu'],
+    });
+    state.setFlag('robo_met');
+    if (c === 0) await openChapter(ui, chapter4);
+    return;
+  }
+  await stageFlow(ui, ROBO, chapter4, 'Logikamu tervalidasi. BEEP! Godot Crystal keempat menyala. Bab 5 (Karakter dan Gerakan) hadir di pembaruan berikutnya.');
+}
+
+export async function interactCodeDoor(ui) {
+  const who = { name: 'Pintu Ruang Pemrograman', portrait: 'kak' };
+  if (!state.hasFlag('quest_q_ch3')) {
+    A.sfx('bad');
+    await ui.dialog({ who, pages: ['Pintu terkunci. Selesaikan Misi Bab 3 dari Kak Syntax untuk membukanya.'] });
+  } else {
+    bus.emit('goto:scene', 'Code');
+  }
 }
 
 export async function interactLabDoor(ui) {
