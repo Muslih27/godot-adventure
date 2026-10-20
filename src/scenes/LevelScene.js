@@ -2,7 +2,7 @@ import { ui } from '../systems/UIManager.js';
 import { state } from '../systems/GameState.js';
 import { QuestManager } from '../systems/QuestManager.js';
 import { bus } from '../core/bus.js';
-import { interactLevel } from '../systems/LearningManager.js';
+import { interactLevel, interactAIDoor } from '../systems/LearningManager.js';
 import WorldScene from './WorldScene.js';
 
 // Susunan balok seperti "tile": [x, y, jumlah, arah]
@@ -32,9 +32,11 @@ export default class LevelScene extends WorldScene {
     this.tweens.add({ targets: npc, y: 208, duration: 700, yoyo: true, repeat: -1 });
     this.wall(390, 200, 20, 10);
 
+    this.add.image(620, 102, 'idoor').setOrigin(0.5, 1).setDepth(151);
     this.coinDefs = [['t1', 40, 440], ['t2', 760, 440]];
     this.things = [
       { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Mas Level', run: () => interactLevel(ui) },
+      { x: 620, y: 125, r: 55, hy: 95, label: 'Masuk Laboratorium AI', run: () => interactAIDoor(ui) },
       { x: 400, y: 450, r: 50, hy: 415, label: 'Kembali ke Perpustakaan', run: () => bus.emit('goto:scene', 'Library', { x: 620, y: 135 }) },
     ];
     this.mmBg = (c, k) => {

@@ -12,6 +12,7 @@ const LOOKS = {
   bu: { skin: '#f1c27d', hair: '#0e7490', shirt: '#fbbf24', pants: '#7c3aed' },
   pus: { skin: '#c68642', hair: '#6b7280', shirt: '#0e7490', pants: '#334155', glasses: true },
   lvl: { skin: '#f1c27d', hair: '#111827', shirt: '#7ee7ff', pants: '#92400e' },
+  arsi: { skin: '#c68642', hair: '#0f172a', shirt: '#a7f3d0', pants: '#1e293b', glasses: true },
   prof: { skin: '#f1c27d', hair: '#d1d5db', shirt: '#ffffff', pants: '#334155', glasses: true, coat: true },
 };
 
@@ -246,6 +247,25 @@ export function generateTextures(scene) {
     c.fillStyle = '#7ee7ff'; c.fillRect(0, 0, 48, 34);
     c.fillStyle = '#173a5c'; c.fillRect(5, 5, 38, 29);
     c.fillStyle = '#fff'; c.font = 'bold 9px monospace'; c.textAlign = 'center'; c.fillText('LEVEL', 24, 24);
+  });
+
+  canvasTex(scene, 'iwall', 800, 110, (c) => {
+    c.fillStyle = '#0e2a47'; c.fillRect(0, 0, 800, 110);
+    c.strokeStyle = '#1f5f8b'; c.fillStyle = '#22d3ee';
+    const pts = [[60, 25], [130, 60], [60, 85], [220, 40], [640, 30], [720, 70], [640, 90], [580, 55]];
+    pts.forEach(([x, y], i) => { const [x2, y2] = pts[(i + 1) % pts.length]; if (Math.abs(x - x2) < 200) { c.beginPath(); c.moveTo(x, y); c.lineTo(x2, y2); c.stroke(); } });
+    pts.forEach(([x, y]) => { c.beginPath(); c.arc(x, y, 5, 0, 7); c.fill(); });
+    c.fillStyle = '#0a1f36'; c.fillRect(0, 100, 800, 10);
+    c.fillStyle = '#7a4a21'; c.fillRect(256, 12, 288, 74);
+    c.fillStyle = '#031020'; c.fillRect(262, 18, 276, 62);
+    c.font = 'bold 12px monospace'; c.textAlign = 'left';
+    c.fillStyle = '#22d3ee'; c.fillText('enum State { IDLE, WALK }', 272, 42);
+    c.fillStyle = '#ffb347'; c.fillText('match state:', 272, 62);
+  });
+  canvasTex(scene, 'idoor', 48, 34, (c) => {
+    c.fillStyle = '#c084fc'; c.fillRect(0, 0, 48, 34);
+    c.fillStyle = '#173a5c'; c.fillRect(5, 5, 38, 29);
+    c.fillStyle = '#fff'; c.font = 'bold 11px monospace'; c.textAlign = 'center'; c.fillText('AI', 24, 24);
   });
 
   for (const key of Object.keys(LOOKS)) {

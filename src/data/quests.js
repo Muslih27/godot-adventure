@@ -167,6 +167,25 @@ export const quests = [
     reward: { xp: 130, coins: 60, crystals: 1 },
   },
   {
+    id: 'q_ai', type: 'Utama', title: 'Masuki Laboratorium AI',
+    desc: 'Pintu AI di Ruang Desain Level kini terbuka. Temui Dr. Arsitek.',
+    requires: 'q_ch9',
+    done: (s) => !!s.flags.aiRoom,
+    reward: { xp: 10 },
+  },
+  {
+    id: 'q_ch10', type: 'Utama', title: 'Misi Bab 10: Arsitektur Gameplay',
+    desc: 'Pulihkan Godot Crystal kesepuluh dengan membangun fondasi gim yang rapi.',
+    requires: 'q_ai',
+    steps: [
+      { t: 'Baca materi Bab 10', done: (s) => !!s.flags.read10 },
+      { t: 'Pasangkan masalah dengan solusi arsitektur', done: (s) => !!s.flags.sim10 },
+      { t: 'Lulus kuis (minimal 4 dari 6 benar)', done: (s) => !!s.flags.quiz10 },
+    ],
+    done: (s) => !!(s.flags.read10 && s.flags.sim10 && s.flags.quiz10),
+    reward: { xp: 140, coins: 65, crystals: 1 },
+  },
+  {
     id: 'q_coins', type: 'Sampingan', title: 'Koin Berserakan',
     desc: 'Temukan 3 Koin Akademi yang tersebar di halaman sekolah.',
     progress: (s) => `${coinsFound(s)}/3 koin`,

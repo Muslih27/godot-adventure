@@ -9,6 +9,7 @@ import { chapter6 } from '../data/chapter6.js';
 import { chapter7 } from '../data/chapter7.js';
 import { chapter8 } from '../data/chapter8.js';
 import { chapter9 } from '../data/chapter9.js';
+import { chapter10 } from '../data/chapter10.js';
 import { state } from './GameState.js';
 import { QuestManager } from './QuestManager.js';
 import { AudioManager as A } from './AudioManager.js';
@@ -21,6 +22,7 @@ const COACH = { name: 'Coach Vektor', portrait: 'coach' };
 const BU = { name: 'Bu Animasi', portrait: 'bu' };
 const PUS = { name: 'Pustakawan Data', portrait: 'pus' };
 const LVL = { name: 'Mas Level', portrait: 'lvl' };
+const ARSI = { name: 'Dr. Arsitek', portrait: 'arsi' };
 
 /* ---------- Materi ---------- */
 export function openChapter(ui, ch) {
@@ -433,6 +435,34 @@ export async function interactLevel(ui) {
     return;
   }
   await stageFlow(ui, LVL, chapter8, 'Antarmukamu rapi dan jelas! Godot Crystal kedelapan menyala. Bicara lagi denganku untuk lanjut ke Bab 9 (Desain Level dan Interaksi).');
+}
+
+export async function interactArsi(ui) {
+  if (!state.hasFlag('arsi_met')) {
+    const c = await ui.dialog({
+      who: ARSI,
+      pages: [
+        `Selamat datang di Laboratorium AI, ${state.data.name}. Aku Dr. Arsitek.`,
+        'Lihat robot kecil itu: ia berpindah antara diam dan patroli. Itulah contoh state machine, salah satu fondasi arsitektur gim.',
+        'Di Bab 10 kamu belajar membangun fondasi: state machine, Autoload, quest, dan inventaris. Siap?',
+      ],
+      choices: ['Siap!', 'Nanti dulu'],
+    });
+    state.setFlag('arsi_met');
+    if (c === 0) await openChapter(ui, chapter10);
+    return;
+  }
+  await stageFlow(ui, ARSI, chapter10, 'Fondasimu kokoh! Godot Crystal kesepuluh menyala. Bab 11 (AI dan NPC) hadir di pembaruan berikutnya.');
+}
+
+export async function interactAIDoor(ui) {
+  const who = { name: 'Pintu Laboratorium AI', portrait: 'lvl' };
+  if (!state.hasFlag('quest_q_ch9')) {
+    A.sfx('bad');
+    await ui.dialog({ who, pages: ['Pintu terkunci. Selesaikan Misi Bab 9 dari Mas Level untuk membukanya.'] });
+  } else {
+    bus.emit('goto:scene', 'AI');
+  }
 }
 
 export async function interactLevelDoor(ui) {

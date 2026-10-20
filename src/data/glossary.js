@@ -36,4 +36,8 @@ export const glossary = [
   { ch: 9, t: 'TileMapLayer', d: 'Node (Godot 4.3+) untuk melukis tile pada grid; satu node per lapisan.' },
   { ch: 9, t: 'Collision Layer dan Mask', d: 'Pengaturan siapa yang berada di lapisan mana dan lapisan mana yang dideteksi sebuah benda.' },
   { ch: 9, t: 'Trigger', d: 'Area2D yang memicu kejadian saat dimasuki, misalnya koin, checkpoint, atau pintu.' },
+  { ch: 10, t: 'Finite State Machine', d: 'Pola yang membuat objek berada di satu state pada satu waktu dan berpindah lewat aturan transisi.' },
+  { ch: 10, t: 'enum', d: 'Daftar nilai bernama, sering dipakai untuk mendefinisikan state.' },
+  { ch: 10, t: 'Autoload', d: 'Skrip atau scene yang dimuat otomatis dan tetap hidup saat scene diganti (singleton).' },
+  { ch: 10, t: 'Modular', d: 'Sistem dipecah menjadi bagian kecil yang berdiri sendiri sehingga mudah diganti dan dikembangkan.' },
 ];
