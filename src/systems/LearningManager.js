@@ -8,6 +8,7 @@ import { chapter5 } from '../data/chapter5.js';
 import { chapter6 } from '../data/chapter6.js';
 import { chapter7 } from '../data/chapter7.js';
 import { chapter8 } from '../data/chapter8.js';
+import { chapter9 } from '../data/chapter9.js';
 import { state } from './GameState.js';
 import { QuestManager } from './QuestManager.js';
 import { AudioManager as A } from './AudioManager.js';
@@ -399,6 +400,24 @@ export async function interactPus(ui) {
 }
 
 export async function interactLevel(ui) {
+  if (state.hasFlag('quest_q_ch8')) {
+    if (!state.hasFlag('lvl9_met')) {
+      const c = await ui.dialog({
+        who: LVL,
+        pages: [
+          'Antarmukamu sudah beres. Sekarang saatnya merancang dunianya.',
+          'Di Bab 9 kamu belajar melukis level dengan tile, membuat collision, koin dan pintu, serta mengatur kamera.',
+          'Siap mulai Bab 9?',
+        ],
+        choices: ['Siap!', 'Nanti dulu'],
+      });
+      state.setFlag('lvl9_met');
+      if (c === 0) await openChapter(ui, chapter9);
+      return;
+    }
+    await stageFlow(ui, LVL, chapter9, 'Levelmu terarah dan menyenangkan! Godot Crystal kesembilan menyala. Bab 10 (Arsitektur Gameplay) hadir di pembaruan berikutnya.');
+    return;
+  }
   if (!state.hasFlag('lvl_met')) {
     const c = await ui.dialog({
       who: LVL,
@@ -413,7 +432,7 @@ export async function interactLevel(ui) {
     if (c === 0) await openChapter(ui, chapter8);
     return;
   }
-  await stageFlow(ui, LVL, chapter8, 'Antarmukamu rapi dan jelas! Godot Crystal kedelapan menyala. Bab 9 (Desain Level dan Interaksi) hadir di pembaruan berikutnya, dan aku akan membimbingmu lagi di sini.');
+  await stageFlow(ui, LVL, chapter8, 'Antarmukamu rapi dan jelas! Godot Crystal kedelapan menyala. Bicara lagi denganku untuk lanjut ke Bab 9 (Desain Level dan Interaksi).');
 }
 
 export async function interactLevelDoor(ui) {

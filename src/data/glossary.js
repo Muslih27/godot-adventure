@@ -32,4 +32,8 @@ export const glossary = [
   { ch: 8, t: 'Container', d: 'Node yang menata child-nya otomatis, misalnya VBoxContainer dan HBoxContainer.' },
   { ch: 8, t: 'CanvasLayer', d: 'Lapisan gambar terpisah dari kamera, cocok untuk HUD yang tetap di layar.' },
   { ch: 8, t: 'process_mode', d: 'Pengaturan kapan node berjalan; PROCESS_MODE_ALWAYS tetap berjalan saat gim dijeda.' },
+  { ch: 9, t: 'TileSet', d: 'Resource yang menyimpan kumpulan tile beserta pengaturan fisika dan atributnya.' },
+  { ch: 9, t: 'TileMapLayer', d: 'Node (Godot 4.3+) untuk melukis tile pada grid; satu node per lapisan.' },
+  { ch: 9, t: 'Collision Layer dan Mask', d: 'Pengaturan siapa yang berada di lapisan mana dan lapisan mana yang dideteksi sebuah benda.' },
+  { ch: 9, t: 'Trigger', d: 'Area2D yang memicu kejadian saat dimasuki, misalnya koin, checkpoint, atau pintu.' },
 ];

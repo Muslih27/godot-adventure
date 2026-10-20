@@ -155,6 +155,18 @@ export const quests = [
     reward: { xp: 120, coins: 55, crystals: 1 },
   },
   {
+    id: 'q_ch9', type: 'Utama', title: 'Misi Bab 9: Desain Level dan Interaksi',
+    desc: 'Pulihkan Godot Crystal kesembilan dengan merancang level yang memandu pemain. Temui Mas Level lagi.',
+    requires: 'q_ch8',
+    steps: [
+      { t: 'Baca materi Bab 9', done: (s) => !!s.flags.read9 },
+      { t: 'Urutkan langkah membuat level bertile', done: (s) => !!s.flags.sim9 },
+      { t: 'Lulus kuis (minimal 4 dari 6 benar)', done: (s) => !!s.flags.quiz9 },
+    ],
+    done: (s) => !!(s.flags.read9 && s.flags.sim9 && s.flags.quiz9),
+    reward: { xp: 130, coins: 60, crystals: 1 },
+  },
+  {
     id: 'q_coins', type: 'Sampingan', title: 'Koin Berserakan',
     desc: 'Temukan 3 Koin Akademi yang tersebar di halaman sekolah.',
     progress: (s) => `${coinsFound(s)}/3 koin`,
