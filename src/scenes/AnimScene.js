@@ -30,6 +30,7 @@ export default class AnimScene extends WorldScene {
     this.wall(390, 200, 20, 10);
 
     this.add.image(640, 102, 'bdoor').setOrigin(0.5, 1).setDepth(151);
+    this.enemyDefs = [{ x: 170, y: 170, axis: 'x', range: 70, tint: 0xffd0f0, hp: 2 }, { x: 630, y: 170, axis: 'x', range: 70, tint: 0xffd0f0, hp: 2 }, { x: 760, y: 300, axis: 'y', range: 50, tint: 0xffd0f0, hp: 2 }];
     this.coinDefs = [['n1', 40, 440], ['n2', 760, 150]];
     this.things = [
       { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Bu Animasi', run: () => interactBu(ui) },

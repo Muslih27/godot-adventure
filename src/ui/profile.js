@@ -48,7 +48,8 @@ export function openProfile(ui) {
         <div><b>${qs.filter((q) => QuestManager.isDone(q)).length}/${qs.length}</b><span>Quest selesai</span></div>
         <div><b>${d.collected.filter((id) => COIN_IDS.includes(id)).length}/${COIN_IDS.length}</b><span>Koin ditemukan</span></div>
         <div><b>${achievements.filter((a) => AchievementManager.isUnlocked(a)).length}/${achievements.length}</b><span>Prestasi</span></div>
-        <div><b>${done}/${total}</b><span>Bab dikuasai</span></div></div>
+        <div><b>${done}/${total}</b><span>Bab dikuasai</span></div>
+        <div><b>${d.bugs}</b><span>Bug dikalahkan</span></div></div>
         <h3>Progres kurikulum</h3><div class="bar"><i style="width:${(done / total) * 100}%"></i></div>
         <h3>Skor kuis terbaik</h3><ul>${chapters.map((c) => `<li>Bab ${c.id}: ${d.scores['ch' + c.id] !== undefined ? `${d.scores['ch' + c.id]} / ${c.quiz.length}` : 'belum dikerjakan'}</li>`).join('')}</ul>`;
     },

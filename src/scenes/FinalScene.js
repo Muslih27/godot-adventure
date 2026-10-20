@@ -28,6 +28,7 @@ export default class FinalScene extends WorldScene {
     this.tweens.add({ targets: npc, y: 198, duration: 800, yoyo: true, repeat: -1 });
     this.wall(390, 190, 20, 10);
 
+    this.enemyDefs = [{ x: 170, y: 170, axis: 'x', range: 70, tint: 0xffd24a, hp: 3 }, { x: 630, y: 170, axis: 'x', range: 70, tint: 0xffd24a, hp: 3 }, { x: 760, y: 300, axis: 'y', range: 50, tint: 0xffd24a, hp: 3 }, { x: 40, y: 300, axis: 'y', range: 50, tint: 0xffd24a, hp: 3 }];
     this.coinDefs = [['f1', 40, 440], ['f2', 760, 440]];
     this.things = [
       { x: 400, y: 200, r: 60, hy: 155, label: 'Bicara dengan Bu Kepala Akademi', run: () => interactKepala(ui) },

@@ -32,6 +32,7 @@ export default class TestScene extends WorldScene {
     this.wall(390, 200, 20, 10);
 
     this.add.image(620, 102, 'fdoor').setOrigin(0.5, 1).setDepth(151);
+    this.enemyDefs = [{ x: 170, y: 170, axis: 'x', range: 60, tint: 0xffffff, hp: 2 }, { x: 630, y: 170, axis: 'x', range: 60, tint: 0xffffff, hp: 2 }, { x: 760, y: 300, axis: 'y', range: 50, tint: 0xffffff, hp: 2 }];
     this.coinDefs = [['x1', 40, 440], ['x2', 760, 440]];
     this.things = [
       { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Pak Debug', run: () => interactDebug(ui) },
@@ -48,18 +49,10 @@ export default class TestScene extends WorldScene {
   }
 
   onReady() {
-    // Kutu bug dekoratif yang merayap (tidak berbahaya, hanya hiasan)
-    [[120, 400, 360], [520, 440, 700], [90, 230, 200], [620, 230, 720]].forEach(([x, y, x2], i) => {
-      const bug = this.add.image(x, y, 'bug').setScale(1.5).setDepth(y);
-      this.tweens.add({
-        targets: bug, x: x2, duration: 2600 + i * 500, yoyo: true, repeat: -1,
-        onYoyo: () => bug.setFlipX(true), onRepeat: () => bug.setFlipX(false),
-      });
-    });
     this.time.delayedCall(400, () => {
       state.setFlag('testRoom');
       QuestManager.check();
-      if (!state.hasFlag('debug_met')) ui.toast('Temui Pak Debug di tengah ruangan. Kutu merah itu hanya hiasan.');
+      if (!state.hasFlag('debug_met')) ui.toast('Temui Pak Debug di tengah ruangan. Awas, bug di sini asli!');
     });
   }
 }

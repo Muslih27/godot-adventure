@@ -34,6 +34,7 @@ class GameState {
   hasFlag(k) { return !!this.data.flags[k]; }
   collect(id) { if (!this.data.collected.includes(id)) { this.data.collected.push(id); this.commit(); } }
   setCosmetic(c) { this.data.cosmetic = c; this.commit(); bus.emit('cosmetic', c); }
+  defeatBug() { this.data.bugs += 1; this.data.coins += 1; this.commit(); }
   addBadge(b) { if (!this.data.badges.includes(b)) { this.data.badges.push(b); this.commit(); } }
 }
 export const state = new GameState();

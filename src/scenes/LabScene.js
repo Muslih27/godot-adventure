@@ -29,6 +29,7 @@ export default class LabScene extends WorldScene {
     this.wall(390, 190, 20, 10);
 
     this.add.image(620, 102, 'kdoor').setOrigin(0.5, 1).setDepth(151);
+    this.enemyDefs = [{ x: 170, y: 170, axis: 'x', range: 70, tint: 0x9fe8ff, hp: 2 }, { x: 630, y: 170, axis: 'x', range: 70, tint: 0x9fe8ff, hp: 2 }, { x: 760, y: 300, axis: 'y', range: 50, tint: 0x9fe8ff, hp: 2 }];
     this.coinDefs = [['l1', 40, 150], ['l2', 760, 420]];
     this.things = [
       { x: 400, y: 200, r: 60, hy: 155, label: 'Bicara dengan Kak Syntax', run: () => interactKakLab(ui) },

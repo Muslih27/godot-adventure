@@ -30,6 +30,7 @@ export default class AudioScene extends WorldScene {
     this.wall(390, 200, 20, 10);
 
     this.add.image(620, 102, 'vdoor').setOrigin(0.5, 1).setDepth(151);
+    this.enemyDefs = [{ x: 170, y: 170, axis: 'x', range: 70, tint: 0xb8a8ff, hp: 2 }, { x: 630, y: 170, axis: 'x', range: 70, tint: 0xb8a8ff, hp: 2 }, { x: 760, y: 300, axis: 'y', range: 50, tint: 0xb8a8ff, hp: 2 }];
     this.coinDefs = [['o1', 40, 440], ['o2', 760, 150]];
     this.things = [
       { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Kak Nada', run: () => interactNada(ui) },

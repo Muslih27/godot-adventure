@@ -51,3 +51,16 @@ gerak pemain, dan pengetikan di kolom input tidak ditangkap game.
 
 Catatan: progres tersimpan di LocalStorage per browser/perangkat, tidak lintas perangkat.
 Font memakai Google Fonts dan akan turun ke font sistem bila offline.
+
+## Kontrol
+
+| Perangkat | Gerak | Aksi | Serang | Lari |
+|---|---|---|---|---|
+| Keyboard | W A S D / panah | E atau Spasi | F | Shift |
+| HP / tablet | Geser di sisi kiri layar (joystick melayang) | Tombol Aksi | Tombol Serang | Tombol Lari (toggle) |
+
+Menu Jeda (Esc atau tombol Jeda) memuat pilihan layar penuh dan "Kontrol layar sentuh: Otomatis / Selalu tampil".
+
+## Musuh
+
+Setiap ruangan berisi bug yang berpatroli dan mengejar saat pemain dekat. Hati pemain tidak disimpan; jika habis, pemain kembali ke pintu masuk ruangan tanpa kehilangan progres. Bug yang kalah muncul lagi setelah 25 detik.

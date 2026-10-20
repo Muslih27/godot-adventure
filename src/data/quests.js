@@ -281,6 +281,13 @@ export const quests = [
     reward: { xp: 300, coins: 150 },
   },
   {
+    id: 'q_bugs', type: 'Sampingan', title: 'Pembasmi Bug',
+    desc: 'Kalahkan 10 bug di ruangan mana pun. Tekan F atau tombol Serang saat bug dekat.',
+    progress: (s) => `${Math.min(s.bugs, 10)}/10 bug`,
+    done: (s) => s.bugs >= 10,
+    reward: { xp: 30, coins: 20 },
+  },
+  {
     id: 'q_coins', type: 'Sampingan', title: 'Koin Berserakan',
     desc: 'Temukan 3 Koin Akademi yang tersebar di halaman sekolah.',
     progress: (s) => `${coinsFound(s)}/3 koin`,

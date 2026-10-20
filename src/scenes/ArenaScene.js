@@ -33,6 +33,7 @@ export default class ArenaScene extends WorldScene {
     this.wall(390, 200, 20, 10);
 
     this.add.image(640, 102, 'sdoor').setOrigin(0.5, 1).setDepth(151);
+    this.enemyDefs = [{ x: 170, y: 170, axis: 'x', range: 70, tint: 0xffb27a, hp: 2 }, { x: 630, y: 170, axis: 'x', range: 70, tint: 0xffb27a, hp: 2 }, { x: 760, y: 300, axis: 'y', range: 50, tint: 0xffb27a, hp: 2 }];
     this.coinDefs = [['a1', 60, 300], ['a2', 740, 200]];
     this.things = [
       { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Coach Vektor', run: () => interactCoach(ui) },

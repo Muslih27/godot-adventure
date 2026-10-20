@@ -17,5 +17,7 @@ export const achievements = [
   { id: 'cr3', title: 'Penjaga Kristal', desc: 'Kumpulkan 3 Godot Crystal.', test: (s) => s.crystals >= 3 },
   { id: 'cr15', title: 'Kristal Lengkap', desc: 'Kumpulkan seluruh 15 Godot Crystal.', test: (s) => s.crystals >= 15 },
   { id: 'graduate', title: 'Lulusan Akademi', desc: 'Lulus Ujian Akhir di Ruang Final Project.', test: (s) => !!s.flags.finalExam },
+  { id: 'bug10', title: 'Pembasmi Bug', desc: 'Kalahkan 10 bug.', test: (s) => s.bugs >= 10 },
+  { id: 'bug50', title: 'Penakluk Bug', desc: 'Kalahkan 50 bug.', test: (s) => s.bugs >= 50 },
   { id: 'cr6', title: 'Master Kristal', desc: 'Kumpulkan 6 Godot Crystal.', test: (s) => s.crystals >= 6 },
 ];

@@ -6,6 +6,7 @@ import { QuestManager } from './QuestManager.js';
 import { AudioManager as A } from './AudioManager.js';
 import { hasSave, setAudioPref } from './SaveManager.js';
 import { portraits } from '../assets/textures.js';
+import { PlayerStatus } from './PlayerStatus.js';
 import { openQuestLog, openMap, openProgress, openPause } from '../ui/panels.js';
 import { openProfile, openJournal } from '../ui/profile.js';
 
@@ -14,9 +15,14 @@ class UIManager {
     this.root = document.getElementById('ui');
     this.modals = [];
     this.dlg = null;
+    this.syncClasses();
     this.cool = 0;
     this.touch = { x: 0, y: 0 };
     this.touchAct = false;
+    this.touchAttack = false;
+    this.touchRun = false;
+    this.touchMode = 'auto';
+    this.isTouch = window.matchMedia('(pointer: coarse)').matches;
     this.inGame = false;
     this.callbacks = {};
     this.root.append(
@@ -28,8 +34,11 @@ class UIManager {
     );
     this.buildHud();
     this.buildTouch();
+    this.initTouchMode();
+    this.buildRotateHint();
     window.addEventListener('keydown', (e) => this.onKey(e));
     bus.on('state', () => this.refreshHud());
+    bus.on('hp', () => this.refreshHearts());
     bus.on('levelup', (lv) => { A.sfx('levelup'); this.toast(`Naik ke Level ${lv}!`, 'good'); });
     bus.on('achievement', (list) => {
       A.sfx('quest');
@@ -102,12 +111,14 @@ class UIManager {
     const draw = () => {
       s.innerHTML = `<div class="title-card"><h2>Pengaturan</h2>
         <button class="btn" data-a="aud">Musik &amp; efek suara: ${A.enabled ? 'Menyala' : 'Mati'}</button>
+        <button class="btn" data-a="touch">Kontrol layar sentuh: ${this.touchMode === 'always' ? 'Selalu tampil' : 'Otomatis'}</button>
         <div class="menu"><button class="btn primary" data-a="back">Kembali</button></div></div>`;
     };
     draw();
     s.onclick = (e) => {
       const a = e.target.closest('button')?.dataset.a;
       if (a === 'aud') { this.setAudio(!A.enabled); draw(); }
+      if (a === 'touch') { this.setTouchMode(this.touchMode === 'always' ? 'auto' : 'always'); draw(); }
       if (a === 'back') back();
     };
   }
@@ -131,7 +142,7 @@ class UIManager {
     this.hudEl.innerHTML = `
       <div class="hud-top">
         <div class="hud-player"><b id="hn"></b><span id="hl"></span><div class="xp"><i id="hx"></i></div></div>
-        <div class="hud-res"><span><i class="ico coin"></i><b id="hc">0</b></span><span><i class="ico crystal"></i><b id="hcr">0</b></span></div>
+        <div class="hud-res"><span class="hearts" id="hh"></span><span><i class="ico coin"></i><b id="hc">0</b></span><span><i class="ico crystal"></i><b id="hcr">0</b></span></div>
         <div class="hud-btns">
           <button data-a="quest">Quest</button><button data-a="map">Peta</button>
           <button data-a="learn">Materi</button><button data-a="journal">Jurnal</button><button data-a="profile">Profil</button><button data-a="pause">Jeda</button>
@@ -162,37 +173,110 @@ class UIManager {
     q('#hl').textContent = ` Lv ${state.level}`;
     q('#hx').style.width = state.xpInLevel + '%';
     q('#hc').textContent = d.coins;
+    this.refreshHearts();
     q('#hcr').textContent = d.crystals;
     const aq = QuestManager.active();
     const side = QuestManager.all().find((x) => x.type === 'Sampingan' && !QuestManager.isDone(x));
     q('#hq').innerHTML = (aq ? `<b>${esc(aq.title)}</b><span>${esc(aq.steps ? aq.steps.find((s) => !s.done(d))?.t || '' : aq.desc)}</span>` : '<b>Semua quest yang tersedia sudah selesai</b>')
       + (side ? `<small>${esc(side.title)}: ${side.progress(d)}</small>` : '');
   }
-  drawMinimap(px, py, W, H, bg) {
+  drawMinimap(px, py, W, H, bg, dots = []) {
     const c = this.mm, k = Math.min(120 / W, 80 / H);
     c.fillStyle = '#000'; c.fillRect(0, 0, 120, 80);
     c.save(); c.translate((120 - W * k) / 2, (80 - H * k) / 2);
     if (bg) bg(c, k);
+    c.fillStyle = '#ef4444';
+    dots.forEach((d) => c.fillRect(d.x * k - 1.5, d.y * k - 1.5, 3, 3));
     c.fillStyle = '#fff'; c.fillRect(px * k - 2, py * k - 2, 4, 4);
     c.restore();
+  }
+  refreshHearts() {
+    const el = this.hudEl.querySelector('#hh');
+    if (!el) return;
+    el.innerHTML = Array.from({ length: PlayerStatus.max }, (_, i) => `<i class="heart ${i < PlayerStatus.hp ? '' : 'off'}"></i>`).join('');
   }
 
   /* ---------- Kontrol sentuh ---------- */
   buildTouch() {
     this.touchEl = $(`<div class="touch hidden">
-      <div class="dpad"><button data-d="0,-1" class="u">▲</button><button data-d="-1,0" class="l">◀</button><button data-d="1,0" class="r">▶</button><button data-d="0,1" class="d">▼</button></div>
-      <button class="act">E</button></div>`);
+      <div class="joy-zone"><div class="joy-base"><div class="joy-knob"></div></div></div>
+      <div class="touch-btns">
+        <button class="tb run" data-k="run" aria-label="Lari">Lari</button>
+        <button class="tb atk" data-k="atk" aria-label="Serang">Serang</button>
+        <button class="tb act" data-k="act" aria-label="Aksi">Aksi</button>
+      </div></div>`);
     this.root.append(this.touchEl);
-    const set = (v) => { this.touch = v; };
-    this.touchEl.querySelectorAll('[data-d]').forEach((b) => {
-      const [x, y] = b.dataset.d.split(',').map(Number);
-      b.addEventListener('pointerdown', (e) => { e.preventDefault(); set({ x, y }); });
-      ['pointerup', 'pointerleave', 'pointercancel'].forEach((ev) => b.addEventListener(ev, () => set({ x: 0, y: 0 })));
-    });
-    this.touchEl.querySelector('.act').addEventListener('pointerdown', (e) => {
+    const zone = this.touchEl.querySelector('.joy-zone');
+    const base = this.touchEl.querySelector('.joy-base');
+    const knob = this.touchEl.querySelector('.joy-knob');
+    const R = 52;
+    let pid = null, cx = 0, cy = 0;
+    const reset = () => {
+      pid = null;
+      this.touch = { x: 0, y: 0 };
+      knob.style.transform = '';
+      base.classList.remove('active');
+      base.style.left = base.style.top = base.style.bottom = '';
+    };
+    this.resetJoystick = reset;
+    const move = (e) => {
+      let dx = e.clientX - cx, dy = e.clientY - cy;
+      const len = Math.hypot(dx, dy);
+      if (len > R) { dx = (dx / len) * R; dy = (dy / len) * R; }
+      knob.style.transform = `translate(${dx}px, ${dy}px)`;
+      const mag = Math.min(1, len / R);
+      this.touch = mag < 0.18 ? { x: 0, y: 0 } : { x: (dx / R), y: (dy / R) };
+    };
+    zone.addEventListener('pointerdown', (e) => {
+      if (pid !== null) return;
       e.preventDefault();
-      if (this.dlg) this.advance(); else this.touchAct = true;
+      pid = e.pointerId;
+      zone.setPointerCapture(pid);
+      cx = e.clientX; cy = e.clientY;
+      base.classList.add('active');
+      base.style.bottom = 'auto';
+      base.style.left = `${cx - 60}px`;
+      base.style.top = `${cy - 60}px`;
+      move(e);
     });
+    zone.addEventListener('pointermove', (e) => { if (e.pointerId === pid) move(e); });
+    ['pointerup', 'pointercancel', 'lostpointercapture'].forEach((ev) => zone.addEventListener(ev, (e) => { if (e.pointerId === pid || ev === 'lostpointercapture') reset(); }));
+    this.touchEl.querySelectorAll('.tb').forEach((b) => {
+      b.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        const kind = b.dataset.k;
+        if (kind === 'act') { if (this.dlg) this.advance(); else this.touchAct = true; }
+        if (kind === 'atk') this.touchAttack = true;
+        if (kind === 'run') { this.touchRun = !this.touchRun; b.classList.toggle('on', this.touchRun); }
+      });
+    });
+  }
+  syncClasses() {
+    this.root.classList.toggle('dialog-open', !!this.dlg);
+    this.root.classList.toggle('modal-open', this.modals.length > 0);
+    if ((this.dlg || this.modals.length) && this.resetJoystick) this.resetJoystick();
+  }
+  initTouchMode() {
+    let m = 'auto';
+    try { m = localStorage.getItem('gaa.touch') === 'always' ? 'always' : 'auto'; } catch { /* abaikan */ }
+    this.setTouchMode(m);
+  }
+  setTouchMode(mode) {
+    this.touchMode = mode;
+    try { localStorage.setItem('gaa.touch', mode); } catch { /* abaikan */ }
+    this.root.classList.toggle('force-touch', mode === 'always');
+    this.isTouch = mode === 'always' || window.matchMedia('(pointer: coarse)').matches;
+  }
+  buildRotateHint() {
+    const el = $(`<div class="rotate-hint"><div class="rh-card"><div class="rh-ico"></div><h3>Putar perangkatmu</h3>
+      <p>Game ini paling nyaman dimainkan dalam mode layar melebar (landscape).</p><button class="btn primary">Tetap main di sini</button></div></div>`);
+    el.querySelector('button').onclick = () => this.root.classList.add('no-rotate-hint');
+    this.root.append(el);
+  }
+  toggleFullscreen() {
+    const d = document;
+    if (!d.fullscreenElement) d.documentElement.requestFullscreen?.().catch(() => {});
+    else d.exitFullscreen?.();
   }
 
   /* ---------- Keyboard UI ---------- */
@@ -213,6 +297,7 @@ class UIManager {
   dialog({ who, pages, choices = [] }) {
     return new Promise((resolve) => {
       this.dlg = { who, pages, choices, i: 0, resolve, done: false };
+      this.syncClasses();
       this.dialogEl.classList.remove('hidden');
       this.dialogEl.innerHTML = `<img class="av" src="${portraits[who.portrait] || ''}" alt=""><div class="box">
         <div class="nm">${esc(who.name)}</div><p class="tx"></p><div class="ch"></div>
@@ -270,6 +355,7 @@ class UIManager {
       close: () => {
         if (!this.modals.includes(m)) return;
         this.modals.splice(this.modals.indexOf(m), 1);
+        this.syncClasses();
         el.remove();
         this.cool = performance.now() + 250;
         resolveClosed();
@@ -277,6 +363,7 @@ class UIManager {
     };
     el.querySelector('.x')?.addEventListener('click', () => { A.sfx('click'); m.close(); });
     this.modals.push(m);
+    this.syncClasses();
     return m;
   }
   toast(msg, kind = '') {

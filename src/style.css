@@ -168,3 +168,68 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--cyan-soft);
   .certificate { position: fixed; left: 0; top: 0; width: 100%; background: #fff; }
   .certificate .chips span, .certificate .stat-grid > div { border-color: #111 !important; background: #fff !important; }
 }
+
+/* ===== Responsif dan kontrol sentuh ===== */
+html, body { overscroll-behavior: none; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+input, textarea { -webkit-user-select: text; user-select: text; }
+#app { inset: auto; left: 0; top: 0; width: 100%; height: 100vh; height: 100dvh; }
+.screen { display: flex; overflow: auto; }
+.screen .title-card { margin: auto; }
+
+.hearts { gap: 3px; }
+.heart { width: 15px; height: 14px; background: #ef4444; clip-path: polygon(50% 100%, 0 40%, 0 20%, 15% 0, 35% 0, 50% 20%, 65% 0, 85% 0, 100% 20%, 100% 40%); }
+.heart.off { background: #3b2230; }
+
+.touch { position: absolute; inset: 0; padding: 0; display: none; z-index: 10; pointer-events: none; }
+@media (pointer: coarse) { .touch { display: block; } }
+.force-touch .touch { display: block; }
+.dialog-open .touch, .modal-open .touch { display: none !important; }
+.joy-zone { position: absolute; left: 0; bottom: 0; width: 48%; height: 70%; pointer-events: auto; touch-action: none; }
+.joy-base { position: absolute; left: calc(26px + env(safe-area-inset-left, 0px)); bottom: calc(26px + env(safe-area-inset-bottom, 0px)); width: 120px; height: 120px; border-radius: 50%; border: 3px solid rgba(126, 231, 255, .55); background: rgba(18, 69, 110, .35); display: grid; place-items: center; pointer-events: none; }
+.joy-base.active { border-color: var(--orange); background: rgba(18, 69, 110, .55); }
+.joy-knob { width: 52px; height: 52px; border-radius: 50%; background: rgba(126, 231, 255, .85); border: 3px solid #fff; }
+.touch-btns { position: absolute; inset: 0; pointer-events: none; }
+.tb { position: absolute; pointer-events: auto; touch-action: none; border-radius: 50%; border: 3px solid var(--cyan); background: rgba(18, 69, 110, .82); color: var(--ink); font-weight: 800; font-family: var(--body); }
+.tb:active { filter: brightness(1.3); }
+.tb.act { right: calc(22px + env(safe-area-inset-right, 0px)); bottom: calc(22px + env(safe-area-inset-bottom, 0px)); width: 88px; height: 88px; background: rgba(255, 138, 61, .92); color: #1b0f05; font-size: 16px; }
+.tb.atk { right: calc(122px + env(safe-area-inset-right, 0px)); bottom: calc(30px + env(safe-area-inset-bottom, 0px)); width: 70px; height: 70px; border-color: #ef4444; font-size: 13px; }
+.tb.run { right: calc(34px + env(safe-area-inset-right, 0px)); bottom: calc(122px + env(safe-area-inset-bottom, 0px)); width: 58px; height: 58px; font-size: 12px; }
+.tb.run.on { background: var(--green); color: #052; border-color: #fff; }
+
+.rotate-hint { display: none; position: absolute; inset: 0; z-index: 60; background: rgba(5, 18, 34, .92); place-items: center; padding: 20px; text-align: center; pointer-events: auto; }
+.rh-card { max-width: 340px; display: grid; gap: 10px; justify-items: center; }
+.rh-ico { width: 46px; height: 76px; border: 4px solid var(--cyan); border-radius: 10px; animation: rot 2.2s ease-in-out infinite; }
+@keyframes rot { 0%, 30% { transform: rotate(0); } 70%, 100% { transform: rotate(-90deg); } }
+@media (orientation: portrait) and (pointer: coarse) and (max-width: 900px) { #ui:not(.no-rotate-hint) .rotate-hint { display: grid; } }
+
+@media (max-height: 520px), (max-width: 760px) {
+  .hud-top { top: calc(4px + env(safe-area-inset-top, 0px)); left: calc(4px + env(safe-area-inset-left, 0px)); right: calc(4px + env(safe-area-inset-right, 0px)); gap: 6px; }
+  .hud-top > * { padding: 4px 8px; border-radius: 8px; }
+  .hud-player { min-width: 100px; }
+  .hud-player b, .hud-player span { font-size: 11px; }
+  .hud-res { gap: 8px; font-size: 13px; }
+  .hud-btns { gap: 4px; }
+  .hud-btns button { padding: 5px 8px; font-size: 12px; }
+  .questbox { font-size: 12px; padding: 5px 8px; max-width: 40vw; }
+  .dialog { bottom: calc(6px + env(safe-area-inset-bottom, 0px)); gap: 8px; }
+  .dialog .av { width: 52px; height: 52px; }
+  .dialog .box { padding: 8px 12px; min-height: 80px; }
+  .dialog .tx { font-size: 14px; min-height: 36px; margin-bottom: 4px; }
+  .dialog .nm { font-size: 12px; }
+  .toasts { top: 60px; }
+  .toast { font-size: 13px; padding: 6px 10px; }
+  .modal-back { padding: 4px; }
+  .modal header { padding: 8px 12px; }
+  .modal h2 { font-size: 14px; }
+  .modal .body { padding: 12px; font-size: 15px; }
+  .title-card { padding: 16px; }
+  .stat-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+}
+@media (pointer: coarse) {
+  .btn { min-height: 44px; }
+  .hud-btns button { min-height: 40px; }
+  .modal .x { width: 44px; height: 44px; }
+  .questbox { top: calc(54px + env(safe-area-inset-top, 0px)); bottom: auto; left: calc(6px + env(safe-area-inset-left, 0px)); }
+  #mm { top: calc(54px + env(safe-area-inset-top, 0px)); bottom: auto; right: calc(6px + env(safe-area-inset-right, 0px)); width: 96px; height: 64px; }
+}
+@media (max-height: 380px) { .joy-base { width: 100px; height: 100px; } .tb.act { width: 76px; height: 76px; } .tb.atk { right: calc(110px + env(safe-area-inset-right, 0px)); width: 62px; height: 62px; } .tb.run { bottom: calc(104px + env(safe-area-inset-bottom, 0px)); } }

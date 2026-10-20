@@ -33,6 +33,9 @@ const SFX = {
   bad: () => { tone(200, 0.2, 'sawtooth', 0.035); },
   door: () => { tone(180, 0.15, 'triangle'); tone(140, 0.25, 'triangle', 0.04, 0.12); },
   levelup: () => [523, 659, 784, 1046].forEach((f, i) => tone(f, 0.16, 'square', 0.04, i * 0.1)),
+  attack: () => tone(320, 0.08, 'sawtooth', 0.03),
+  hurt: () => { tone(180, 0.18, 'square', 0.05); tone(120, 0.2, 'square', 0.04, 0.1); },
+  defeat: () => { tone(660, 0.08); tone(880, 0.1, 'square', 0.04, 0.07); tone(1100, 0.14, 'square', 0.04, 0.14); },
   quest: () => [392, 523, 659, 784].forEach((f, i) => tone(f, 0.14, 'triangle', 0.05, i * 0.09)),
 };
 const NOTES = [262, 330, 392, 330, 294, 349, 440, 349];

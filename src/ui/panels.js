@@ -59,6 +59,8 @@ export function openPause(ui) {
       <button class="btn primary" data-a="resume">Lanjutkan</button>
       <button class="btn" data-a="aud">Musik &amp; efek suara: ${A.enabled ? 'Menyala' : 'Mati'}</button>
       <button class="btn" data-a="save">Simpan sekarang</button>
+      <button class="btn" data-a="touch">Kontrol layar sentuh: ${ui.touchMode === 'always' ? 'Selalu tampil' : 'Otomatis'}</button>
+      ${document.fullscreenEnabled ? '<button class="btn" data-a="full">Layar penuh</button>' : ''}
       <button class="btn" data-a="menu">Kembali ke menu utama</button></div>`;
   };
   draw();
@@ -69,6 +71,8 @@ export function openPause(ui) {
     if (a === 'resume') m.close();
     if (a === 'aud') { ui.setAudio(!A.enabled); draw(); }
     if (a === 'save') { state.save(); ui.toast('Progres tersimpan.', 'good'); }
+    if (a === 'touch') { ui.setTouchMode(ui.touchMode === 'always' ? 'auto' : 'always'); draw(); }
+    if (a === 'full') ui.toggleFullscreen();
     if (a === 'menu') { state.save(); m.close(); bus.emit('goto:menu'); }
   };
 }

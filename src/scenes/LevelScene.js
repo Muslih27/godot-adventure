@@ -33,6 +33,7 @@ export default class LevelScene extends WorldScene {
     this.wall(390, 200, 20, 10);
 
     this.add.image(620, 102, 'idoor').setOrigin(0.5, 1).setDepth(151);
+    this.enemyDefs = [{ x: 170, y: 170, axis: 'x', range: 60, tint: 0x9fd0ff, hp: 2 }, { x: 630, y: 170, axis: 'x', range: 60, tint: 0x9fd0ff, hp: 2 }, { x: 760, y: 300, axis: 'y', range: 50, tint: 0x9fd0ff, hp: 2 }];
     this.coinDefs = [['t1', 40, 440], ['t2', 760, 440]];
     this.things = [
       { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Mas Level', run: () => interactLevel(ui) },

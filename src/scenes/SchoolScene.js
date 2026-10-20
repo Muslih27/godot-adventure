@@ -28,6 +28,7 @@ export default class SchoolScene extends WorldScene {
     this.tweens.add({ targets: prof, y: 338, duration: 700, yoyo: true, repeat: -1 });
     this.wall(470, 330, 20, 10);
 
+    this.enemyDefs = [{ x: 200, y: 300, axis: 'x', range: 70, tint: 0xffffff, hp: 2 }, { x: 760, y: 300, axis: 'x', range: 70, tint: 0xffffff, hp: 2 }, { x: 680, y: 410, axis: 'x', range: 60, tint: 0xffffff, hp: 2 }];
     this.coinDefs = [['c1', 90, 330], ['c2', 880, 330], ['c3', 150, 595]];
     this.things = [
       { x: 480, y: 330, r: 60, hy: 285, label: 'Bicara dengan Profesor Pixel', run: () => interactProf(ui) },

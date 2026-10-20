@@ -17,6 +17,7 @@ export const defaultSave = () => ({
   scores: {},
   badges: [],
   cosmetic: 'none',
+  bugs: 0,
   settings: { audio: true },
 });
 
@@ -45,6 +46,7 @@ export function validate(raw) {
     collected: strs(raw.collected),
     scores,
     badges: strs(raw.badges),
+    bugs: num(raw.bugs),
     cosmetic: ['none', 'green', 'orange', 'gold'].includes(raw.cosmetic) ? raw.cosmetic : 'none',
     settings: { audio: !(isObj(raw.settings) && raw.settings.audio === false) },
   };

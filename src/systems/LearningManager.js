@@ -712,8 +712,9 @@ export async function interactSign(ui) {
   await ui.dialog({
     who: { name: 'Papan Informasi', portrait: 'prof' },
     pages: [
-      'Kontrol: W A S D / tombol panah untuk bergerak, Shift untuk berlari, E atau Spasi untuk berinteraksi, Esc untuk menu jeda.',
+      'Kontrol: W A S D / panah untuk bergerak, Shift untuk berlari, E atau Spasi untuk berinteraksi, F untuk menyerang bug, Esc untuk menu jeda. Di HP atau tablet: geser di sisi kiri layar untuk bergerak, lalu pakai tombol Aksi, Serang, dan Lari.',
       'Tips: temui Profesor Pixel di tengah halaman, dan cari 3 Koin Akademi yang tersembunyi.',
+      'Bug mengejar jika kamu terlalu dekat. Jika hatimu habis, kamu hanya kembali ke pintu masuk ruangan tanpa kehilangan progres. Bug yang kalah muncul lagi setelah beberapa saat.',
     ],
   });
 }

@@ -25,6 +25,7 @@ export default class ClassroomScene extends WorldScene {
     this.add.image(400, H, 'cdoor').setOrigin(0.5, 1).setDepth(H);
 
     this.add.image(610, 102, 'ldoor').setOrigin(0.5, 1).setDepth(151);
+    this.enemyDefs = [{ x: 170, y: 170, axis: 'x', range: 70, tint: 0xffe08a, hp: 2 }, { x: 630, y: 170, axis: 'x', range: 70, tint: 0xffe08a, hp: 2 }, { x: 760, y: 300, axis: 'y', range: 50, tint: 0xffe08a, hp: 2 }];
     this.coinDefs = [['k1', 50, 440], ['k2', 750, 150]];
     this.things = [
       { x: 400, y: 450, r: 50, hy: 415, label: 'Keluar ke halaman sekolah', run: () => bus.emit('goto:scene', 'School', { x: 480, y: 200 }) },
