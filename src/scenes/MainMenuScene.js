@@ -28,6 +28,6 @@ export default class MainMenuScene extends Phaser.Scene {
     A.setEnabled(state.data.settings.audio);
     A.startMusic();
     AchievementManager.check();
-    this.scene.start({ school: 'School', classroom: 'Classroom', lab: 'Lab', code: 'Code', arena: 'Arena', anim: 'Anim', library: 'Library', level: 'Level', ai: 'AI', audio: 'Audio', server: 'Server' }[state.data.location] || 'School');
+    this.scene.start({ school: 'School', classroom: 'Classroom', lab: 'Lab', code: 'Code', arena: 'Arena', anim: 'Anim', library: 'Library', level: 'Level', ai: 'AI', audio: 'Audio', server: 'Server', test: 'Test' }[state.data.location] || 'School');
   }
 }

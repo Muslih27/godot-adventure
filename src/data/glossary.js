@@ -52,4 +52,8 @@ export const glossary = [
   { ch: 13, t: 'user://', d: 'Folder yang dapat ditulis untuk data pemain, tetap berfungsi setelah gim diekspor.' },
   { ch: 13, t: 'JSON', d: 'Format teks untuk menyimpan data terstruktur; angkanya dibaca sebagai float di Godot.' },
   { ch: 13, t: 'Validasi data', d: 'Memeriksa bentuk, kunci, dan tipe data sebelum dipakai agar gim tidak crash.' },
+  { ch: 14, t: 'Debugger', d: 'Panel yang menampilkan error, peringatan, dan membantu menyelidiki gim yang berjalan.' },
+  { ch: 14, t: 'Breakpoint', d: 'Titik yang menghentikan gim pada baris tertentu agar variabel dapat diperiksa.' },
+  { ch: 14, t: 'Print debugging', d: 'Memeriksa nilai dengan menampilkannya lewat print() di panel Output.' },
+  { ch: 14, t: 'Profiler', d: 'Alat yang menunjukkan fungsi mana yang paling memakan waktu.' },
 ];

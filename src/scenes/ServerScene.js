@@ -2,7 +2,7 @@ import { ui } from '../systems/UIManager.js';
 import { state } from '../systems/GameState.js';
 import { QuestManager } from '../systems/QuestManager.js';
 import { bus } from '../core/bus.js';
-import { interactSrv } from '../systems/LearningManager.js';
+import { interactSrv, interactTestDoor } from '../systems/LearningManager.js';
 import WorldScene from './WorldScene.js';
 
 const RACKS = [[100, 230], [100, 330], [700, 230], [700, 330]];
@@ -32,9 +32,11 @@ export default class ServerScene extends WorldScene {
     this.tweens.add({ targets: npc, y: 208, duration: 800, yoyo: true, repeat: -1 });
     this.wall(390, 200, 20, 10);
 
+    this.add.image(620, 102, 'xdoor').setOrigin(0.5, 1).setDepth(151);
     this.coinDefs = [['v1', 40, 440], ['v2', 760, 150]];
     this.things = [
       { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Mas Server', run: () => interactSrv(ui) },
+      { x: 620, y: 125, r: 55, hy: 95, label: 'Masuk Ruang Pengujian', run: () => interactTestDoor(ui) },
       { x: 400, y: 450, r: 50, hy: 415, label: 'Kembali ke Ruang Audio', run: () => bus.emit('goto:scene', 'Audio', { x: 620, y: 135 }) },
     ];
     this.mmBg = (c, k) => {

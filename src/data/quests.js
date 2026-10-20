@@ -236,6 +236,25 @@ export const quests = [
     reward: { xp: 170, coins: 80, crystals: 1 },
   },
   {
+    id: 'q_test', type: 'Utama', title: 'Masuki Ruang Pengujian',
+    desc: 'Pintu TEST di Server Room kini terbuka. Temui Pak Debug.',
+    requires: 'q_ch13',
+    done: (s) => !!s.flags.testRoom,
+    reward: { xp: 10 },
+  },
+  {
+    id: 'q_ch14', type: 'Utama', title: 'Misi Bab 14: Debugging dan Optimasi',
+    desc: 'Pulihkan Godot Crystal keempat belas dengan memburu bug dan melancarkan gim.',
+    requires: 'q_test',
+    steps: [
+      { t: 'Baca materi Bab 14', done: (s) => !!s.flags.read14 },
+      { t: 'Pasangkan gejala dengan penyebab', done: (s) => !!s.flags.sim14 },
+      { t: 'Lulus kuis (minimal 4 dari 6 benar)', done: (s) => !!s.flags.quiz14 },
+    ],
+    done: (s) => !!(s.flags.read14 && s.flags.sim14 && s.flags.quiz14),
+    reward: { xp: 180, coins: 85, crystals: 1 },
+  },
+  {
     id: 'q_coins', type: 'Sampingan', title: 'Koin Berserakan',
     desc: 'Temukan 3 Koin Akademi yang tersebar di halaman sekolah.',
     progress: (s) => `${coinsFound(s)}/3 koin`,
