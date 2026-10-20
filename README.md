@@ -13,7 +13,7 @@ npm run build     # build produksi ke folder dist
 npm run preview   # uji build lokal
 ```
 
-## Status (Fase 1 + seluruh 15 bab, 12 ruangan, Ujian Akhir, sertifikat, teleport peta, prestasi, jurnal, profil)
+## Status (Fase 1 + seluruh 15 bab, 12 ruangan, Ujian Akhir, sertifikat, toko, peliharaan, misi harian, emote, teleport peta, prestasi, jurnal, profil)
 
 Sudah berfungsi: menu utama (New Game dengan konfirmasi, Continue, pilih karakter, pengaturan, credit),
 Halaman Sekolah dengan collision, kamera halus, animasi idle/jalan, lari (Shift), kontrol sentuh,
@@ -64,3 +64,12 @@ Menu Jeda (Esc atau tombol Jeda) memuat pilihan layar penuh dan "Kontrol layar s
 ## Musuh
 
 Setiap ruangan berisi bug yang berpatroli dan mengejar saat pemain dekat. Hati pemain tidak disimpan; jika habis, pemain kembali ke pintu masuk ruangan tanpa kehilangan progres. Bug yang kalah muncul lagi setelah 25 detik.
+
+## Sistem gaya Roblox (tanpa backend, tanpa uang sungguhan)
+
+- **Menu dropdown:** semua menu ada di tombol Menu; titik merah berarti ada hadiah harian atau misi yang bisa diambil. Kotak quest dapat dilipat dengan mengetuknya.
+- **Toko Akademi:** topi dan peliharaan dibeli dengan Koin Akademi (hanya kosmetik). Gelar dibuka lewat prestasi.
+- **Peliharaan** mengikuti pemain; **nama dan gelar** tampil di atas karakter.
+- **Misi Harian dan hadiah login:** streak 7 hari, tiga misi acak per hari, reset mengikuti jam perangkat.
+- **Emote:** tombol 1-6 di keyboard atau Menu > Emote.
+- Belum ada: papan peringkat dan fitur sosial lintas pemain (butuh backend).

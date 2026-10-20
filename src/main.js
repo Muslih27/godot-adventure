@@ -4,6 +4,7 @@ import BootScene from './scenes/BootScene.js';
 import PreloadScene from './scenes/PreloadScene.js';
 import MainMenuScene from './scenes/MainMenuScene.js';
 import { AchievementManager } from './systems/AchievementManager.js';
+import { DailyManager } from './systems/DailyManager.js';
 import SchoolScene from './scenes/SchoolScene.js';
 import ClassroomScene from './scenes/ClassroomScene.js';
 import LabScene from './scenes/LabScene.js';
@@ -19,6 +20,7 @@ import TestScene from './scenes/TestScene.js';
 import FinalScene from './scenes/FinalScene.js';
 
 AchievementManager.init();
+DailyManager.init();
 
 new Phaser.Game({
   type: Phaser.AUTO,

@@ -9,6 +9,10 @@ import { portraits } from '../assets/textures.js';
 import { PlayerStatus } from './PlayerStatus.js';
 import { openQuestLog, openMap, openProgress, openPause } from '../ui/panels.js';
 import { openProfile, openJournal } from '../ui/profile.js';
+import { openShop } from '../ui/shop.js';
+import { openDaily } from '../ui/daily.js';
+import { DailyManager } from './DailyManager.js';
+import { emotes } from '../data/emotes.js';
 
 class UIManager {
   constructor() {
@@ -47,11 +51,11 @@ class UIManager {
     });
     bus.on('quest:complete', (q) => {
       A.sfx('quest');
-      this.toast(`Quest selesai: ${q.title}`, 'good');
       const r = q.reward || {};
-      this.openModal({ title: 'Misi selesai!' }).body.append($(`<div class="reward">
-        <div class="burst"></div><h3>${esc(q.title)}</h3>
-        <p>${r.xp ? `+${r.xp} XP ` : ''}${r.coins ? `+${r.coins} Koin ` : ''}${r.crystals ? `+${r.crystals} Godot Crystal` : ''}</p></div>`));
+      const parts = [r.xp ? `+${r.xp} XP` : '', r.coins ? `+${r.coins} koin` : '', r.crystals ? `+${r.crystals} Godot Crystal` : ''].filter(Boolean).join('  ');
+      const t = $(`<div class="toast quest-banner"><b>Misi selesai!</b><span>${esc(q.title)}</span><small>${esc(parts)}</small></div>`);
+      this.toastEl.append(t);
+      setTimeout(() => t.remove(), 5200);
     });
   }
 
@@ -143,18 +147,31 @@ class UIManager {
       <div class="hud-top">
         <div class="hud-player"><b id="hn"></b><span id="hl"></span><div class="xp"><i id="hx"></i></div></div>
         <div class="hud-res"><span class="hearts" id="hh"></span><span><i class="ico coin"></i><b id="hc">0</b></span><span><i class="ico crystal"></i><b id="hcr">0</b></span></div>
-        <div class="hud-btns">
-          <button data-a="quest">Quest</button><button data-a="map">Peta</button>
-          <button data-a="learn">Materi</button><button data-a="journal">Jurnal</button><button data-a="profile">Profil</button><button data-a="pause">Jeda</button>
-        </div>
+        <div class="hud-btns"><button class="menu-btn" data-a="menu">Menu<i class="dot hidden"></i></button></div>
       </div>
+      <div class="menu-drop hidden" id="md">
+        <button data-a="quest">Quest</button><button data-a="map">Peta</button>
+        <button data-a="learn">Materi</button><button data-a="journal">Jurnal</button>
+        <button data-a="profile">Profil</button><button data-a="shop">Toko</button>
+        <button data-a="daily">Misi Harian</button><button data-a="emote">Emote</button>
+        <button data-a="pause" class="wide">Jeda</button></div>
       <div class="questbox" id="hq"></div>
       <canvas id="mm" width="120" height="80" aria-label="Minimap"></canvas>`;
+    const md = this.hudEl.querySelector('#md');
     this.hudEl.addEventListener('click', (e) => {
       const a = e.target.closest('button')?.dataset.a;
       if (!a || this.blocked) return;
       A.sfx('click');
+      if (a === 'menu') { md.classList.toggle('hidden'); return; }
+      md.classList.add('hidden');
       this.action(a);
+    });
+    const hq = this.hudEl.querySelector('#hq');
+    if (this.isTouch) hq.classList.add('collapsed');
+    hq.addEventListener('click', () => hq.classList.toggle('collapsed'));
+    document.addEventListener('pointerdown', (e) => {
+      if (!md.contains(e.target) && !e.target.closest('.menu-btn')) md.classList.add('hidden');
+      if (this.emotePop && !this.emotePop.contains(e.target)) { this.emotePop.remove(); this.emotePop = null; }
     });
     this.mm = this.hudEl.querySelector('#mm').getContext('2d');
   }
@@ -165,6 +182,9 @@ class UIManager {
     if (a === 'journal') openJournal(this);
     if (a === 'profile') openProfile(this);
     if (a === 'pause') openPause(this);
+    if (a === 'shop') openShop(this);
+    if (a === 'daily') openDaily(this);
+    if (a === 'emote') this.openEmotes();
   }
   showHud(on) { this.hudEl.classList.toggle('hidden', !on); this.inGame = on; if (on) this.refreshHud(); this.touchEl.classList.toggle('hidden', !on); }
   refreshHud() {
@@ -175,6 +195,7 @@ class UIManager {
     q('#hc').textContent = d.coins;
     this.refreshHearts();
     q('#hcr').textContent = d.crystals;
+    q('.menu-btn .dot')?.classList.toggle('hidden', !DailyManager.hasClaimable());
     const aq = QuestManager.active();
     const side = QuestManager.all().find((x) => x.type === 'Sampingan' && !QuestManager.isDone(x));
     q('#hq').innerHTML = (aq ? `<b>${esc(aq.title)}</b><span>${esc(aq.steps ? aq.steps.find((s) => !s.done(d))?.t || '' : aq.desc)}</span>` : '<b>Semua quest yang tersedia sudah selesai</b>')
@@ -250,6 +271,19 @@ class UIManager {
         if (kind === 'run') { this.touchRun = !this.touchRun; b.classList.toggle('on', this.touchRun); }
       });
     });
+  }
+  openEmotes() {
+    if (this.emotePop) { this.emotePop.remove(); this.emotePop = null; return; }
+    const el = $(`<div class="emote-pop">${emotes.map((l, i) => `<button class="btn" data-i="${i}">${i + 1}. ${esc(l)}</button>`).join('')}</div>`);
+    el.onclick = (e) => {
+      const b = e.target.closest('button');
+      if (!b) return;
+      bus.emit('emote', Number(b.dataset.i));
+      el.remove();
+      this.emotePop = null;
+    };
+    this.root.append(el);
+    this.emotePop = el;
   }
   syncClasses() {
     this.root.classList.toggle('dialog-open', !!this.dlg);

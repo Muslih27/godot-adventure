@@ -13,7 +13,7 @@ import { bus } from '../core/bus.js';
 
 const mastered = (ch) => [ch.keys.read, ch.keys.sim, ch.keys.quiz].every((k) => state.hasFlag(k));
 
-function tabbed(ui, title, tabs) {
+export function tabbed(ui, title, tabs) {
   const m = ui.openModal({ title, wide: true });
   const names = Object.keys(tabs);
   let cur = names[0];

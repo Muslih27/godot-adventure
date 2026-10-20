@@ -7,6 +7,9 @@ import { PlayerStatus } from '../systems/PlayerStatus.js';
 import { EnemyManager } from '../systems/EnemyManager.js';
 import { bus } from '../core/bus.js';
 import { cosmetics } from '../data/cosmetics.js';
+import { shopItems } from '../data/shop.js';
+import { titles, titleUnlocked } from '../data/titles.js';
+import { emotes } from '../data/emotes.js';
 
 const LOCATION = { School: 'school', Classroom: 'classroom', Lab: 'lab', Code: 'code', Arena: 'arena', Anim: 'anim', Library: 'library', Level: 'level', AI: 'ai', Audio: 'audio', Server: 'server', Test: 'test', Final: 'final' };
 
@@ -29,6 +32,7 @@ export default class WorldScene extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, W, H);
     this.cameras.main.setBounds(0, 0, W, H).fadeIn(500);
     PlayerStatus.reset();
+    bus.emit('track', 'room', state.data.location);
 
     if (!this.anims.exists('walk' + av)) {
       this.anims.create({ key: 'walk' + av, frames: [{ key, frame: 'f1' }, { key, frame: 'f0' }, { key, frame: 'f2' }, { key, frame: 'f0' }], frameRate: 8, repeat: -1 });
@@ -47,6 +51,29 @@ export default class WorldScene extends Phaser.Scene {
     applyCos();
     bus.on('cosmetic', applyCos);
 
+    // Nama, gelar, topi, dan peliharaan (gaya avatar Roblox)
+    this.tag = this.add.text(0, 0, '', { fontFamily: 'Nunito, sans-serif', fontSize: '11px', fontStyle: 'bold', color: '#ffffff', align: 'center', stroke: '#06202e', strokeThickness: 3 }).setOrigin(0.5, 1).setDepth(10001);
+    this.hat = null; this.pet = null; this.bubble = null; this.petPos = { x: 0, y: 0 };
+    const applyEquip = () => {
+      const eq = state.data.equip, own = state.data.owned;
+      if (this.hat) this.hat.destroy();
+      if (this.pet) this.pet.destroy();
+      this.hat = null; this.pet = null;
+      const h = shopItems.find((i) => i.id === eq.hat && own.includes(i.id));
+      const p = shopItems.find((i) => i.id === eq.pet && own.includes(i.id));
+      if (h) this.hat = this.add.image(0, 0, h.tex).setOrigin(0.5, 1);
+      if (p) {
+        this.pet = this.add.image(this.player.x - 24, this.player.y, p.tex).setOrigin(0.5, 1);
+        this.petPos = { x: this.pet.x, y: this.pet.y };
+      }
+      const t = titles.find((x) => x.id === eq.title && titleUnlocked(x, state.data.flags)) || titles[0];
+      this.tag.setText(`${state.data.name}\n${t.name}`);
+    };
+    applyEquip();
+    bus.on('equip', applyEquip);
+    const onEmote = (i) => this.emote(i);
+    bus.on('emote', onEmote);
+
     this.enemies = new EnemyManager(this, this.enemyDefs);
 
     this.coinDefs.forEach(([id, x, y]) => {
@@ -58,7 +85,7 @@ export default class WorldScene extends Phaser.Scene {
 
     this.hint = this.add.text(0, 0, '', { fontFamily: 'Nunito, sans-serif', fontSize: '13px', fontStyle: 'bold', color: '#06202e', backgroundColor: '#7ee7ff', padding: { x: 6, y: 3 } })
       .setOrigin(0.5, 1).setDepth(10000).setVisible(false);
-    this.keys = this.input.keyboard.addKeys('W,A,S,D,UP,DOWN,LEFT,RIGHT,E,SPACE,SHIFT,F');
+    this.keys = this.input.keyboard.addKeys('W,A,S,D,UP,DOWN,LEFT,RIGHT,E,SPACE,SHIFT,F,ONE,TWO,THREE,FOUR,FIVE,SIX');
     this.input.keyboard.addCapture('UP,DOWN,LEFT,RIGHT,SPACE');
     this.nextStep = 0; this.nextMm = 0;
 
@@ -72,6 +99,8 @@ export default class WorldScene extends Phaser.Scene {
       bus.off('goto:menu', toMenu);
       bus.off('goto:scene', travel);
       bus.off('cosmetic', applyCos);
+      bus.off('equip', applyEquip);
+      bus.off('emote', onEmote);
       this.input.keyboard.clearCaptures();
       ui.showHud(false);
       ui.touch = { x: 0, y: 0 };
@@ -83,6 +112,29 @@ export default class WorldScene extends Phaser.Scene {
       });
     }
     this.onReady?.();
+  }
+
+  syncVisuals(time) {
+    const p = this.player;
+    this.tag.setPosition(p.x, p.y - 36 - (this.hat ? 12 : 0));
+    if (this.hat) this.hat.setPosition(p.x, p.y - 27).setFlipX(p.flipX).setDepth(p.y + 1).setAlpha(p.alpha);
+    if (this.pet) {
+      this.petPos.x += (p.x + (p.flipX ? 24 : -24) - this.petPos.x) * 0.12;
+      this.petPos.y += (p.y - this.petPos.y) * 0.12;
+      this.pet.setPosition(this.petPos.x, this.petPos.y + Math.sin(time / 160) * 1.5).setFlipX(p.flipX).setDepth(this.petPos.y);
+    }
+    if (this.bubble) this.bubble.setPosition(p.x, p.y - 62 - (this.hat ? 12 : 0));
+  }
+
+  emote(i) {
+    const text = emotes[i];
+    if (!text || this.leaving || ui.blocked) return;
+    if (this.bubble) this.bubble.destroy();
+    A.sfx('emote');
+    const b = this.add.text(this.player.x, this.player.y - 62, text, { fontFamily: 'Nunito, sans-serif', fontSize: '13px', fontStyle: 'bold', color: '#06202e', backgroundColor: '#ffffff', padding: { x: 7, y: 4 } }).setOrigin(0.5, 1).setDepth(10002);
+    this.bubble = b;
+    this.tweens.add({ targets: this.player, angle: { from: -10, to: 10 }, duration: 110, yoyo: true, repeat: 3, onComplete: () => this.player.setAngle(0) });
+    this.time.delayedCall(2200, () => { if (this.bubble === b) { b.destroy(); this.bubble = null; } });
   }
 
   travel(target, pos) {
@@ -109,6 +161,7 @@ export default class WorldScene extends Phaser.Scene {
     A.sfx('coin');
     state.collect(id);
     state.addCoins(5);
+    bus.emit('track', 'coins');
     const fx = this.add.particles(x, y, 'spark', { speed: { min: 40, max: 120 }, lifespan: 500, scale: { start: 1.5, end: 0 }, tint: 0xffb347, emitting: false }).setDepth(9999);
     fx.explode(12);
     this.time.delayedCall(700, () => fx.destroy());
@@ -122,6 +175,8 @@ export default class WorldScene extends Phaser.Scene {
     const { JustDown } = Phaser.Input.Keyboard;
     const act = JustDown(k.E) || JustDown(k.SPACE) || ui.touchAct; // selalu dikonsumsi agar tidak "bocor"
     const atk = JustDown(k.F) || ui.touchAttack;
+    const em = ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'].map((n) => JustDown(k[n])).indexOf(true);
+    this.syncVisuals(time);
     ui.touchAct = false;
     ui.touchAttack = false;
     if (ui.blocked || this.leaving) {
@@ -132,6 +187,7 @@ export default class WorldScene extends Phaser.Scene {
       return;
     }
     if (atk) this.enemies.attack(time);
+    if (em >= 0) this.emote(em);
     if (time < this.knockUntil) {
       this.player.setVelocity(this.knockV.x, this.knockV.y);
       this.enemies.update(time);

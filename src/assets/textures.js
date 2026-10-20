@@ -1,5 +1,6 @@
 // Aset visual prosedural (canvas) bergaya pixel art: tidak butuh file gambar eksternal.
 export const portraits = {};
+export const previews = {};
 let seed = 7;
 const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
 
@@ -44,6 +45,7 @@ function canvasTex(scene, key, w, h, draw) {
   const t = scene.textures.createCanvas(key, w, h);
   draw(t.context, w, h);
   t.refresh();
+  if (/^(hat|pet)_/.test(key)) previews[key] = t.canvas.toDataURL();
   return t;
 }
 
@@ -342,6 +344,40 @@ export function generateTextures(scene) {
     c.fillStyle = '#ffb347'; c.fillRect(0, 0, 48, 34);
     c.fillStyle = '#173a5c'; c.fillRect(5, 5, 38, 29);
     c.fillStyle = '#fff'; c.font = 'bold 9px monospace'; c.textAlign = 'center'; c.fillText('FINAL', 24, 24);
+  });
+
+  const hat = (key, main, light) => canvasTex(scene, key, 22, 14, (c) => {
+    c.fillStyle = main; c.fillRect(4, 2, 14, 8);
+    c.fillStyle = light; c.fillRect(4, 2, 14, 3);
+    c.fillStyle = '#12304f'; c.fillRect(0, 9, 22, 4);
+  });
+  hat('hat_blue', '#1d4ed8', '#60a5fa');
+  hat('hat_orange', '#ea580c', '#fdba74');
+  canvasTex(scene, 'hat_crown', 22, 14, (c) => {
+    c.fillStyle = '#fbbf24'; c.fillRect(2, 6, 18, 7);
+    c.beginPath(); c.moveTo(2, 6); c.lineTo(2, 1); c.lineTo(7, 5); c.lineTo(11, 0); c.lineTo(15, 5); c.lineTo(20, 1); c.lineTo(20, 6); c.fill();
+    c.fillStyle = '#ef4444'; c.fillRect(9, 8, 4, 3);
+  });
+  canvasTex(scene, 'pet_slime', 18, 14, (c) => {
+    c.fillStyle = '#34d399'; c.beginPath(); c.ellipse(9, 9, 8, 5, 0, 0, 7); c.fill();
+    c.fillStyle = '#6ee7b7'; c.fillRect(4, 6, 4, 2);
+    c.fillStyle = '#fff'; c.fillRect(5, 8, 3, 3); c.fillRect(10, 8, 3, 3);
+    c.fillStyle = '#111'; c.fillRect(6, 9, 1, 2); c.fillRect(11, 9, 1, 2);
+  });
+  canvasTex(scene, 'pet_robo', 16, 18, (c) => {
+    c.fillStyle = '#9ca3af'; c.fillRect(2, 6, 12, 10);
+    c.fillStyle = '#6b7280'; c.fillRect(2, 14, 12, 2);
+    c.fillStyle = '#22d3ee'; c.fillRect(5, 8, 6, 4);
+    c.fillStyle = '#9ca3af'; c.fillRect(7, 2, 2, 4);
+    c.fillStyle = '#ef4444'; c.fillRect(6, 0, 4, 3);
+  });
+  canvasTex(scene, 'pet_cat', 18, 16, (c) => {
+    c.fillStyle = '#fb923c'; c.fillRect(3, 6, 12, 9);
+    c.beginPath(); c.moveTo(3, 6); c.lineTo(4, 1); c.lineTo(8, 6); c.fill();
+    c.beginPath(); c.moveTo(15, 6); c.lineTo(14, 1); c.lineTo(10, 6); c.fill();
+    c.fillStyle = '#fff'; c.fillRect(5, 8, 3, 3); c.fillRect(10, 8, 3, 3);
+    c.fillStyle = '#111'; c.fillRect(6, 9, 1, 2); c.fillRect(11, 9, 1, 2);
+    c.fillStyle = '#f472b6'; c.fillRect(8, 12, 2, 1);
   });
 
   for (const key of Object.keys(LOOKS)) {

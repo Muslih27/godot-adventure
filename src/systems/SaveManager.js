@@ -18,6 +18,10 @@ export const defaultSave = () => ({
   badges: [],
   cosmetic: 'none',
   bugs: 0,
+  owned: [],
+  equip: { hat: '', pet: '', title: 'pemula' },
+  daily: { last: '', streak: 0 },
+  dq: { date: '', prog: { bugs: 0, coins: 0, rooms: [], quiz: 0 }, claimed: {} },
   settings: { audio: true },
 });
 
@@ -47,6 +51,18 @@ export function validate(raw) {
     scores,
     badges: strs(raw.badges),
     bugs: num(raw.bugs),
+    owned: strs(raw.owned),
+    equip: {
+      hat: typeof raw.equip?.hat === 'string' ? raw.equip.hat : '',
+      pet: typeof raw.equip?.pet === 'string' ? raw.equip.pet : '',
+      title: typeof raw.equip?.title === 'string' && raw.equip.title ? raw.equip.title : 'pemula',
+    },
+    daily: { last: typeof raw.daily?.last === 'string' ? raw.daily.last : '', streak: num(raw.daily?.streak) },
+    dq: {
+      date: typeof raw.dq?.date === 'string' ? raw.dq.date : '',
+      prog: { bugs: num(raw.dq?.prog?.bugs), coins: num(raw.dq?.prog?.coins), quiz: num(raw.dq?.prog?.quiz), rooms: strs(raw.dq?.prog?.rooms) },
+      claimed: Object.fromEntries(Object.entries(isObj(raw.dq?.claimed) ? raw.dq.claimed : {}).filter(([, v]) => v === true)),
+    },
     cosmetic: ['none', 'green', 'orange', 'gold'].includes(raw.cosmetic) ? raw.cosmetic : 'none',
     settings: { audio: !(isObj(raw.settings) && raw.settings.audio === false) },
   };

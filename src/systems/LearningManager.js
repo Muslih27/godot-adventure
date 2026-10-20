@@ -250,6 +250,7 @@ export function openQuiz(ui, ch) {
     m.body.append(next);
   };
   const result = () => {
+    bus.emit('track', 'quiz');
     const pass = score >= ch.passScore;
     const first = pass && !state.hasFlag(ch.keys.quiz);
     const sk = 'ch' + ch.id;

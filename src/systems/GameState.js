@@ -34,7 +34,15 @@ class GameState {
   hasFlag(k) { return !!this.data.flags[k]; }
   collect(id) { if (!this.data.collected.includes(id)) { this.data.collected.push(id); this.commit(); } }
   setCosmetic(c) { this.data.cosmetic = c; this.commit(); bus.emit('cosmetic', c); }
-  defeatBug() { this.data.bugs += 1; this.data.coins += 1; this.commit(); }
+  defeatBug() { this.data.bugs += 1; this.data.coins += 1; this.commit(); bus.emit('track', 'bugs'); }
+  buy(item) {
+    if (this.data.owned.includes(item.id) || this.data.coins < item.price) return false;
+    this.data.coins -= item.price;
+    this.data.owned.push(item.id);
+    this.commit();
+    return true;
+  }
+  equip(slot, id) { this.data.equip[slot] = id; this.commit(); bus.emit('equip'); }
   addBadge(b) { if (!this.data.badges.includes(b)) { this.data.badges.push(b); this.commit(); } }
 }
 export const state = new GameState();
