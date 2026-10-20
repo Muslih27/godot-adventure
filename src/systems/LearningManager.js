@@ -10,6 +10,7 @@ import { chapter7 } from '../data/chapter7.js';
 import { chapter8 } from '../data/chapter8.js';
 import { chapter9 } from '../data/chapter9.js';
 import { chapter10 } from '../data/chapter10.js';
+import { chapter11 } from '../data/chapter11.js';
 import { state } from './GameState.js';
 import { QuestManager } from './QuestManager.js';
 import { AudioManager as A } from './AudioManager.js';
@@ -438,6 +439,24 @@ export async function interactLevel(ui) {
 }
 
 export async function interactArsi(ui) {
+  if (state.hasFlag('quest_q_ch10')) {
+    if (!state.hasFlag('arsi11_met')) {
+      const c = await ui.dialog({
+        who: ARSI,
+        pages: [
+          'Fondasimu sudah kokoh. Sekarang kita beri NPC kemampuan berpikir.',
+          'Di Bab 11 kamu belajar membuat NPC yang berpatroli, mengejar, mencari jalan, dan berbicara dengan pilihan jawaban.',
+          'Siap mulai Bab 11?',
+        ],
+        choices: ['Siap!', 'Nanti dulu'],
+      });
+      state.setFlag('arsi11_met');
+      if (c === 0) await openChapter(ui, chapter11);
+      return;
+    }
+    await stageFlow(ui, ARSI, chapter11, 'NPC-mu cerdas! Godot Crystal kesebelas menyala. Bab 12 (Audio dan Efek Visual) hadir di pembaruan berikutnya.');
+    return;
+  }
   if (!state.hasFlag('arsi_met')) {
     const c = await ui.dialog({
       who: ARSI,
@@ -452,7 +471,7 @@ export async function interactArsi(ui) {
     if (c === 0) await openChapter(ui, chapter10);
     return;
   }
-  await stageFlow(ui, ARSI, chapter10, 'Fondasimu kokoh! Godot Crystal kesepuluh menyala. Bab 11 (AI dan NPC) hadir di pembaruan berikutnya.');
+  await stageFlow(ui, ARSI, chapter10, 'Fondasimu kokoh! Godot Crystal kesepuluh menyala. Bicara lagi denganku untuk lanjut ke Bab 11 (AI dan NPC).');
 }
 
 export async function interactAIDoor(ui) {

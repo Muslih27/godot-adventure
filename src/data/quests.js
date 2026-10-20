@@ -186,6 +186,18 @@ export const quests = [
     reward: { xp: 140, coins: 65, crystals: 1 },
   },
   {
+    id: 'q_ch11', type: 'Utama', title: 'Misi Bab 11: AI dan NPC',
+    desc: 'Pulihkan Godot Crystal kesebelas dengan membuat NPC yang berpikir. Temui Dr. Arsitek lagi.',
+    requires: 'q_ch10',
+    steps: [
+      { t: 'Baca materi Bab 11', done: (s) => !!s.flags.read11 },
+      { t: 'Urutkan algoritma NPC pengejar', done: (s) => !!s.flags.sim11 },
+      { t: 'Lulus kuis (minimal 4 dari 6 benar)', done: (s) => !!s.flags.quiz11 },
+    ],
+    done: (s) => !!(s.flags.read11 && s.flags.sim11 && s.flags.quiz11),
+    reward: { xp: 150, coins: 70, crystals: 1 },
+  },
+  {
     id: 'q_coins', type: 'Sampingan', title: 'Koin Berserakan',
     desc: 'Temukan 3 Koin Akademi yang tersebar di halaman sekolah.',
     progress: (s) => `${coinsFound(s)}/3 koin`,

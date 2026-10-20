@@ -40,4 +40,8 @@ export const glossary = [
   { ch: 10, t: 'enum', d: 'Daftar nilai bernama, sering dipakai untuk mendefinisikan state.' },
   { ch: 10, t: 'Autoload', d: 'Skrip atau scene yang dimuat otomatis dan tetap hidup saat scene diganti (singleton).' },
   { ch: 10, t: 'Modular', d: 'Sistem dipecah menjadi bagian kecil yang berdiri sendiri sehingga mudah diganti dan dikembangkan.' },
+  { ch: 11, t: 'Patroli', d: 'Perilaku NPC berpindah antar titik secara berulang.' },
+  { ch: 11, t: 'Pathfinding', d: 'Pencarian jalur yang menghindari rintangan menuju tujuan.' },
+  { ch: 11, t: 'NavigationAgent2D', d: 'Node yang menghitung jalur pada area navigasi dan memberi titik berikutnya.' },
+  { ch: 11, t: 'Dialog bercabang', d: 'Percakapan yang berlanjut ke bagian berbeda sesuai pilihan pemain.' },
 ];
