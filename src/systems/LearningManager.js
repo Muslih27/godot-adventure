@@ -12,6 +12,7 @@ import { chapter9 } from '../data/chapter9.js';
 import { chapter10 } from '../data/chapter10.js';
 import { chapter11 } from '../data/chapter11.js';
 import { chapter12 } from '../data/chapter12.js';
+import { chapter13 } from '../data/chapter13.js';
 import { state } from './GameState.js';
 import { QuestManager } from './QuestManager.js';
 import { AudioManager as A } from './AudioManager.js';
@@ -26,6 +27,7 @@ const PUS = { name: 'Pustakawan Data', portrait: 'pus' };
 const LVL = { name: 'Mas Level', portrait: 'lvl' };
 const ARSI = { name: 'Dr. Arsitek', portrait: 'arsi' };
 const NADA = { name: 'Kak Nada', portrait: 'nada' };
+const SRV = { name: 'Mas Server', portrait: 'srv' };
 
 /* ---------- Materi ---------- */
 export function openChapter(ui, ch) {
@@ -492,6 +494,34 @@ export async function interactNada(ui) {
     return;
   }
   await stageFlow(ui, NADA, chapter12, 'Gimmu terdengar dan terlihat hidup! Godot Crystal kedua belas menyala. Bab 13 (Save System) hadir di pembaruan berikutnya.');
+}
+
+export async function interactSrv(ui) {
+  if (!state.hasFlag('srv_met')) {
+    const c = await ui.dialog({
+      who: SRV,
+      pages: [
+        `Selamat datang di Server Room, ${state.data.name}. Aku Mas Server.`,
+        'Di sini kita menjaga data. Gim yang bagus harus mengingat progres pemain, bahkan setelah gimnya ditutup.',
+        'Siap mulai Bab 13?',
+      ],
+      choices: ['Siap!', 'Nanti dulu'],
+    });
+    state.setFlag('srv_met');
+    if (c === 0) await openChapter(ui, chapter13);
+    return;
+  }
+  await stageFlow(ui, SRV, chapter13, 'Datamu aman! Godot Crystal ketiga belas menyala. Bab 14 (Debugging dan Optimasi) hadir di pembaruan berikutnya.');
+}
+
+export async function interactServerDoor(ui) {
+  const who = { name: 'Pintu Server Room', portrait: 'nada' };
+  if (!state.hasFlag('quest_q_ch12')) {
+    A.sfx('bad');
+    await ui.dialog({ who, pages: ['Pintu terkunci. Selesaikan Misi Bab 12 dari Kak Nada untuk membukanya.'] });
+  } else {
+    bus.emit('goto:scene', 'Server');
+  }
 }
 
 export async function interactAudioDoor(ui) {

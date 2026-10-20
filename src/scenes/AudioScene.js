@@ -2,7 +2,7 @@ import { ui } from '../systems/UIManager.js';
 import { state } from '../systems/GameState.js';
 import { QuestManager } from '../systems/QuestManager.js';
 import { bus } from '../core/bus.js';
-import { interactNada } from '../systems/LearningManager.js';
+import { interactNada, interactServerDoor } from '../systems/LearningManager.js';
 import WorldScene from './WorldScene.js';
 
 export default class AudioScene extends WorldScene {
@@ -29,9 +29,11 @@ export default class AudioScene extends WorldScene {
     this.tweens.add({ targets: npc, y: 208, duration: 600, yoyo: true, repeat: -1 });
     this.wall(390, 200, 20, 10);
 
+    this.add.image(620, 102, 'vdoor').setOrigin(0.5, 1).setDepth(151);
     this.coinDefs = [['o1', 40, 440], ['o2', 760, 150]];
     this.things = [
       { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Kak Nada', run: () => interactNada(ui) },
+      { x: 620, y: 125, r: 55, hy: 95, label: 'Masuk Server Room', run: () => interactServerDoor(ui) },
       { x: 400, y: 450, r: 50, hy: 415, label: 'Kembali ke Laboratorium AI', run: () => bus.emit('goto:scene', 'AI', { x: 620, y: 135 }) },
     ];
     this.mmBg = (c, k) => {

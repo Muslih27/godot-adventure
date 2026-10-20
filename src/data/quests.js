@@ -217,6 +217,25 @@ export const quests = [
     reward: { xp: 160, coins: 75, crystals: 1 },
   },
   {
+    id: 'q_server', type: 'Utama', title: 'Masuki Server Room',
+    desc: 'Pintu SERVER di Ruang Audio kini terbuka. Temui Mas Server.',
+    requires: 'q_ch12',
+    done: (s) => !!s.flags.serverRoom,
+    reward: { xp: 10 },
+  },
+  {
+    id: 'q_ch13', type: 'Utama', title: 'Misi Bab 13: Save System',
+    desc: 'Pulihkan Godot Crystal ketiga belas dengan menjaga progres pemain agar tidak hilang.',
+    requires: 'q_server',
+    steps: [
+      { t: 'Baca materi Bab 13', done: (s) => !!s.flags.read13 },
+      { t: 'Perbaiki tiga bug save system', done: (s) => !!s.flags.sim13 },
+      { t: 'Lulus kuis (minimal 4 dari 6 benar)', done: (s) => !!s.flags.quiz13 },
+    ],
+    done: (s) => !!(s.flags.read13 && s.flags.sim13 && s.flags.quiz13),
+    reward: { xp: 170, coins: 80, crystals: 1 },
+  },
+  {
     id: 'q_coins', type: 'Sampingan', title: 'Koin Berserakan',
     desc: 'Temukan 3 Koin Akademi yang tersebar di halaman sekolah.',
     progress: (s) => `${coinsFound(s)}/3 koin`,

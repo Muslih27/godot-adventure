@@ -24,9 +24,9 @@ export function openQuestLog(ui) {
 export function openMap(ui) {
   const m = ui.openModal({ title: 'Peta Sekolah', wide: true });
   const done = (id) => QuestManager.isDone(QuestManager.all().find((q) => q.id === id));
-  const unlocked = { gate: 1, school: 1, classroom: done('q_ch1') ? 1 : 0, lab: done('q_ch2') ? 1 : 0, code: done('q_ch3') ? 1 : 0, arena: done('q_ch4') ? 1 : 0, anim: done('q_ch5') ? 1 : 0, library: done('q_ch6') ? 1 : 0, level: done('q_ch7') ? 1 : 0, ai: done('q_ch9') ? 1 : 0, audio: done('q_ch11') ? 1 : 0 };
-  const scenes = { school: 'School', classroom: 'Classroom', lab: 'Lab', code: 'Code', arena: 'Arena', anim: 'Anim', library: 'Library', level: 'Level', ai: 'AI', audio: 'Audio' };
-  const visit = { classroom: 'classroom', lab: 'lab', code: 'codeRoom', arena: 'arena', anim: 'animRoom', library: 'libRoom', level: 'levelRoom', ai: 'aiRoom', audio: 'audioRoom' };
+  const unlocked = { gate: 1, school: 1, classroom: done('q_ch1') ? 1 : 0, lab: done('q_ch2') ? 1 : 0, code: done('q_ch3') ? 1 : 0, arena: done('q_ch4') ? 1 : 0, anim: done('q_ch5') ? 1 : 0, library: done('q_ch6') ? 1 : 0, level: done('q_ch7') ? 1 : 0, ai: done('q_ch9') ? 1 : 0, audio: done('q_ch11') ? 1 : 0, server: done('q_ch12') ? 1 : 0 };
+  const scenes = { school: 'School', classroom: 'Classroom', lab: 'Lab', code: 'Code', arena: 'Arena', anim: 'Anim', library: 'Library', level: 'Level', ai: 'AI', audio: 'Audio', server: 'Server' };
+  const visit = { classroom: 'classroom', lab: 'lab', code: 'codeRoom', arena: 'arena', anim: 'animRoom', library: 'libRoom', level: 'levelRoom', ai: 'aiRoom', audio: 'audioRoom', server: 'serverRoom' };
   const seen = (id) => id === 'school' || (visit[id] && state.hasFlag(visit[id]));
   m.body.innerHTML = `<div class="map">${locations.map((l) => {
     const cur = l.id === state.data.location, ok = unlocked[l.id], target = !!(visit[l.id] && ok && !state.hasFlag(visit[l.id]));

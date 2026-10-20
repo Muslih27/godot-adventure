@@ -14,6 +14,7 @@ const LOOKS = {
   lvl: { skin: '#f1c27d', hair: '#111827', shirt: '#7ee7ff', pants: '#92400e' },
   arsi: { skin: '#c68642', hair: '#0f172a', shirt: '#a7f3d0', pants: '#1e293b', glasses: true },
   nada: { skin: '#f1c27d', hair: '#ff8a3d', shirt: '#7c3aed', pants: '#0f172a' },
+  srv: { skin: '#f1c27d', hair: '#334155', shirt: '#0f766e', pants: '#1e293b', glasses: true },
   prof: { skin: '#f1c27d', hair: '#d1d5db', shirt: '#ffffff', pants: '#334155', glasses: true, coat: true },
 };
 
@@ -283,6 +284,27 @@ export function generateTextures(scene) {
     c.fillStyle = '#7c3aed'; c.fillRect(0, 0, 48, 34);
     c.fillStyle = '#173a5c'; c.fillRect(5, 5, 38, 29);
     c.fillStyle = '#fff'; c.font = 'bold 9px monospace'; c.textAlign = 'center'; c.fillText('AUDIO', 24, 24);
+  });
+
+  canvasTex(scene, 'vwall', 800, 110, (c) => {
+    c.fillStyle = '#0b2a2e'; c.fillRect(0, 0, 800, 110);
+    c.fillStyle = '#06191c'; c.fillRect(0, 100, 800, 10);
+    for (let x = 20; x < 780; x += 60) { if (x > 220 && x < 580) continue; c.fillStyle = '#12414a'; c.fillRect(x, 10, 44, 88); for (let i = 0; i < 5; i++) { c.fillStyle = '#031418'; c.fillRect(x + 4, 14 + i * 17, 36, 13); c.fillStyle = i % 2 ? '#34d399' : '#22d3ee'; c.fillRect(x + 7, 18 + i * 17, 4, 4); } }
+    c.fillStyle = '#7a4a21'; c.fillRect(236, 14, 328, 70);
+    c.fillStyle = '#031020'; c.fillRect(242, 20, 316, 58);
+    c.font = 'bold 12px monospace'; c.textAlign = 'left';
+    c.fillStyle = '#22d3ee'; c.fillText('FileAccess.open("user://...")', 252, 44);
+    c.fillStyle = '#34d399'; c.fillText('JSON.stringify(data)', 252, 64);
+  });
+  canvasTex(scene, 'vdoor', 48, 34, (c) => {
+    c.fillStyle = '#14b8a6'; c.fillRect(0, 0, 48, 34);
+    c.fillStyle = '#173a5c'; c.fillRect(5, 5, 38, 29);
+    c.fillStyle = '#fff'; c.font = 'bold 8px monospace'; c.textAlign = 'center'; c.fillText('SERVER', 24, 24);
+  });
+  canvasTex(scene, 'rack', 48, 64, (c) => {
+    c.fillStyle = '#0a2a30'; c.fillRect(0, 0, 48, 64);
+    c.fillStyle = '#12414a'; c.fillRect(3, 3, 42, 58);
+    for (let i = 0; i < 4; i++) { c.fillStyle = '#031418'; c.fillRect(6, 7 + i * 14, 36, 11); }
   });
 
   for (const key of Object.keys(LOOKS)) {

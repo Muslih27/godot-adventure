@@ -48,4 +48,8 @@ export const glossary = [
   { ch: 12, t: 'Audio Bus', d: 'Jalur pencampur suara; dipakai untuk mengatur volume musik dan efek secara terpisah.' },
   { ch: 12, t: 'Particles', d: 'Efek banyak titik kecil seperti percikan atau asap; GPUParticles2D dan CPUParticles2D.' },
   { ch: 12, t: 'Tween', d: 'Objek yang mengubah properti secara halus dari satu nilai ke nilai lain dalam waktu tertentu.' },
+  { ch: 13, t: 'FileAccess', d: 'Kelas untuk membaca dan menulis file.' },
+  { ch: 13, t: 'user://', d: 'Folder yang dapat ditulis untuk data pemain, tetap berfungsi setelah gim diekspor.' },
+  { ch: 13, t: 'JSON', d: 'Format teks untuk menyimpan data terstruktur; angkanya dibaca sebagai float di Godot.' },
+  { ch: 13, t: 'Validasi data', d: 'Memeriksa bentuk, kunci, dan tipe data sebelum dipakai agar gim tidak crash.' },
 ];
