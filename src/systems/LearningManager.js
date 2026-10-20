@@ -11,6 +11,7 @@ import { chapter8 } from '../data/chapter8.js';
 import { chapter9 } from '../data/chapter9.js';
 import { chapter10 } from '../data/chapter10.js';
 import { chapter11 } from '../data/chapter11.js';
+import { chapter12 } from '../data/chapter12.js';
 import { state } from './GameState.js';
 import { QuestManager } from './QuestManager.js';
 import { AudioManager as A } from './AudioManager.js';
@@ -24,6 +25,7 @@ const BU = { name: 'Bu Animasi', portrait: 'bu' };
 const PUS = { name: 'Pustakawan Data', portrait: 'pus' };
 const LVL = { name: 'Mas Level', portrait: 'lvl' };
 const ARSI = { name: 'Dr. Arsitek', portrait: 'arsi' };
+const NADA = { name: 'Kak Nada', portrait: 'nada' };
 
 /* ---------- Materi ---------- */
 export function openChapter(ui, ch) {
@@ -472,6 +474,34 @@ export async function interactArsi(ui) {
     return;
   }
   await stageFlow(ui, ARSI, chapter10, 'Fondasimu kokoh! Godot Crystal kesepuluh menyala. Bicara lagi denganku untuk lanjut ke Bab 11 (AI dan NPC).');
+}
+
+export async function interactNada(ui) {
+  if (!state.hasFlag('nada_met')) {
+    const c = await ui.dialog({
+      who: NADA,
+      pages: [
+        `Halo, ${state.data.name}! Aku Kak Nada, teknisi suara akademi.`,
+        'Lihat bar di dinding itu? Itu irama musik latar. Di sini kamu belajar memutar suara, mengatur volume, membuat efek partikel, dan transisi layar.',
+        'Siap mulai Bab 12?',
+      ],
+      choices: ['Siap!', 'Nanti dulu'],
+    });
+    state.setFlag('nada_met');
+    if (c === 0) await openChapter(ui, chapter12);
+    return;
+  }
+  await stageFlow(ui, NADA, chapter12, 'Gimmu terdengar dan terlihat hidup! Godot Crystal kedua belas menyala. Bab 13 (Save System) hadir di pembaruan berikutnya.');
+}
+
+export async function interactAudioDoor(ui) {
+  const who = { name: 'Pintu Ruang Audio', portrait: 'arsi' };
+  if (!state.hasFlag('quest_q_ch11')) {
+    A.sfx('bad');
+    await ui.dialog({ who, pages: ['Pintu terkunci. Selesaikan Misi Bab 11 dari Dr. Arsitek untuk membukanya.'] });
+  } else {
+    bus.emit('goto:scene', 'Audio');
+  }
 }
 
 export async function interactAIDoor(ui) {

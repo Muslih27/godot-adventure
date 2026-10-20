@@ -198,6 +198,25 @@ export const quests = [
     reward: { xp: 150, coins: 70, crystals: 1 },
   },
   {
+    id: 'q_audio', type: 'Utama', title: 'Masuki Ruang Audio',
+    desc: 'Pintu AUDIO di Laboratorium AI kini terbuka. Temui Kak Nada.',
+    requires: 'q_ch11',
+    done: (s) => !!s.flags.audioRoom,
+    reward: { xp: 10 },
+  },
+  {
+    id: 'q_ch12', type: 'Utama', title: 'Misi Bab 12: Audio dan Efek Visual',
+    desc: 'Pulihkan Godot Crystal kedua belas dengan menghidupkan gim lewat suara dan efek.',
+    requires: 'q_audio',
+    steps: [
+      { t: 'Baca materi Bab 12', done: (s) => !!s.flags.read12 },
+      { t: 'Urutkan langkah transisi scene', done: (s) => !!s.flags.sim12 },
+      { t: 'Lulus kuis (minimal 4 dari 6 benar)', done: (s) => !!s.flags.quiz12 },
+    ],
+    done: (s) => !!(s.flags.read12 && s.flags.sim12 && s.flags.quiz12),
+    reward: { xp: 160, coins: 75, crystals: 1 },
+  },
+  {
     id: 'q_coins', type: 'Sampingan', title: 'Koin Berserakan',
     desc: 'Temukan 3 Koin Akademi yang tersebar di halaman sekolah.',
     progress: (s) => `${coinsFound(s)}/3 koin`,

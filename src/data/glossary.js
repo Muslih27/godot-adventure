@@ -44,4 +44,8 @@ export const glossary = [
   { ch: 11, t: 'Pathfinding', d: 'Pencarian jalur yang menghindari rintangan menuju tujuan.' },
   { ch: 11, t: 'NavigationAgent2D', d: 'Node yang menghitung jalur pada area navigasi dan memberi titik berikutnya.' },
   { ch: 11, t: 'Dialog bercabang', d: 'Percakapan yang berlanjut ke bagian berbeda sesuai pilihan pemain.' },
+  { ch: 12, t: 'AudioStreamPlayer2D', d: 'Pemutar suara berposisi: makin dekat sumber, makin keras.' },
+  { ch: 12, t: 'Audio Bus', d: 'Jalur pencampur suara; dipakai untuk mengatur volume musik dan efek secara terpisah.' },
+  { ch: 12, t: 'Particles', d: 'Efek banyak titik kecil seperti percikan atau asap; GPUParticles2D dan CPUParticles2D.' },
+  { ch: 12, t: 'Tween', d: 'Objek yang mengubah properti secara halus dari satu nilai ke nilai lain dalam waktu tertentu.' },
 ];

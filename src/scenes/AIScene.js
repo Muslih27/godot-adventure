@@ -2,7 +2,7 @@ import { ui } from '../systems/UIManager.js';
 import { state } from '../systems/GameState.js';
 import { QuestManager } from '../systems/QuestManager.js';
 import { bus } from '../core/bus.js';
-import { interactArsi } from '../systems/LearningManager.js';
+import { interactArsi, interactAudioDoor } from '../systems/LearningManager.js';
 import WorldScene from './WorldScene.js';
 
 export default class AIScene extends WorldScene {
@@ -28,9 +28,11 @@ export default class AIScene extends WorldScene {
     this.tweens.add({ targets: npc, y: 208, duration: 700, yoyo: true, repeat: -1 });
     this.wall(390, 200, 20, 10);
 
+    this.add.image(620, 102, 'odoor').setOrigin(0.5, 1).setDepth(151);
     this.coinDefs = [['i1', 40, 440], ['i2', 760, 150]];
     this.things = [
       { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Dr. Arsitek', run: () => interactArsi(ui) },
+      { x: 620, y: 125, r: 55, hy: 95, label: 'Masuk Ruang Audio', run: () => interactAudioDoor(ui) },
       { x: 400, y: 450, r: 50, hy: 415, label: 'Kembali ke Ruang Desain Level', run: () => bus.emit('goto:scene', 'Level', { x: 620, y: 135 }) },
     ];
     this.mmBg = (c, k) => {

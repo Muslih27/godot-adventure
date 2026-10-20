@@ -13,6 +13,7 @@ const LOOKS = {
   pus: { skin: '#c68642', hair: '#6b7280', shirt: '#0e7490', pants: '#334155', glasses: true },
   lvl: { skin: '#f1c27d', hair: '#111827', shirt: '#7ee7ff', pants: '#92400e' },
   arsi: { skin: '#c68642', hair: '#0f172a', shirt: '#a7f3d0', pants: '#1e293b', glasses: true },
+  nada: { skin: '#f1c27d', hair: '#ff8a3d', shirt: '#7c3aed', pants: '#0f172a' },
   prof: { skin: '#f1c27d', hair: '#d1d5db', shirt: '#ffffff', pants: '#334155', glasses: true, coat: true },
 };
 
@@ -266,6 +267,22 @@ export function generateTextures(scene) {
     c.fillStyle = '#c084fc'; c.fillRect(0, 0, 48, 34);
     c.fillStyle = '#173a5c'; c.fillRect(5, 5, 38, 29);
     c.fillStyle = '#fff'; c.font = 'bold 11px monospace'; c.textAlign = 'center'; c.fillText('AI', 24, 24);
+  });
+
+  canvasTex(scene, 'owall', 800, 110, (c) => {
+    c.fillStyle = '#241a4d'; c.fillRect(0, 0, 800, 110);
+    c.fillStyle = '#150f33'; c.fillRect(0, 100, 800, 10);
+    [[40, 22], [660, 22]].forEach(([x, y]) => { c.fillStyle = '#0b0820'; c.fillRect(x, y, 100, 66); c.fillStyle = '#7c3aed'; c.beginPath(); c.arc(x + 50, y + 33, 24, 0, 7); c.fill(); c.fillStyle = '#c4b5fd'; c.beginPath(); c.arc(x + 50, y + 33, 8, 0, 7); c.fill(); });
+    c.fillStyle = '#7a4a21'; c.fillRect(236, 14, 328, 70);
+    c.fillStyle = '#031020'; c.fillRect(242, 20, 316, 58);
+    c.font = 'bold 12px monospace'; c.textAlign = 'left';
+    c.fillStyle = '#22d3ee'; c.fillText('AudioStreamPlayer', 256, 44);
+    c.fillStyle = '#34d399'; c.fillText('musik.play()', 256, 64);
+  });
+  canvasTex(scene, 'odoor', 48, 34, (c) => {
+    c.fillStyle = '#7c3aed'; c.fillRect(0, 0, 48, 34);
+    c.fillStyle = '#173a5c'; c.fillRect(5, 5, 38, 29);
+    c.fillStyle = '#fff'; c.font = 'bold 9px monospace'; c.textAlign = 'center'; c.fillText('AUDIO', 24, 24);
   });
 
   for (const key of Object.keys(LOOKS)) {

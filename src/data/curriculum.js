@@ -11,7 +11,7 @@ export const curriculum = [
   { n: 9, level: 'Level 3 — Menengah', title: 'Desain Level dan Interaksi', available: true },
   { n: 10, level: 'Level 4 — Lanjutan', title: 'Arsitektur Gameplay', available: true },
   { n: 11, level: 'Level 4 — Lanjutan', title: 'AI dan NPC', available: true },
-  { n: 12, level: 'Level 4 — Lanjutan', title: 'Audio dan Efek Visual' },
+  { n: 12, level: 'Level 4 — Lanjutan', title: 'Audio dan Efek Visual', available: true },
   { n: 13, level: 'Level 5 — Mahir', title: 'Save System' },
   { n: 14, level: 'Level 5 — Mahir', title: 'Debugging dan Optimasi' },
   { n: 15, level: 'Level 5 — Mahir', title: 'Export dan Proyek Akhir' },

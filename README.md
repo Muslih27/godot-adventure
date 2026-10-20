@@ -13,7 +13,7 @@ npm run build     # build produksi ke folder dist
 npm run preview   # uji build lokal
 ```
 
-## Status (Fase 1 + Bab 2-11, 8 ruangan, teleport peta, prestasi, jurnal, profil)
+## Status (Fase 1 + Bab 2-12, 9 ruangan, teleport peta, prestasi, jurnal, profil)
 
 Sudah berfungsi: menu utama (New Game dengan konfirmasi, Continue, pilih karakter, pengaturan, credit),
 Halaman Sekolah dengan collision, kamera halus, animasi idle/jalan, lari (Shift), kontrol sentuh,
