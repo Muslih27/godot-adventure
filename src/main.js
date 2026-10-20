@@ -16,6 +16,7 @@ import AIScene from './scenes/AIScene.js';
 import AudioScene from './scenes/AudioScene.js';
 import ServerScene from './scenes/ServerScene.js';
 import TestScene from './scenes/TestScene.js';
+import FinalScene from './scenes/FinalScene.js';
 
 AchievementManager.init();
 
@@ -28,5 +29,5 @@ new Phaser.Game({
   backgroundColor: '#071a30',
   scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
   physics: { default: 'arcade', arcade: { debug: false } },
-  scene: [BootScene, PreloadScene, MainMenuScene, SchoolScene, ClassroomScene, LabScene, CodeScene, ArenaScene, AnimScene, LibraryScene, LevelScene, AIScene, AudioScene, ServerScene, TestScene],
+  scene: [BootScene, PreloadScene, MainMenuScene, SchoolScene, ClassroomScene, LabScene, CodeScene, ArenaScene, AnimScene, LibraryScene, LevelScene, AIScene, AudioScene, ServerScene, TestScene, FinalScene],
 });

@@ -255,6 +255,32 @@ export const quests = [
     reward: { xp: 180, coins: 85, crystals: 1 },
   },
   {
+    id: 'q_final', type: 'Utama', title: 'Masuki Ruang Final Project',
+    desc: 'Pintu FINAL di Ruang Pengujian kini terbuka. Temui Bu Kepala Akademi.',
+    requires: 'q_ch14',
+    done: (s) => !!s.flags.finalRoom,
+    reward: { xp: 10 },
+  },
+  {
+    id: 'q_ch15', type: 'Utama', title: 'Misi Bab 15: Export dan Proyek Akhir',
+    desc: 'Pulihkan Godot Crystal terakhir dengan menerbitkan gim ke dunia.',
+    requires: 'q_final',
+    steps: [
+      { t: 'Baca materi Bab 15', done: (s) => !!s.flags.read15 },
+      { t: 'Urutkan langkah export ke Web', done: (s) => !!s.flags.sim15 },
+      { t: 'Lulus kuis (minimal 4 dari 6 benar)', done: (s) => !!s.flags.quiz15 },
+    ],
+    done: (s) => !!(s.flags.read15 && s.flags.sim15 && s.flags.quiz15),
+    reward: { xp: 200, coins: 100, crystals: 1 },
+  },
+  {
+    id: 'q_exam', type: 'Utama', title: 'Ujian Akhir',
+    desc: 'Jawab 10 soal acak dari seluruh bab dan lulus dengan minimal 7 benar. Temui Bu Kepala Akademi.',
+    requires: 'q_ch15',
+    done: (s) => !!s.flags.finalExam,
+    reward: { xp: 300, coins: 150 },
+  },
+  {
     id: 'q_coins', type: 'Sampingan', title: 'Koin Berserakan',
     desc: 'Temukan 3 Koin Akademi yang tersebar di halaman sekolah.',
     progress: (s) => `${coinsFound(s)}/3 koin`,

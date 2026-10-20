@@ -158,3 +158,13 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--cyan-soft);
 .check { display: flex; gap: 8px; align-items: center; font-weight: 700; }
 .check input { width: 18px; height: 18px; accent-color: var(--orange); }
 .gloss dt { font-weight: 800; color: var(--green); margin-top: 10px; } .gloss dt small { color: var(--orange); margin-left: 6px; } .gloss dd { margin: 2px 0 0; }
+
+.certificate { border: 4px double var(--orange); border-radius: 12px; padding: 20px; text-align: center; }
+.certificate h1 { font-family: var(--pixel); color: var(--cyan-soft); margin: 4px 0 10px; }
+.certificate .chips { justify-content: center; margin: 10px 0; }
+@media print {
+  body * { visibility: hidden !important; }
+  .certificate, .certificate * { visibility: visible !important; color: #111 !important; }
+  .certificate { position: fixed; left: 0; top: 0; width: 100%; background: #fff; }
+  .certificate .chips span, .certificate .stat-grid > div { border-color: #111 !important; background: #fff !important; }
+}

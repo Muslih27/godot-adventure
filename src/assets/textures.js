@@ -16,6 +16,7 @@ const LOOKS = {
   nada: { skin: '#f1c27d', hair: '#ff8a3d', shirt: '#7c3aed', pants: '#0f172a' },
   srv: { skin: '#f1c27d', hair: '#334155', shirt: '#0f766e', pants: '#1e293b', glasses: true },
   debug: { skin: '#c68642', hair: '#9ca3af', shirt: '#dc2626', pants: '#1e293b', glasses: true },
+  kepala: { skin: '#f1c27d', hair: '#4b5563', shirt: '#1e3a8a', pants: '#111827', long: true, glasses: true },
   prof: { skin: '#f1c27d', hair: '#d1d5db', shirt: '#ffffff', pants: '#334155', glasses: true, coat: true },
 };
 
@@ -328,6 +329,19 @@ export function generateTextures(scene) {
     c.fillStyle = '#ef4444'; c.beginPath(); c.ellipse(8, 6, 6, 4, 0, 0, 7); c.fill();
     c.fillStyle = '#fff'; c.fillRect(5, 4, 2, 2); c.fillRect(9, 4, 2, 2);
     c.fillStyle = '#111'; c.fillRect(6, 5, 1, 1); c.fillRect(10, 5, 1, 1);
+  });
+
+  canvasTex(scene, 'fwall', 800, 110, (c) => {
+    c.fillStyle = '#0d2b52'; c.fillRect(0, 0, 800, 110);
+    c.fillStyle = '#ffb347'; c.fillRect(0, 0, 800, 6); c.fillRect(0, 94, 800, 6);
+    c.fillStyle = '#081a33'; c.fillRect(0, 100, 800, 10);
+    c.fillStyle = '#7a4a21'; c.fillRect(250, 66, 300, 26);
+    c.fillStyle = '#ffe08a'; c.font = 'bold 13px monospace'; c.textAlign = 'center'; c.fillText('RUANG FINAL PROJECT', 400, 84);
+  });
+  canvasTex(scene, 'fdoor', 48, 34, (c) => {
+    c.fillStyle = '#ffb347'; c.fillRect(0, 0, 48, 34);
+    c.fillStyle = '#173a5c'; c.fillRect(5, 5, 38, 29);
+    c.fillStyle = '#fff'; c.font = 'bold 9px monospace'; c.textAlign = 'center'; c.fillText('FINAL', 24, 24);
   });
 
   for (const key of Object.keys(LOOKS)) {

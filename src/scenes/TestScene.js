@@ -2,7 +2,7 @@ import { ui } from '../systems/UIManager.js';
 import { state } from '../systems/GameState.js';
 import { QuestManager } from '../systems/QuestManager.js';
 import { bus } from '../core/bus.js';
-import { interactDebug } from '../systems/LearningManager.js';
+import { interactDebug, interactFinalDoor } from '../systems/LearningManager.js';
 import WorldScene from './WorldScene.js';
 
 const BARS = [[120, 280, 4, 'h'], [560, 280, 4, 'h'], [250, 180, 3, 'v'], [518, 180, 3, 'v']];
@@ -31,9 +31,11 @@ export default class TestScene extends WorldScene {
     this.tweens.add({ targets: npc, y: 208, duration: 700, yoyo: true, repeat: -1 });
     this.wall(390, 200, 20, 10);
 
+    this.add.image(620, 102, 'fdoor').setOrigin(0.5, 1).setDepth(151);
     this.coinDefs = [['x1', 40, 440], ['x2', 760, 440]];
     this.things = [
       { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Pak Debug', run: () => interactDebug(ui) },
+      { x: 620, y: 125, r: 55, hy: 95, label: 'Masuk Ruang Final Project', run: () => interactFinalDoor(ui) },
       { x: 400, y: 450, r: 50, hy: 415, label: 'Kembali ke Server Room', run: () => bus.emit('goto:scene', 'Server', { x: 620, y: 135 }) },
     ];
     this.mmBg = (c, k) => {

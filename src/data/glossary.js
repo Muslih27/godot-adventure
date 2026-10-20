@@ -56,4 +56,8 @@ export const glossary = [
   { ch: 14, t: 'Breakpoint', d: 'Titik yang menghentikan gim pada baris tertentu agar variabel dapat diperiksa.' },
   { ch: 14, t: 'Print debugging', d: 'Memeriksa nilai dengan menampilkannya lewat print() di panel Output.' },
   { ch: 14, t: 'Profiler', d: 'Alat yang menunjukkan fungsi mana yang paling memakan waktu.' },
+  { ch: 15, t: 'Export Templates', d: 'Paket yang dibutuhkan Godot untuk membangun gim pada platform tujuan.' },
+  { ch: 15, t: 'Stretch Mode', d: 'Pengaturan cara tampilan gim menyesuaikan ukuran jendela atau layar.' },
+  { ch: 15, t: 'Export Web', d: 'Hasil export berupa index.html, JavaScript, WebAssembly, dan data yang harus dilayani lewat server web.' },
+  { ch: 15, t: 'Komentar dokumentasi', d: 'Komentar berawalan ## yang tampil sebagai bantuan di editor Godot.' },
 ];

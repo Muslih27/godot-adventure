@@ -1,7 +1,7 @@
 import { chapters } from './chapters.js';
 
-export const COIN_IDS = ['c1', 'c2', 'c3', 'k1', 'k2', 'l1', 'l2', 'p1', 'p2', 'a1', 'a2', 'n1', 'n2', 'b1', 'b2', 't1', 't2', 'i1', 'i2', 'o1', 'o2', 'v1', 'v2', 'x1', 'x2'];
-const ROOM_FLAGS = ['classroom', 'lab', 'codeRoom', 'arena', 'animRoom', 'libRoom', 'levelRoom', 'aiRoom', 'audioRoom', 'serverRoom', 'testRoom'];
+export const COIN_IDS = ['c1', 'c2', 'c3', 'k1', 'k2', 'l1', 'l2', 'p1', 'p2', 'a1', 'a2', 'n1', 'n2', 'b1', 'b2', 't1', 't2', 'i1', 'i2', 'o1', 'o2', 'v1', 'v2', 'x1', 'x2', 'f1', 'f2'];
+const ROOM_FLAGS = ['classroom', 'lab', 'codeRoom', 'arena', 'animRoom', 'libRoom', 'levelRoom', 'aiRoom', 'audioRoom', 'serverRoom', 'testRoom', 'finalRoom'];
 
 // Setiap prestasi punya syarat nyata yang dihitung dari data pemain.
 export const achievements = [
@@ -15,5 +15,7 @@ export const achievements = [
   { id: 'perfect', title: 'Nilai Sempurna', desc: 'Jawab semua soal kuis sebuah bab dengan benar.', test: (s) => chapters.some((c) => s.scores['ch' + c.id] === c.quiz.length) },
   { id: 'lv5', title: 'Siswa Teladan', desc: 'Capai Level 5.', test: (s) => s.xp >= 400 },
   { id: 'cr3', title: 'Penjaga Kristal', desc: 'Kumpulkan 3 Godot Crystal.', test: (s) => s.crystals >= 3 },
+  { id: 'cr15', title: 'Kristal Lengkap', desc: 'Kumpulkan seluruh 15 Godot Crystal.', test: (s) => s.crystals >= 15 },
+  { id: 'graduate', title: 'Lulusan Akademi', desc: 'Lulus Ujian Akhir di Ruang Final Project.', test: (s) => !!s.flags.finalExam },
   { id: 'cr6', title: 'Master Kristal', desc: 'Kumpulkan 6 Godot Crystal.', test: (s) => s.crystals >= 6 },
 ];

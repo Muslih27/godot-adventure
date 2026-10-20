@@ -14,7 +14,7 @@ export const curriculum = [
   { n: 12, level: 'Level 4 — Lanjutan', title: 'Audio dan Efek Visual', available: true },
   { n: 13, level: 'Level 5 — Mahir', title: 'Save System', available: true },
   { n: 14, level: 'Level 5 — Mahir', title: 'Debugging dan Optimasi', available: true },
-  { n: 15, level: 'Level 5 — Mahir', title: 'Export dan Proyek Akhir' },
+  { n: 15, level: 'Level 5 — Mahir', title: 'Export dan Proyek Akhir', available: true },
 ];
 
 export const locations = [

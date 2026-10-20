@@ -89,3 +89,20 @@ export function openJournal(ui) {
     },
   });
 }
+
+export function openCertificate(ui) {
+  const m = ui.openModal({ title: 'Sertifikat Penyelesaian', wide: true });
+  const d = state.data;
+  const done = chapters.filter(mastered).length;
+  const ach = achievements.filter((a) => AchievementManager.isUnlocked(a)).length;
+  const tgl = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+  m.body.innerHTML = `<div class="certificate"><h2>Sertifikat Penyelesaian</h2><p>Diberikan kepada</p><h1>${esc(d.name)}</h1>
+    <p>yang telah menyelesaikan petualangan <b>Godot Adventure Academy</b>: ${done} dari ${curriculum.length} bab Godot Engine 4.x.</p>
+    <div class="stat-grid"><div><b>${state.level}</b><span>Level</span></div><div><b>${d.xp}</b><span>Total XP</span></div>
+    <div><b>${d.crystals}</b><span>Godot Crystal</span></div><div><b>${ach}/${achievements.length}</b><span>Prestasi</span></div></div>
+    <div class="chips">${d.badges.map((b) => `<span>${esc(b)}</span>`).join('')}</div>
+    <p class="muted">Tanggal: ${tgl}. Sertifikat ini adalah penanda penyelesaian di dalam game edukasi, bukan sertifikat kompetensi resmi.</p></div>
+    <div class="nav"><button class="btn" data-print="1">Cetak atau simpan sebagai PDF</button><button class="btn primary" data-close="1">Tutup</button></div>`;
+  m.body.querySelector('[data-print]').onclick = () => window.print();
+  m.body.querySelector('[data-close]').onclick = () => m.close();
+}

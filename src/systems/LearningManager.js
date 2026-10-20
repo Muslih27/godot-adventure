@@ -14,6 +14,9 @@ import { chapter11 } from '../data/chapter11.js';
 import { chapter12 } from '../data/chapter12.js';
 import { chapter13 } from '../data/chapter13.js';
 import { chapter14 } from '../data/chapter14.js';
+import { chapter15 } from '../data/chapter15.js';
+import { chapters } from '../data/chapters.js';
+import { openCertificate } from '../ui/profile.js';
 import { state } from './GameState.js';
 import { QuestManager } from './QuestManager.js';
 import { AudioManager as A } from './AudioManager.js';
@@ -30,6 +33,7 @@ const ARSI = { name: 'Dr. Arsitek', portrait: 'arsi' };
 const NADA = { name: 'Kak Nada', portrait: 'nada' };
 const SRV = { name: 'Mas Server', portrait: 'srv' };
 const DBG = { name: 'Pak Debug', portrait: 'debug' };
+const KEPALA = { name: 'Bu Kepala Akademi', portrait: 'kepala' };
 
 /* ---------- Materi ---------- */
 export function openChapter(ui, ch) {
@@ -217,7 +221,7 @@ function openMatch(ui, ch) {
 
 /* ---------- Kuis ---------- */
 export function openQuiz(ui, ch) {
-  const m = ui.openModal({ title: `Kuis Bab ${ch.id}`, wide: true });
+  const m = ui.openModal({ title: ch.quizTitle || `Kuis Bab ${ch.id}`, wide: true });
   const qs = ch.quiz.map((q) => {
     const opts = q.a.map((t, i) => ({ t, ok: i === q.c }));
     return { ...q, opts: q.a.length === 2 ? opts : shuffle(opts) };
@@ -531,7 +535,67 @@ export async function interactDebug(ui) {
     if (c === 0) await openChapter(ui, chapter14);
     return;
   }
-  await stageFlow(ui, DBG, chapter14, 'Bug-bug itu tertangkap! Godot Crystal keempat belas menyala. Satu bab lagi: Bab 15 (Export dan Proyek Akhir) hadir di pembaruan berikutnya.');
+  await stageFlow(ui, DBG, chapter14, 'Bug-bug itu tertangkap! Godot Crystal keempat belas menyala. Satu bab lagi: Bab 15 (Export dan Proyek Akhir) menantimu di Ruang Final Project.');
+}
+
+function openFinalExam(ui) {
+  const bank = chapters.flatMap((c) => c.quiz.map((q) => ({ ...q })));
+  const exam = {
+    id: 'Akhir', quizTitle: 'Ujian Akhir', quiz: shuffle(bank).slice(0, 10), passScore: 7,
+    keys: { quiz: 'finalExam' }, badge: 'Lulusan Akademi',
+  };
+  return openQuiz(ui, exam);
+}
+
+export async function interactKepala(ui) {
+  if (!state.hasFlag('kepala_met')) {
+    const c = await ui.dialog({
+      who: KEPALA,
+      pages: [
+        `Selamat datang di Ruang Final Project, ${state.data.name}. Aku Kepala Akademi.`,
+        'Kamu sudah menempuh perjalanan panjang. Lihat kristal-kristal di dinding itu: masing-masing menyala berkat satu bab yang kamu kuasai.',
+        'Tugas terakhirmu: membawa gim ke dunia lewat export dan penerbitan. Siap mulai Bab 15?',
+      ],
+      choices: ['Siap!', 'Nanti dulu'],
+    });
+    state.setFlag('kepala_met');
+    if (c === 0) await openChapter(ui, chapter15);
+    return;
+  }
+  if (!state.hasFlag('quest_q_ch15')) {
+    await stageFlow(ui, KEPALA, chapter15, 'Bab 15 selesai.');
+    return;
+  }
+  if (!state.hasFlag('finalExam')) {
+    const c = await ui.dialog({
+      who: KEPALA,
+      pages: [
+        'Bab terakhir sudah kamu tuntaskan. Tinggal satu tantangan: Ujian Akhir.',
+        'Ada 10 soal acak dari seluruh bab. Kamu lulus dengan minimal 7 jawaban benar, dan boleh mengulang tanpa hukuman.',
+      ],
+      choices: ['Mulai Ujian Akhir', 'Baca ulang materi Bab 15', 'Nanti saja'],
+    });
+    if (c === 0) await openFinalExam(ui);
+    if (c === 1) await openChapter(ui, chapter15);
+    return;
+  }
+  const c = await ui.dialog({
+    who: KEPALA,
+    pages: [`Selamat, ${state.data.name}! Kamu resmi menjadi lulusan Godot Adventure Academy. Teruslah membuat gim dan jangan berhenti belajar.`],
+    choices: ['Lihat sertifikat', 'Ulangi Ujian Akhir', 'Tutup'],
+  });
+  if (c === 0) openCertificate(ui);
+  if (c === 1) await openFinalExam(ui);
+}
+
+export async function interactFinalDoor(ui) {
+  const who = { name: 'Pintu Ruang Final Project', portrait: 'debug' };
+  if (!state.hasFlag('quest_q_ch14')) {
+    A.sfx('bad');
+    await ui.dialog({ who, pages: ['Pintu terkunci. Selesaikan Misi Bab 14 dari Pak Debug untuk membukanya.'] });
+  } else {
+    bus.emit('goto:scene', 'Final');
+  }
 }
 
 export async function interactTestDoor(ui) {
