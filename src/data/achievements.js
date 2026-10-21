@@ -1,7 +1,7 @@
 import { chapters } from './chapters.js';
 
-export const COIN_IDS = ['c1', 'c2', 'c3', 'k1', 'k2', 'l1', 'l2', 'p1', 'p2', 'a1', 'a2', 'n1', 'n2', 'b1', 'b2', 't1', 't2', 'i1', 'i2', 'o1', 'o2', 'v1', 'v2', 'x1', 'x2', 'f1', 'f2'];
-const ROOM_FLAGS = ['classroom', 'lab', 'codeRoom', 'arena', 'animRoom', 'libRoom', 'levelRoom', 'aiRoom', 'audioRoom', 'serverRoom', 'testRoom', 'finalRoom'];
+export const COIN_IDS = ['c1', 'c2', 'c3', 'k1', 'k2', 'l1', 'l2', 'p1', 'p2', 'a1', 'a2', 'n1', 'n2', 'b1', 'b2', 't1', 't2', 'i1', 'i2', 'o1', 'o2', 'v1', 'v2', 'x1', 'x2', 'f1', 'f2', 'g1', 'g2'];
+const ROOM_FLAGS = ['classroom', 'lab', 'codeRoom', 'arena', 'animRoom', 'libRoom', 'levelRoom', 'aiRoom', 'audioRoom', 'serverRoom', 'testRoom', 'finalRoom', 'gardenRoom'];
 
 // Setiap prestasi punya syarat nyata yang dihitung dari data pemain.
 export const achievements = [
@@ -19,5 +19,6 @@ export const achievements = [
   { id: 'graduate', title: 'Lulusan Akademi', desc: 'Lulus Ujian Akhir di Ruang Final Project.', test: (s) => !!s.flags.finalExam },
   { id: 'bug10', title: 'Pembasmi Bug', desc: 'Kalahkan 10 bug.', test: (s) => s.bugs >= 10 },
   { id: 'bug50', title: 'Penakluk Bug', desc: 'Kalahkan 50 bug.', test: (s) => s.bugs >= 50 },
+  { id: 'harvest5', title: 'Petani Kode', desc: 'Panen 5 tanaman di Kebun Akademi.', test: (s) => s.farm.harvests >= 5 },
   { id: 'cr6', title: 'Master Kristal', desc: 'Kumpulkan 6 Godot Crystal.', test: (s) => s.crystals >= 6 },
 ];

@@ -11,6 +11,7 @@ import { openQuestLog, openMap, openProgress, openPause } from '../ui/panels.js'
 import { openProfile, openJournal } from '../ui/profile.js';
 import { openShop } from '../ui/shop.js';
 import { openDaily } from '../ui/daily.js';
+import { openOnline } from '../ui/online.js';
 import { DailyManager } from './DailyManager.js';
 import { emotes } from '../data/emotes.js';
 
@@ -44,6 +45,12 @@ class UIManager {
     window.addEventListener('keydown', (e) => this.onKey(e));
     bus.on('state', () => this.refreshHud());
     bus.on('hp', () => this.refreshHearts());
+    bus.on('online:label', (t) => {
+      const el = this.hudEl.querySelector('#ho');
+      if (!el) return;
+      el.textContent = t;
+      el.classList.toggle('hidden', !t);
+    });
     bus.on('levelup', (lv) => { A.sfx('levelup'); this.toast(`Naik ke Level ${lv}!`, 'good'); });
     bus.on('achievement', (list) => {
       A.sfx('quest');
@@ -148,15 +155,16 @@ class UIManager {
     this.hudEl.innerHTML = `
       <div class="hud-top">
         <div class="hud-player"><b id="hn"></b><span id="hl"></span><div class="xp"><i id="hx"></i></div></div>
-        <div class="hud-res"><span class="hearts" id="hh"></span><span><i class="ico coin"></i><b id="hc">0</b></span><span><i class="ico crystal"></i><b id="hcr">0</b></span></div>
+        <div class="hud-res"><span class="hearts" id="hh"></span><span class="online hidden" id="ho"></span><span><i class="ico coin"></i><b id="hc">0</b></span><span><i class="ico crystal"></i><b id="hcr">0</b></span></div>
         <div class="hud-btns"><button class="fs-btn" data-a="fs" aria-label="Layar penuh"></button><button class="menu-btn" data-a="menu">Menu<i class="dot hidden"></i></button></div>
       </div>
       <div class="menu-drop hidden" id="md">
         <button data-a="quest">Quest</button><button data-a="map">Peta</button>
         <button data-a="learn">Materi</button><button data-a="journal">Jurnal</button>
         <button data-a="profile">Profil</button><button data-a="shop">Toko</button>
-        <button data-a="daily">Misi Harian</button><button data-a="emote">Emote</button>
+        <button data-a="daily">Misi Harian</button><button data-a="online">Online</button>
         <button data-a="pause" class="wide">Jeda</button></div>
+      <button class="emote-fab" data-a="emote" aria-label="Emote" title="Emote (tombol 1 sampai 6)">Emote</button>
       <div class="questbox" id="hq"></div>
       <canvas id="mm" width="120" height="80" aria-label="Minimap"></canvas>`;
     const md = this.hudEl.querySelector('#md');
@@ -174,7 +182,7 @@ class UIManager {
     hq.addEventListener('click', () => hq.classList.toggle('collapsed'));
     document.addEventListener('pointerdown', (e) => {
       if (!md.contains(e.target) && !e.target.closest('.menu-btn')) md.classList.add('hidden');
-      if (this.emotePop && !this.emotePop.contains(e.target)) { this.emotePop.remove(); this.emotePop = null; }
+      if (this.emotePop && !this.emotePop.contains(e.target) && !e.target.closest('.emote-fab')) { this.emotePop.remove(); this.emotePop = null; }
     });
     this.mm = this.hudEl.querySelector('#mm').getContext('2d');
   }
@@ -188,6 +196,7 @@ class UIManager {
     if (a === 'shop') openShop(this);
     if (a === 'daily') openDaily(this);
     if (a === 'emote') this.openEmotes();
+    if (a === 'online') openOnline(this);
   }
   showHud(on) { this.hudEl.classList.toggle('hidden', !on); this.inGame = on; if (on) this.refreshHud(); this.touchEl.classList.toggle('hidden', !on); }
   refreshHud() {

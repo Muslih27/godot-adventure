@@ -35,6 +35,20 @@ class GameState {
   collect(id) { if (!this.data.collected.includes(id)) { this.data.collected.push(id); this.commit(); } }
   setCosmetic(c) { this.data.cosmetic = c; this.commit(); bus.emit('cosmetic', c); }
   defeatBug() { this.data.bugs += 1; this.data.coins += 1; this.commit(); bus.emit('track', 'bugs'); }
+  plantPlot(i) { this.data.farm.plots[i] = { c: 1, last: '', n: 0 }; this.commit(); }
+  waterPlot(i, day) {
+    const p = this.data.farm.plots[i];
+    p.n = Math.min(3, p.n + 1);
+    p.last = day;
+    this.commit();
+    bus.emit('track', 'water');
+  }
+  harvestPlot(i) {
+    this.data.farm.plots[i] = { c: 0, last: '', n: 0 };
+    this.data.farm.harvests += 1;
+    this.data.coins += 20;
+    this.commit();
+  }
   buy(item) {
     if (this.data.owned.includes(item.id) || this.data.coins < item.price) return false;
     this.data.coins -= item.price;

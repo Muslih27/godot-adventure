@@ -18,6 +18,7 @@ const LOOKS = {
   srv: { skin: '#f1c27d', hair: '#334155', shirt: '#0f766e', pants: '#1e293b', glasses: true },
   debug: { skin: '#c68642', hair: '#9ca3af', shirt: '#dc2626', pants: '#1e293b', glasses: true },
   kepala: { skin: '#f1c27d', hair: '#4b5563', shirt: '#1e3a8a', pants: '#111827', long: true, glasses: true },
+  tani: { skin: '#c68642', hair: '#b45309', shirt: '#16a34a', pants: '#92400e' },
   prof: { skin: '#f1c27d', hair: '#d1d5db', shirt: '#ffffff', pants: '#334155', glasses: true, coat: true },
 };
 
@@ -378,6 +379,50 @@ export function generateTextures(scene) {
     c.fillStyle = '#fff'; c.fillRect(5, 8, 3, 3); c.fillRect(10, 8, 3, 3);
     c.fillStyle = '#111'; c.fillRect(6, 9, 1, 2); c.fillRect(11, 9, 1, 2);
     c.fillStyle = '#f472b6'; c.fillRect(8, 12, 2, 1);
+  });
+
+  canvasTex(scene, 'plot', 56, 40, (c) => {
+    c.fillStyle = '#4a2f17'; c.fillRect(0, 0, 56, 40);
+    c.fillStyle = '#6b4423'; c.fillRect(2, 2, 52, 36);
+    c.fillStyle = '#553619';
+    for (let y = 8; y < 36; y += 8) c.fillRect(4, y, 48, 2);
+    c.fillStyle = '#7d5230'; for (let i = 0; i < 12; i++) c.fillRect(4 + Math.floor(rnd() * 46), 4 + Math.floor(rnd() * 30), 3, 2);
+  });
+  canvasTex(scene, 'crop0', 40, 44, (c) => {
+    c.fillStyle = '#5a3a1c'; c.beginPath(); c.ellipse(20, 38, 11, 5, 0, 0, 7); c.fill();
+    c.fillStyle = '#c8a165'; c.fillRect(16, 35, 3, 2); c.fillRect(22, 36, 3, 2);
+  });
+  canvasTex(scene, 'crop1', 40, 44, (c) => {
+    c.fillStyle = '#5a3a1c'; c.beginPath(); c.ellipse(20, 40, 11, 4, 0, 0, 7); c.fill();
+    c.fillStyle = '#34d399'; c.fillRect(19, 28, 3, 12);
+    c.beginPath(); c.ellipse(14, 28, 6, 3, -0.5, 0, 7); c.fill();
+    c.beginPath(); c.ellipse(26, 27, 6, 3, 0.5, 0, 7); c.fill();
+  });
+  canvasTex(scene, 'crop2', 40, 44, (c) => {
+    c.fillStyle = '#5a3a1c'; c.beginPath(); c.ellipse(20, 41, 11, 3, 0, 0, 7); c.fill();
+    c.fillStyle = '#22a06b'; c.fillRect(19, 14, 3, 27);
+    [[12, 20, -0.6], [28, 18, 0.6], [12, 30, -0.4], [28, 29, 0.4]].forEach(([x, y, r]) => { c.beginPath(); c.ellipse(x, y, 7, 3.5, r, 0, 7); c.fill(); });
+  });
+  canvasTex(scene, 'crop3', 40, 44, (c) => {
+    c.fillStyle = '#5a3a1c'; c.beginPath(); c.ellipse(20, 41, 11, 3, 0, 0, 7); c.fill();
+    c.fillStyle = '#22a06b'; c.fillRect(19, 18, 3, 23);
+    [[12, 26, -0.6], [28, 25, 0.6], [12, 34, -0.4], [28, 33, 0.4]].forEach(([x, y, r]) => { c.beginPath(); c.ellipse(x, y, 7, 3.5, r, 0, 7); c.fill(); });
+    c.fillStyle = '#22d3ee'; c.beginPath(); c.moveTo(20, 2); c.lineTo(28, 12); c.lineTo(20, 22); c.lineTo(12, 12); c.fill();
+    c.fillStyle = '#c8f6ff'; c.fillRect(17, 8, 3, 6);
+  });
+  canvasTex(scene, 'gwall', 800, 110, (c) => {
+    c.fillStyle = '#2f7d4c'; c.fillRect(0, 0, 800, 100);
+    for (let i = 0; i < 160; i++) { c.fillStyle = rnd() > 0.5 ? '#256b3f' : '#3d9a5e'; c.fillRect(Math.floor(rnd() * 796), Math.floor(rnd() * 96), 5, 4); }
+    c.fillStyle = '#7a4a21'; for (let x = 8; x < 800; x += 36) c.fillRect(x, 60, 8, 40);
+    c.fillStyle = '#a9713a'; c.fillRect(0, 70, 800, 5); c.fillRect(0, 86, 800, 5);
+    c.fillStyle = '#5a3a1c'; c.fillRect(0, 100, 800, 10);
+    c.fillStyle = '#7a4a21'; c.fillRect(290, 18, 220, 30);
+    c.fillStyle = '#ffe08a'; c.font = 'bold 14px monospace'; c.textAlign = 'center'; c.fillText('KEBUN AKADEMI', 400, 38);
+  });
+  canvasTex(scene, 'kgate', 20, 60, (c) => {
+    c.fillStyle = '#7a4a21'; c.fillRect(2, 6, 5, 54); c.fillRect(13, 6, 5, 54);
+    c.fillStyle = '#a9713a'; c.fillRect(0, 4, 20, 6);
+    c.fillStyle = '#34d399'; c.fillRect(4, 0, 12, 5);
   });
 
   for (const key of Object.keys(LOOKS)) {

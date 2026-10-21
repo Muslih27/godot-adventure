@@ -34,6 +34,7 @@ const NADA = { name: 'Kak Nada', portrait: 'nada' };
 const SRV = { name: 'Mas Server', portrait: 'srv' };
 const DBG = { name: 'Pak Debug', portrait: 'debug' };
 const KEPALA = { name: 'Bu Kepala Akademi', portrait: 'kepala' };
+const TANI = { name: 'Pak Tani', portrait: 'tani' };
 
 /* ---------- Materi ---------- */
 export function openChapter(ui, ch) {
@@ -546,6 +547,50 @@ function openFinalExam(ui) {
     keys: { quiz: 'finalExam' }, badge: 'Lulusan Akademi',
   };
   return openQuiz(ui, exam);
+}
+
+// Soal ulasan acak dari bab yang sudah dibaca. Menyiram tanaman = menjawab benar (latihan mengingat).
+export function openReview(ui) {
+  return new Promise((resolve) => {
+    const read = chapters.filter((c) => state.hasFlag(c.keys.read));
+    const src = (read.length ? read : [chapters[0]]).flatMap((c) => c.quiz.map((q) => ({ ...q, ch: c.id })));
+    const q = src[Math.floor(Math.random() * src.length)];
+    const base = q.a.map((t, i) => ({ t, ok: i === q.c }));
+    const opts = q.a.length === 2 ? base : shuffle(base);
+    const m = ui.openModal({ title: 'Soal ulasan: siram tanaman' });
+    let correct = false;
+    m.body.innerHTML = `<p class="muted">Dari Bab ${q.ch}. Jawab dengan benar untuk menyiram tanaman. Jika salah, baca penjelasannya lalu coba lagi nanti.</p>
+      <h3>${esc(q.q)}</h3><div class="pool col">${opts.map((o, i) => `<button class="btn" data-i="${i}">${esc(o.t)}</button>`).join('')}</div><p class="fb"></p>`;
+    m.body.querySelectorAll('[data-i]').forEach((b) => (b.onclick = () => {
+      const i = Number(b.dataset.i), ok = opts[i].ok;
+      correct = ok;
+      A.sfx(ok ? 'ok' : 'bad');
+      m.body.querySelectorAll('[data-i]').forEach((x, k) => { x.disabled = true; if (opts[k].ok) x.classList.add('right'); else if (k === i) x.classList.add('wrong'); });
+      const fb = m.body.querySelector('.fb');
+      fb.className = 'fb ' + (ok ? 'good' : 'bad');
+      fb.textContent = (ok ? 'Benar! Tanamanmu disiram. ' : `Belum tepat. Jawaban benar: ${opts.find((o) => o.ok).t}. `) + q.why;
+      const nav = $(`<div class="nav"><span></span><button class="btn primary">${ok ? 'Siram tanaman' : 'Tutup'}</button></div>`);
+      nav.querySelector('button').onclick = () => m.close();
+      m.body.append(nav);
+    }));
+    m.closed.then(() => resolve(correct));
+  });
+}
+
+export async function interactTani(ui) {
+  const first = !state.hasFlag('tani_met');
+  state.setFlag('tani_met');
+  await ui.dialog({
+    who: TANI,
+    pages: first ? [
+      `Selamat datang di Kebun Akademi, ${state.data.name}! Aku Pak Tani.`,
+      'Di sini tanaman tumbuh dari kebiasaan belajar. Tanam benih di petak tanah, lalu siram setiap hari dengan menjawab satu soal ulasan dari bab yang sudah kamu baca.',
+      'Setelah disiram di 3 hari yang berbeda, tanaman berbuah kristal dan siap dipanen untuk 20 koin. Tidak ada tanaman yang layu, jadi tenang saja kalau kamu absen sehari.',
+    ] : [
+      'Ingat: satu siraman per tanaman per hari. Mengulang sedikit demi sedikit secara teratur membantu ingatan bertahan lebih lama.',
+      'Awas hama berwarna hijau yang berkeliaran di kebun. Serang dengan tombol F atau tombol Serang.',
+    ],
+  });
 }
 
 export async function interactKepala(ui) {

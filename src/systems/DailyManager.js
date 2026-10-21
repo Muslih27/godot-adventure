@@ -7,17 +7,19 @@ const POOL = [
   { id: 'coins', t: 'Kumpulkan 2 Koin Akademi', goal: 2, reward: 15 },
   { id: 'rooms', t: 'Kunjungi 3 ruangan berbeda', goal: 3, reward: 20 },
   { id: 'quiz', t: 'Selesaikan 1 kuis', goal: 1, reward: 25 },
+  { id: 'water', t: 'Siram 1 tanaman di Kebun Akademi', goal: 1, reward: 20 },
 ];
 const LOGIN = [10, 15, 20, 25, 30, 40, 60];
 const key = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 const todayKey = () => key(new Date());
+export const dateKey = todayKey;
 const yesterdayKey = () => { const d = new Date(); d.setDate(d.getDate() - 1); return key(d); };
 
 export const DailyManager = {
   init() { bus.on('track', (k, v) => this.track(k, v)); },
   ensure() {
     const d = state.data;
-    if (d.dq.date !== todayKey()) d.dq = { date: todayKey(), prog: { bugs: 0, coins: 0, rooms: [], quiz: 0 }, claimed: {} };
+    if (d.dq.date !== todayKey()) d.dq = { date: todayKey(), prog: { bugs: 0, coins: 0, rooms: [], quiz: 0, water: 0 }, claimed: {} };
   },
   today() {
     this.ensure();

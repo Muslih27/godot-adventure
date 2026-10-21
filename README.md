@@ -74,3 +74,22 @@ Setiap ruangan berisi bug yang berpatroli dan mengejar saat pemain dekat. Hati p
 - **Misi Harian dan hadiah login:** streak 7 hari, tiga misi acak per hari, reset mengikuti jam perangkat.
 - **Emote:** tombol 1-6 di keyboard atau Menu > Emote.
 - Belum ada: papan peringkat dan fitur sosial lintas pemain (butuh backend).
+
+## Mode Online (multiplayer)
+
+Pemain dengan **kode kelas** yang sama di **ruangan yang sama** saling terlihat (nama, gelar, topi, gerakan, emote). Tidak ada chat bebas.
+Buka Menu > Online, isi kode kelas, lalu Aktifkan.
+
+- **Tanpa pengaturan server** game memakai *mode uji lokal*: pemain hanya terlihat antar tab pada perangkat yang sama (cocok untuk mencoba fiturnya).
+- **Agar lintas perangkat**, pakai Supabase Realtime (Broadcast), gratis untuk kelas kecil:
+  1. Buat proyek di supabase.com. Salin *Project URL* dan *anon public key* (Settings > API).
+  2. Salin `.env.example` menjadi `.env.local` dan isi `VITE_SUPABASE_URL` dan `VITE_SUPABASE_ANON_KEY`.
+  3. Di Vercel tambahkan dua variabel yang sama (Settings > Environment Variables) lalu deploy ulang.
+  4. Di dasbor Supabase buka Realtime Settings dan pastikan akses publik untuk Broadcast diizinkan.
+- **Batas:** paket gratis Supabase Realtime dibatasi 100 pesan per detik per proyek. Game mengirim paket jarang (maks. 2 per detik saat bergerak) dan hanya menampilkan 8 pemain lain per ruangan, sehingga cocok untuk kelompok kecil (sekitar 8 sampai 10 siswa per kode kelas). Kelas yang lebih besar perlu paket berbayar atau beberapa kode kelas.
+- Bug dan musuh dihitung di perangkat masing-masing (tidak disinkronkan). Progres tetap milik masing-masing pemain.
+- Privasi: data yang dikirim hanya nama panggilan, gelar, topi, posisi, dan emote. Sebaiknya guru membagikan kode kelas hanya kepada siswanya.
+
+## Kebun Akademi (terinspirasi Harvest Moon)
+
+Pintu di sisi timur halaman sekolah. Tanam benih di petak tanah, siram **sekali per hari** dengan menjawab satu soal ulasan dari bab yang sudah dibaca (latihan mengingat berkala), dan panen kristal setelah 3 hari disiram (+20 koin). Tanaman tidak layu. Tanggal mengikuti jam perangkat.

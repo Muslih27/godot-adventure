@@ -1,5 +1,6 @@
 import { ui } from '../systems/UIManager.js';
 import { state } from '../systems/GameState.js';
+import { bus } from '../core/bus.js';
 import { interactProf, interactDoor, interactSign } from '../systems/LearningManager.js';
 import WorldScene from './WorldScene.js';
 
@@ -24,6 +25,7 @@ export default class SchoolScene extends WorldScene {
     this.wall(0, 0, W, 140); this.wall(0, H - 30, 424, 30); this.wall(536, H - 30, 424, 30);
     TREES.forEach(([x, y]) => { this.add.image(x, y, 'tree').setOrigin(0.5, 1).setDepth(y); this.wall(x - 12, y - 14, 24, 14); });
     BENCHES.forEach(([x, y]) => { this.add.image(x, y, 'bench').setOrigin(0.5, 1).setDepth(y); this.wall(x - 32, y - 18, 64, 18); });
+    this.add.image(948, 262, 'kgate').setOrigin(0.5, 1).setDepth(262);
     this.add.image(392, 575, 'sign').setOrigin(0.5, 1).setDepth(575); this.wall(386, 568, 12, 7);
 
     const prof = this.add.sprite(480, 340, 'prof', 'f0').setOrigin(0.5, 1).setDepth(340);
@@ -35,6 +37,7 @@ export default class SchoolScene extends WorldScene {
     this.things = [
       { x: 480, y: 330, r: 60, hy: 285, label: 'Bicara dengan Profesor Pixel', run: () => interactProf(ui) },
       { x: 480, y: 172, r: 64, hy: 160, label: 'Masuk / periksa pintu Ruang Kelas', run: () => interactDoor(ui) },
+      { x: 925, y: 262, r: 55, hy: 205, label: 'Masuk Kebun Akademi', run: () => bus.emit('goto:scene', 'Garden') },
       { x: 392, y: 570, r: 50, hy: 530, label: 'Baca papan informasi', run: () => interactSign(ui) },
     ];
     this.mmBg = (c, k) => {

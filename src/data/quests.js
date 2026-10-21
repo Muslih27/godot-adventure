@@ -288,6 +288,13 @@ export const quests = [
     reward: { xp: 30, coins: 20 },
   },
   {
+    id: 'q_farm', type: 'Sampingan', title: 'Petani Kode',
+    desc: 'Panen 3 tanaman di Kebun Akademi (pintu di sisi timur halaman sekolah). Siram tanaman dengan menjawab soal ulasan.',
+    progress: (s) => `${Math.min(s.farm.harvests, 3)}/3 panen`,
+    done: (s) => s.farm.harvests >= 3,
+    reward: { xp: 30, coins: 20 },
+  },
+  {
     id: 'q_coins', type: 'Sampingan', title: 'Koin Berserakan',
     desc: 'Temukan 3 Koin Akademi yang tersebar di halaman sekolah.',
     progress: (s) => `${coinsFound(s)}/3 koin`,

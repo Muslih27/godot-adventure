@@ -10,8 +10,9 @@ import { cosmetics } from '../data/cosmetics.js';
 import { shopItems } from '../data/shop.js';
 import { titles, titleUnlocked } from '../data/titles.js';
 import { emotes } from '../data/emotes.js';
+import { RemotePlayers } from '../systems/RemotePlayers.js';
 
-const LOCATION = { School: 'school', Classroom: 'classroom', Lab: 'lab', Code: 'code', Arena: 'arena', Anim: 'anim', Library: 'library', Level: 'level', AI: 'ai', Audio: 'audio', Server: 'server', Test: 'test', Final: 'final' };
+const LOCATION = { School: 'school', Classroom: 'classroom', Lab: 'lab', Code: 'code', Arena: 'arena', Anim: 'anim', Library: 'library', Level: 'level', AI: 'ai', Audio: 'audio', Server: 'server', Test: 'test', Final: 'final', Garden: 'garden' };
 
 // Kelas dasar semua area yang dapat dijelajahi.
 // Subclass mengisi build(): W, H, minY, spawn, things, coinDefs, enemyDefs, mmBg.
@@ -35,10 +36,12 @@ export default class WorldScene extends Phaser.Scene {
     PlayerStatus.reset();
     bus.emit('track', 'room', state.data.location);
 
-    if (!this.anims.exists('walk' + av)) {
-      this.anims.create({ key: 'walk' + av, frames: [{ key, frame: 'f1' }, { key, frame: 'f0' }, { key, frame: 'f2' }, { key, frame: 'f0' }], frameRate: 8, repeat: -1 });
-      this.anims.create({ key: 'idle' + av, frames: [{ key, frame: 'f0' }], frameRate: 1 });
-    }
+    [0, 1].forEach((a) => {
+      const k = 'player' + a;
+      if (this.anims.exists('walk' + a)) return;
+      this.anims.create({ key: 'walk' + a, frames: [{ key: k, frame: 'f1' }, { key: k, frame: 'f0' }, { key: k, frame: 'f2' }, { key: k, frame: 'f0' }], frameRate: 8, repeat: -1 });
+      this.anims.create({ key: 'idle' + a, frames: [{ key: k, frame: 'f0' }], frameRate: 1 });
+    });
     const pos = state.data.pos || this.spawn;
     this.player = this.physics.add.sprite(Phaser.Math.Clamp(pos.x, 20, W - 20), Phaser.Math.Clamp(pos.y, this.minY, H - 4), key, 'f0').setOrigin(0.5, 1);
     this.player.body.setSize(12, 8).setOffset(6, 24);
@@ -76,6 +79,7 @@ export default class WorldScene extends Phaser.Scene {
     bus.on('equip', applyEquip);
     const onEmote = (i) => this.emote(i);
     bus.on('emote', onEmote);
+    this.remote = new RemotePlayers(this);
 
     this.enemies = new EnemyManager(this, this.enemyDefs);
 
@@ -100,6 +104,7 @@ export default class WorldScene extends Phaser.Scene {
     bus.on('goto:scene', travel);
     this.events.once('shutdown', () => {
       this.scale.off('resize', this.fitCamera, this);
+      this.remote.destroy();
       bus.off('goto:menu', toMenu);
       bus.off('goto:scene', travel);
       bus.off('cosmetic', applyCos);
@@ -146,6 +151,7 @@ export default class WorldScene extends Phaser.Scene {
     A.sfx('emote');
     const b = this.add.text(this.player.x, this.player.y - 62, text, { fontFamily: 'Nunito, sans-serif', fontSize: '13px', fontStyle: 'bold', color: '#06202e', backgroundColor: '#ffffff', padding: { x: 7, y: 4 } }).setOrigin(0.5, 1).setDepth(10002);
     this.bubble = b;
+    this.remote.sendEmote(i);
     this.tweens.add({ targets: this.player, angle: { from: -10, to: 10 }, duration: 110, yoyo: true, repeat: 3, onComplete: () => this.player.setAngle(0) });
     this.time.delayedCall(2200, () => { if (this.bubble === b) { b.destroy(); this.bubble = null; } });
   }
@@ -190,6 +196,7 @@ export default class WorldScene extends Phaser.Scene {
     const atk = JustDown(k.F) || ui.touchAttack;
     const em = ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'].map((n) => JustDown(k[n])).indexOf(true);
     this.syncVisuals(time);
+    this.remote.update(time);
     ui.touchAct = false;
     ui.touchAttack = false;
     if (ui.blocked || this.leaving) {
@@ -224,7 +231,7 @@ export default class WorldScene extends Phaser.Scene {
       const d = Phaser.Math.Distance.Between(this.player.x, this.player.y, t.x, t.y);
       if (d < t.r && d < best) { best = d; near = t; }
     }
-    if (near) this.hint.setText(`[${ui.isTouch ? 'Aksi' : 'E'}] ${near.label}`).setPosition(near.x, near.hy).setVisible(true);
+    if (near) this.hint.setText(`[${ui.isTouch ? 'Aksi' : 'E'}] ${typeof near.label === 'function' ? near.label() : near.label}`).setPosition(near.x, near.hy).setVisible(true);
     else this.hint.setVisible(false);
     if (act && near) near.run();
     this.enemies.update(time);

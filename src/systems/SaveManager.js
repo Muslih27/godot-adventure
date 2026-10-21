@@ -21,7 +21,8 @@ export const defaultSave = () => ({
   owned: [],
   equip: { hat: '', pet: '', title: 'pemula' },
   daily: { last: '', streak: 0 },
-  dq: { date: '', prog: { bugs: 0, coins: 0, rooms: [], quiz: 0 }, claimed: {} },
+  dq: { date: '', prog: { bugs: 0, coins: 0, rooms: [], quiz: 0, water: 0 }, claimed: {} },
+  farm: { plots: Array.from({ length: 8 }, () => ({ c: 0, last: '', n: 0 })), harvests: 0 },
   settings: { audio: true },
 });
 
@@ -51,6 +52,13 @@ export function validate(raw) {
     scores,
     badges: strs(raw.badges),
     bugs: num(raw.bugs),
+    farm: {
+      plots: Array.from({ length: 8 }, (_, i) => {
+        const p = raw.farm?.plots?.[i];
+        return { c: p?.c === 1 ? 1 : 0, last: typeof p?.last === 'string' ? p.last : '', n: Math.min(3, num(p?.n)) };
+      }),
+      harvests: num(raw.farm?.harvests),
+    },
     owned: strs(raw.owned),
     equip: {
       hat: typeof raw.equip?.hat === 'string' ? raw.equip.hat : '',
@@ -60,7 +68,7 @@ export function validate(raw) {
     daily: { last: typeof raw.daily?.last === 'string' ? raw.daily.last : '', streak: num(raw.daily?.streak) },
     dq: {
       date: typeof raw.dq?.date === 'string' ? raw.dq.date : '',
-      prog: { bugs: num(raw.dq?.prog?.bugs), coins: num(raw.dq?.prog?.coins), quiz: num(raw.dq?.prog?.quiz), rooms: strs(raw.dq?.prog?.rooms) },
+      prog: { bugs: num(raw.dq?.prog?.bugs), coins: num(raw.dq?.prog?.coins), quiz: num(raw.dq?.prog?.quiz), water: num(raw.dq?.prog?.water), rooms: strs(raw.dq?.prog?.rooms) },
       claimed: Object.fromEntries(Object.entries(isObj(raw.dq?.claimed) ? raw.dq.claimed : {}).filter(([, v]) => v === true)),
     },
     cosmetic: ['none', 'green', 'orange', 'gold'].includes(raw.cosmetic) ? raw.cosmetic : 'none',
