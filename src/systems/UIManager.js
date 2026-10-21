@@ -40,6 +40,7 @@ class UIManager {
     this.buildTouch();
     this.initTouchMode();
     this.buildRotateHint();
+    this.initFullscreenUi();
     window.addEventListener('keydown', (e) => this.onKey(e));
     bus.on('state', () => this.refreshHud());
     bus.on('hp', () => this.refreshHearts());
@@ -70,7 +71,7 @@ class UIManager {
     this.callbacks = { onNew, onContinue };
     const s = this.screenEl;
     s.classList.remove('hidden');
-    s.innerHTML = `<div class="title-card">
+    s.innerHTML = `${document.fullscreenEnabled ? `<button class="fs-btn fs-title${document.fullscreenElement ? ' on' : ''}" data-a="fs" aria-label="Layar penuh"></button>` : ''}<div class="title-card">
       <h1>Godot Adventure Academy</h1>
       <p class="tag">Jelajahi Sekolah, Kuasai Godot, Ciptakan Gim Impianmu!</p>
       <div class="menu">
@@ -83,6 +84,7 @@ class UIManager {
       const a = e.target.closest('button')?.dataset.a;
       if (!a) return;
       A.unlock(); A.sfx('click');
+      if (a === 'fs') { this.toggleFullscreen(); return; }
       if (a === 'new') this.showCharacterSelect();
       if (a === 'cont') this.start(() => onContinue());
       if (a === 'set') this.showSettings(() => this.showTitle(this.callbacks));
@@ -147,7 +149,7 @@ class UIManager {
       <div class="hud-top">
         <div class="hud-player"><b id="hn"></b><span id="hl"></span><div class="xp"><i id="hx"></i></div></div>
         <div class="hud-res"><span class="hearts" id="hh"></span><span><i class="ico coin"></i><b id="hc">0</b></span><span><i class="ico crystal"></i><b id="hcr">0</b></span></div>
-        <div class="hud-btns"><button class="menu-btn" data-a="menu">Menu<i class="dot hidden"></i></button></div>
+        <div class="hud-btns"><button class="fs-btn" data-a="fs" aria-label="Layar penuh"></button><button class="menu-btn" data-a="menu">Menu<i class="dot hidden"></i></button></div>
       </div>
       <div class="menu-drop hidden" id="md">
         <button data-a="quest">Quest</button><button data-a="map">Peta</button>
@@ -162,6 +164,7 @@ class UIManager {
       const a = e.target.closest('button')?.dataset.a;
       if (!a || this.blocked) return;
       A.sfx('click');
+      if (a === 'fs') { this.toggleFullscreen(); return; }
       if (a === 'menu') { md.classList.toggle('hidden'); return; }
       md.classList.add('hidden');
       this.action(a);
@@ -309,8 +312,18 @@ class UIManager {
   }
   toggleFullscreen() {
     const d = document;
-    if (!d.fullscreenElement) d.documentElement.requestFullscreen?.().catch(() => {});
-    else d.exitFullscreen?.();
+    if (!d.fullscreenElement) {
+      const p = d.documentElement.requestFullscreen?.();
+      if (p) p.then(() => screen.orientation?.lock?.('landscape')).catch(() => {});
+    } else d.exitFullscreen?.();
+  }
+  initFullscreenUi() {
+    const sync = () => this.root.querySelectorAll('.fs-btn').forEach((b) => {
+      b.classList.toggle('on', !!document.fullscreenElement);
+      b.classList.toggle('hidden', !document.fullscreenEnabled);
+    });
+    document.addEventListener('fullscreenchange', sync);
+    sync();
   }
 
   /* ---------- Keyboard UI ---------- */

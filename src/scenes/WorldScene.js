@@ -30,7 +30,8 @@ export default class WorldScene extends Phaser.Scene {
     this.build();
     const { W, H } = this;
     this.physics.world.setBounds(0, 0, W, H);
-    this.cameras.main.setBounds(0, 0, W, H).fadeIn(500);
+    this.cameras.main.setBackgroundColor('#071a30').fadeIn(500);
+    if (this.viewW === undefined) { this.viewW = W; this.viewH = H; }
     PlayerStatus.reset();
     bus.emit('track', 'room', state.data.location);
 
@@ -44,6 +45,8 @@ export default class WorldScene extends Phaser.Scene {
     this.player.setCollideWorldBounds(true);
     this.solids.forEach((z) => this.physics.add.collider(this.player, z));
     this.cameras.main.startFollow(this.player, true, 0.12, 0.12).setRoundPixels(true);
+    this.fitCamera();
+    this.scale.on('resize', this.fitCamera, this);
     const applyCos = () => {
       const c = cosmetics.find((x) => x.id === state.data.cosmetic);
       if (c && c.tint) this.player.setTint(c.tint); else this.player.clearTint();
@@ -96,6 +99,7 @@ export default class WorldScene extends Phaser.Scene {
     bus.once('goto:menu', toMenu);
     bus.on('goto:scene', travel);
     this.events.once('shutdown', () => {
+      this.scale.off('resize', this.fitCamera, this);
       bus.off('goto:menu', toMenu);
       bus.off('goto:scene', travel);
       bus.off('cosmetic', applyCos);
@@ -112,6 +116,15 @@ export default class WorldScene extends Phaser.Scene {
       });
     }
     this.onReady?.();
+  }
+
+  // Zoom mengikuti ukuran layar; ruangan kecil tetap di tengah layar.
+  fitCamera() {
+    const cam = this.cameras.main, vw = this.scale.width, vh = this.scale.height;
+    const zoom = Math.max(0.2, Math.min(vw / this.viewW, vh / this.viewH));
+    cam.setZoom(zoom);
+    const padX = Math.max(0, (vw / zoom - this.W) / 2), padY = Math.max(0, (vh / zoom - this.H) / 2);
+    cam.setBounds(-padX, -padY, this.W + padX * 2, this.H + padY * 2);
   }
 
   syncVisuals(time) {

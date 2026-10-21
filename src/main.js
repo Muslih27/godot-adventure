@@ -25,11 +25,11 @@ DailyManager.init();
 new Phaser.Game({
   type: Phaser.AUTO,
   parent: 'game',
-  width: 800,
-  height: 480,
+  width: '100%',
+  height: '100%',
   pixelArt: true,
   backgroundColor: '#071a30',
-  scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
+  scale: { mode: Phaser.Scale.RESIZE },
   physics: { default: 'arcade', arcade: { debug: false } },
   scene: [BootScene, PreloadScene, MainMenuScene, SchoolScene, ClassroomScene, LabScene, CodeScene, ArenaScene, AnimScene, LibraryScene, LevelScene, AIScene, AudioScene, ServerScene, TestScene, FinalScene],
 });

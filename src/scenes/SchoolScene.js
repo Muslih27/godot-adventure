@@ -12,6 +12,8 @@ export default class SchoolScene extends WorldScene {
   build() {
     const W = (this.W = 960), H = (this.H = 640);
     this.minY = 160;
+    this.viewW = 640; // bagian dunia yang terlihat; kamera mengikuti pemain
+    this.viewH = 400;
     this.spawn = { x: 480, y: 560 };
     state.data.location = 'school';
     this.add.tileSprite(0, 0, W, H, 'grass').setOrigin(0);

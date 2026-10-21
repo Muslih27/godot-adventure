@@ -69,6 +69,7 @@ Setiap ruangan berisi bug yang berpatroli dan mengejar saat pemain dekat. Hati p
 
 - **Menu dropdown:** semua menu ada di tombol Menu; titik merah berarti ada hadiah harian atau misi yang bisa diambil. Kotak quest dapat dilipat dengan mengetuknya.
 - **Toko Akademi:** topi dan peliharaan dibeli dengan Koin Akademi (hanya kosmetik). Gelar dibuka lewat prestasi.
+- **Layar:** ukuran game otomatis mengikuti perangkat; tombol kotak di HUD (dan di menu judul) memasuki layar penuh jika didukung browser.
 - **Peliharaan** mengikuti pemain; **nama dan gelar** tampil di atas karakter.
 - **Misi Harian dan hadiah login:** streak 7 hari, tiga misi acak per hari, reset mengikuti jam perangkat.
 - **Emote:** tombol 1-6 di keyboard atau Menu > Emote.
