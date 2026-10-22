@@ -74,7 +74,8 @@ export class RemotePlayers {
 
   refresh(peer) {
     const d = peer.data, s = this.scene;
-    peer.tag.setText(`${d.n}\n${d.t || 'Murid Baru'}`);
+    const label = `${d.n}\n${d.t || 'Murid Baru'}`;
+    if (label !== peer.label) { peer.label = label; peer.tag.setText(label); }
     if (peer.sprite.texture.key !== 'player' + d.a) peer.sprite.setTexture('player' + d.a, 'f0');
     if (d.h !== peer.hatId) {
       if (peer.hat) peer.hat.destroy();

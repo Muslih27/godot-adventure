@@ -312,3 +312,9 @@ input, textarea { -webkit-user-select: text; user-select: text; }
 .online { font-size: 12px; font-weight: 800; color: var(--green); padding: 2px 8px; border: 2px solid var(--green); border-radius: 999px; white-space: nowrap; }
 
 .ver { margin: 14px 0 0; text-align: center; font-size: 12px; color: #6f9bb8; }
+
+/* ===== Pilihan cara bermain, lapisan siang/malam ===== */
+.mode { display: grid; gap: 4px; padding: 14px 16px; font-size: 17px; }
+.mode small { font-weight: 600; font-size: 13px; opacity: .85; }
+.kcode { text-transform: uppercase; letter-spacing: 3px; font-family: var(--pixel); font-size: 18px; text-align: center; }
+#ui > .daylight { pointer-events: none; position: absolute; inset: 0; display: none; }

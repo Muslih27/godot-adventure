@@ -14,6 +14,8 @@ import { openDaily } from '../ui/daily.js';
 import { openOnline } from '../ui/online.js';
 import { DailyManager } from './DailyManager.js';
 import { emotes } from '../data/emotes.js';
+import { OnlineManager } from './OnlineManager.js';
+import { normalizeCode, validCode, generateCode } from './netcode.js';
 
 class UIManager {
   constructor() {
@@ -42,8 +44,11 @@ class UIManager {
     this.initTouchMode();
     this.buildRotateHint();
     this.initFullscreenUi();
+    this.initFx();
+    this.daylightEl = $('<div class="daylight"></div>');
+    this.root.prepend(this.daylightEl);
     window.addEventListener('keydown', (e) => this.onKey(e));
-    bus.on('state', () => this.refreshHud());
+    bus.on('state', () => this.scheduleHud());
     bus.on('hp', () => this.refreshHearts());
     bus.on('online:label', (t) => {
       const el = this.hudEl.querySelector('#ho');
@@ -94,7 +99,7 @@ class UIManager {
       A.unlock(); A.sfx('click');
       if (a === 'fs') { this.toggleFullscreen(); return; }
       if (a === 'new') this.showCharacterSelect();
-      if (a === 'cont') this.start(() => onContinue());
+      if (a === 'cont') this.showModeSelect(() => this.start(() => onContinue()));
       if (a === 'set') this.showSettings(() => this.showTitle(this.callbacks));
       if (a === 'credit') this.showCredit();
     };
@@ -116,10 +121,58 @@ class UIManager {
         const name = s.querySelector('#pname').value.trim() || 'Siswa';
         const av = Number(s.querySelector('input[name=av]:checked').value);
         A.sfx('ok');
-        this.start(() => this.callbacks.onNew(name, av));
+        this.showModeSelect(() => this.start(() => this.callbacks.onNew(name, av)));
       }
     };
   }
+  // Layar pilihan: main sendiri (langsung main) atau main bareng (kode kelas).
+  showModeSelect(proceed) {
+    const s = this.screenEl;
+    s.classList.remove('hidden');
+    const last = OnlineManager.settings;
+    s.innerHTML = `<div class="title-card"><h2>Pilih cara bermain</h2>
+      <div class="menu">
+        <button class="btn primary mode" data-a="solo">Main Sendiri<small>Langsung main tanpa kode</small></button>
+        <button class="btn mode" data-a="group">Main Bareng<small>Masukkan atau buat kode kelas untuk bermain dengan teman${last.on && last.code ? ` (terakhir: ${esc(last.code)})` : ''}</small></button>
+        <button class="btn" data-a="back">Kembali</button></div></div>`;
+    s.onclick = (e) => {
+      const a = e.target.closest('button')?.dataset.a;
+      if (!a) return;
+      A.sfx('click');
+      if (a === 'solo') { OnlineManager.setSettings({ on: false }); proceed(); }
+      if (a === 'group') this.showJoin(proceed);
+      if (a === 'back') this.showTitle(this.callbacks);
+    };
+  }
+  showJoin(proceed) {
+    const s = this.screenEl;
+    const cloud = OnlineManager.hasCloud;
+    s.innerHTML = `<div class="title-card"><h2>Main Bareng</h2>
+      <p class="tag">Pemain dengan kode yang sama di ruangan yang sama akan saling terlihat. Tidak ada chat bebas; komunikasi lewat emote.</p>
+      <label class="field">Kode kelas (3 sampai 12 huruf atau angka)<input id="kode" class="kcode" maxlength="12" autocomplete="off" autocapitalize="characters" value="${esc(OnlineManager.settings.code)}"></label>
+      <p class="muted" id="kmsg">Guru atau ketua kelompok bisa membuat kode baru, lalu membagikannya ke teman.</p>
+      <div class="menu"><button class="btn primary" data-a="join">Gabung dan main</button><button class="btn" data-a="make">Buat kode baru</button><button class="btn" data-a="back">Kembali</button></div>
+      ${cloud ? '' : '<p class="muted">Server online belum dikonfigurasi, sehingga kode hanya bekerja antar jendela browser di perangkat ini.</p>'}</div>`;
+    const input = s.querySelector('#kode'), msg = s.querySelector('#kmsg');
+    s.onclick = (e) => {
+      const a = e.target.closest('button')?.dataset.a;
+      if (!a) return;
+      A.sfx('click');
+      if (a === 'make') {
+        const c = generateCode();
+        input.value = c;
+        msg.textContent = `Kode baru: ${c}. Bagikan ke temanmu, lalu tekan "Gabung dan main".`;
+      }
+      if (a === 'join') {
+        const c = normalizeCode(input.value);
+        if (!validCode(c)) { A.sfx('bad'); msg.textContent = 'Kode harus 3 sampai 12 huruf atau angka.'; return; }
+        OnlineManager.setSettings({ on: true, code: c });
+        proceed();
+      }
+      if (a === 'back') this.showModeSelect(proceed);
+    };
+  }
+
   showSettings(back) {
     const s = this.screenEl;
     const draw = () => {
@@ -285,6 +338,29 @@ class UIManager {
       });
     });
   }
+  // Gabungkan pembaruan HUD dalam satu frame agar tidak boros.
+  scheduleHud() {
+    if (this.hudQueued) return;
+    this.hudQueued = true;
+    requestAnimationFrame(() => { this.hudQueued = false; this.refreshHud(); });
+  }
+  // Nuansa siang/malam lewat lapisan DOM (jauh lebih ringan daripada persegi besar di kanvas).
+  setDaylight(css) {
+    this.daylightEl.style.background = css || '';
+    this.daylightEl.style.display = css ? 'block' : 'none';
+  }
+  initFx() {
+    let m = 'auto';
+    try { m = localStorage.getItem('gaa.fx') || 'auto'; } catch { /* abaikan */ }
+    this.setFxMode(m);
+  }
+  // Mode efek: auto (hemat di HP berspesifikasi rendah), low (hemat), full (penuh).
+  setFxMode(m) {
+    this.fxMode = m;
+    try { localStorage.setItem('gaa.fx', m); } catch { /* abaikan */ }
+    const weak = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 3;
+    this.lowFx = m === 'low' || (m === 'auto' && weak && this.isTouch);
+  }
   openEmotes() {
     if (this.emotePop) { this.emotePop.remove(); this.emotePop = null; return; }
     const el = $(`<div class="emote-pop">${emotes.map((l, i) => `<button class="btn" data-i="${i}">${i + 1}. ${esc(l)}</button>`).join('')}</div>`);
@@ -323,7 +399,7 @@ class UIManager {
   toggleFullscreen() {
     const d = document;
     if (!d.fullscreenElement) {
-      const p = d.documentElement.requestFullscreen?.();
+      const p = d.documentElement.requestFullscreen?.({ navigationUI: 'hide' });
       if (p) p.then(() => screen.orientation?.lock?.('landscape')).catch(() => {});
     } else d.exitFullscreen?.();
   }

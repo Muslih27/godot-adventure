@@ -26,7 +26,7 @@ export default class WorldScene extends Phaser.Scene {
   create() {
     const av = state.data.avatar, key = 'player' + av;
     this.av = av; this.leaving = false;
-    this.knockUntil = 0; this.knockV = new Phaser.Math.Vector2();
+    this.knockUntil = 0; this.knockV = new Phaser.Math.Vector2(); this._v = new Phaser.Math.Vector2(); this.hintText = '';
     this.solids = []; this.things = []; this.coinDefs = []; this.enemyDefs = [];
     this.build();
     const { W, H } = this;
@@ -49,7 +49,9 @@ export default class WorldScene extends Phaser.Scene {
     this.solids.forEach((z) => this.physics.add.collider(this.player, z));
     this.cameras.main.startFollow(this.player, true, 0.12, 0.12).setRoundPixels(true);
     this.fitCamera();
-    this.scale.on('resize', this.fitCamera, this);
+    this.needFit = false;
+    this.onResize = () => { this.needFit = true; }; // diproses sekali per frame, bukan setiap peristiwa resize
+    this.scale.on('resize', this.onResize);
     const applyCos = () => {
       const c = cosmetics.find((x) => x.id === state.data.cosmetic);
       if (c && c.tint) this.player.setTint(c.tint); else this.player.clearTint();
@@ -103,7 +105,7 @@ export default class WorldScene extends Phaser.Scene {
     bus.once('goto:menu', toMenu);
     bus.on('goto:scene', travel);
     this.events.once('shutdown', () => {
-      this.scale.off('resize', this.fitCamera, this);
+      this.scale.off('resize', this.onResize);
       this.remote.destroy();
       bus.off('goto:menu', toMenu);
       bus.off('goto:scene', travel);
@@ -181,9 +183,9 @@ export default class WorldScene extends Phaser.Scene {
     state.collect(id);
     state.addCoins(5);
     bus.emit('track', 'coins');
-    const fx = this.add.particles(x, y, 'spark', { speed: { min: 40, max: 120 }, lifespan: 500, scale: { start: 1.5, end: 0 }, tint: 0xffb347, emitting: false }).setDepth(9999);
-    fx.explode(12);
-    this.time.delayedCall(700, () => fx.destroy());
+    const fx = ui.lowFx ? null : this.add.particles(x, y, 'spark', { speed: { min: 40, max: 120 }, lifespan: 500, scale: { start: 1.5, end: 0 }, tint: 0xffb347, emitting: false }).setDepth(9999);
+    fx?.explode(12);
+    this.time.delayedCall(700, () => fx?.destroy());
     const t = this.add.text(x, y - 10, '+5', { fontFamily: 'Silkscreen, monospace', fontSize: '14px', color: '#ffe08a' }).setOrigin(0.5).setDepth(9999);
     this.tweens.add({ targets: t, y: y - 40, alpha: 0, duration: 800, onComplete: () => t.destroy() });
     QuestManager.check();
@@ -199,6 +201,7 @@ export default class WorldScene extends Phaser.Scene {
     this.remote.update(time);
     ui.touchAct = false;
     ui.touchAttack = false;
+    if (this.needFit) { this.needFit = false; this.fitCamera(); }
     if (ui.blocked || this.leaving) {
       this.player.setVelocity(0);
       this.player.play('idle' + this.av, true);
@@ -215,7 +218,7 @@ export default class WorldScene extends Phaser.Scene {
     }
     const x = (k.D.isDown || k.RIGHT.isDown ? 1 : 0) - (k.A.isDown || k.LEFT.isDown ? 1 : 0) + ui.touch.x;
     const y = (k.S.isDown || k.DOWN.isDown ? 1 : 0) - (k.W.isDown || k.UP.isDown ? 1 : 0) + ui.touch.y;
-    const v = new Phaser.Math.Vector2(x, y);
+    const v = this._v.set(x, y);
     const run = k.SHIFT.isDown || ui.touchRun;
     const mag = Math.min(1, v.length()); // joystick analog: tarik pelan = jalan pelan
     if (mag > 0) v.normalize().scale((run ? 170 : 110) * mag);
@@ -231,10 +234,14 @@ export default class WorldScene extends Phaser.Scene {
       const d = Phaser.Math.Distance.Between(this.player.x, this.player.y, t.x, t.y);
       if (d < t.r && d < best) { best = d; near = t; }
     }
-    if (near) this.hint.setText(`[${ui.isTouch ? 'Aksi' : 'E'}] ${typeof near.label === 'function' ? near.label() : near.label}`).setPosition(near.x, near.hy).setVisible(true);
+    if (near) {
+      const txt = `[${ui.isTouch ? 'Aksi' : 'E'}] ${typeof near.label === 'function' ? near.label() : near.label}`;
+      if (txt !== this.hintText) { this.hintText = txt; this.hint.setText(txt); } // teks hanya digambar ulang jika berubah
+      this.hint.setPosition(near.x, near.hy).setVisible(true);
+    }
     else this.hint.setVisible(false);
     if (act && near) near.run();
     this.enemies.update(time);
-    if (time > this.nextMm) { ui.drawMinimap(this.player.x, this.player.y, this.W, this.H, this.mmBg, this.enemies.positions()); this.nextMm = time + 100; }
+    if (time > this.nextMm) { ui.drawMinimap(this.player.x, this.player.y, this.W, this.H, this.mmBg, this.enemies.positions()); this.nextMm = time + (ui.lowFx ? 250 : 100); }
   }
 }

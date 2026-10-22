@@ -16,6 +16,7 @@ export class EnemyManager {
   constructor(scene, defs = []) {
     this.scene = scene;
     this.nextAttack = 0;
+    this.tmp = new Phaser.Math.Vector2();
     this.list = defs.map((d) => this.create(d));
   }
 
@@ -53,7 +54,7 @@ export class EnemyManager {
       }
       if (e.state === 'PATROL') this.patrol(e);
       else if (e.state === 'CHASE') {
-        const v = new Phaser.Math.Vector2(p.x - sp.x, p.y - 8 - sp.y).normalize().scale(e.speed * 1.6);
+        const v = this.tmp.set(p.x - sp.x, p.y - 8 - sp.y).normalize().scale(e.speed * 1.6);
         sp.setVelocity(v.x, v.y);
         sp.setFlipX(v.x < 0);
       }
@@ -68,7 +69,7 @@ export class EnemyManager {
     const off = ax === 'x' ? sp.x - e.home.x : sp.y - e.home.y;
     const offOther = ax === 'x' ? sp.y - e.home.y : sp.x - e.home.x;
     if (Math.abs(offOther) > 8) {
-      const v = new Phaser.Math.Vector2(e.home.x - sp.x, e.home.y - sp.y).normalize().scale(e.speed);
+      const v = this.tmp.set(e.home.x - sp.x, e.home.y - sp.y).normalize().scale(e.speed);
       sp.setVelocity(v.x, v.y);
       return;
     }
@@ -147,9 +148,9 @@ export class EnemyManager {
     e.sprite.body.enable = false;
     e.bar.setVisible(false);
     A.sfx('defeat');
-    const fx = sc.add.particles(x, y, 'spark', { speed: { min: 40, max: 140 }, lifespan: 450, scale: { start: 1.6, end: 0 }, tint: 0xef4444, emitting: false }).setDepth(9999);
-    fx.explode(14);
-    sc.time.delayedCall(600, () => fx.destroy());
+    const fx = ui.lowFx ? null : sc.add.particles(x, y, 'spark', { speed: { min: 40, max: 140 }, lifespan: 450, scale: { start: 1.6, end: 0 }, tint: 0xef4444, emitting: false }).setDepth(9999);
+    fx?.explode(14);
+    sc.time.delayedCall(600, () => fx?.destroy());
     const t = sc.add.text(x, y - 10, '+1 koin', { fontFamily: 'Silkscreen, monospace', fontSize: '12px', color: '#ffe08a' }).setOrigin(0.5).setDepth(9999);
     sc.tweens.add({ targets: t, y: y - 40, alpha: 0, duration: 800, onComplete: () => t.destroy() });
     state.defeatBug();

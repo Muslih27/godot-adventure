@@ -31,7 +31,8 @@ new Phaser.Game({
   pixelArt: true,
   disableVisibilityChange: true,
   backgroundColor: '#071a30',
-  scale: { mode: Phaser.Scale.RESIZE },
+  scale: { mode: Phaser.Scale.RESIZE, resizeInterval: 100 },
+  render: { powerPreference: 'high-performance' },
   physics: { default: 'arcade', arcade: { debug: false } },
   scene: [BootScene, PreloadScene, MainMenuScene, SchoolScene, ClassroomScene, LabScene, CodeScene, ArenaScene, AnimScene, LibraryScene, LevelScene, AIScene, AudioScene, ServerScene, TestScene, FinalScene, GardenScene],
 });

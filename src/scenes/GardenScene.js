@@ -78,9 +78,9 @@ export default class GardenScene extends WorldScene {
       const v = this.plotViews[i];
       state.harvestPlot(i);
       A.sfx('coin');
-      const fx = this.add.particles(v.soil.x, v.soil.y, 'spark', { speed: { min: 40, max: 130 }, lifespan: 500, scale: { start: 1.6, end: 0 }, tint: 0x22d3ee, emitting: false }).setDepth(9999);
-      fx.explode(14);
-      this.time.delayedCall(700, () => fx.destroy());
+      const fx = ui.lowFx ? null : this.add.particles(v.soil.x, v.soil.y, 'spark', { speed: { min: 40, max: 130 }, lifespan: 500, scale: { start: 1.6, end: 0 }, tint: 0x22d3ee, emitting: false }).setDepth(9999);
+      fx?.explode(14);
+      this.time.delayedCall(700, () => fx?.destroy());
       ui.toast('Panen! +20 koin', 'good');
       QuestManager.check();
     } else if (p.last === today) {
@@ -97,8 +97,9 @@ export default class GardenScene extends WorldScene {
     this.refreshPlots();
     // Siang malam mengikuti jam perangkat (visual saja)
     const h = new Date().getHours();
-    const tone = h >= 20 || h < 5 ? [0x0b1030, 0.35] : h >= 17 ? [0xff8a3d, 0.12] : h < 8 ? [0xffe08a, 0.08] : null;
-    if (tone) this.add.rectangle(this.scale.width / 2, this.scale.height / 2, 8000, 8000, tone[0], tone[1]).setScrollFactor(0).setDepth(9000);
+    const tone = h >= 20 || h < 5 ? 'rgba(11,16,48,.35)' : h >= 17 ? 'rgba(255,138,61,.12)' : h < 8 ? 'rgba(255,224,138,.08)' : null;
+    ui.setDaylight(tone);
+    this.events.once('shutdown', () => ui.setDaylight(null));
     this.time.delayedCall(400, () => {
       state.setFlag('gardenRoom');
       QuestManager.check();

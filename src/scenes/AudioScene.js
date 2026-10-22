@@ -49,7 +49,7 @@ export default class AudioScene extends WorldScene {
     const cols = [0x22d3ee, 0x34d399, 0xff8a3d];
     for (let i = 0; i < 9; i++) {
       const bar = this.add.rectangle(100 + i * 20, 385, 12, 60, cols[i % 3]).setOrigin(0.5, 1).setDepth(310);
-      this.tweens.add({ targets: bar, scaleY: { from: 0.2, to: 1 }, duration: 350 + (i * 90) % 400, yoyo: true, repeat: -1, delay: i * 60 });
+      if (!ui.lowFx) this.tweens.add({ targets: bar, scaleY: { from: 0.2, to: 1 }, duration: 350 + (i * 90) % 400, yoyo: true, repeat: -1, delay: i * 60 });
     }
     this.time.delayedCall(400, () => {
       state.setFlag('audioRoom');

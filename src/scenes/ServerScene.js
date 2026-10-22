@@ -53,7 +53,7 @@ export default class ServerScene extends WorldScene {
     RACKS.forEach(([x, y], r) => {
       for (let i = 0; i < 4; i++) {
         const led = this.add.rectangle(x - 18, y - 56 + i * 14, 4, 4, i % 2 ? 0x34d399 : 0x22d3ee).setDepth(y + 1);
-        this.tweens.add({ targets: led, alpha: 0.15, duration: 400 + ((r + i) * 170) % 500, yoyo: true, repeat: -1 });
+        if (!ui.lowFx) this.tweens.add({ targets: led, alpha: 0.15, duration: 400 + ((r + i) * 170) % 500, yoyo: true, repeat: -1 });
       }
     });
     this.time.delayedCall(400, () => {

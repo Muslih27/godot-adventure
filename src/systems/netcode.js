@@ -31,3 +31,12 @@ export function predictPos(d, now, W, H) {
   const dt = Math.min(0.6, Math.max(0, (now - d.at) / 1000));
   return { x: clamp(d.x + d.vx * dt, 0, W), y: clamp(d.y + d.vy * dt, 0, H) };
 }
+
+// Kode kelas acak 5 karakter (tanpa huruf/angka yang mirip: 0, O, 1, I).
+export function generateCode(n = 5) {
+  const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const buf = new Uint32Array(n);
+  const rnd = globalThis.crypto || { getRandomValues(b) { for (let i = 0; i < b.length; i++) b[i] = Math.floor(Math.random() * 4294967296); return b; } };
+  rnd.getRandomValues(buf);
+  return Array.from(buf, (v) => A[v % A.length]).join('');
+}
