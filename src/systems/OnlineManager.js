@@ -22,8 +22,8 @@ async function cloudTransport(name, onMsg, onStatus) {
     rt = new RealtimeClient(URL.replace(/^http/, 'ws').replace(/\/$/, '') + '/realtime/v1', { params: { apikey: KEY, eventsPerSecond: 10 } });
   }
   const ch = rt.channel(name, { config: { broadcast: { self: false, ack: false } } });
-  ['pos', 'emote', 'bye'].forEach((ev) => ch.on('broadcast', { event: ev }, (m) => onMsg(ev, m?.payload)));
-  ch.subscribe((status) => onStatus(status));
+  ['pos', 'emote', 'bye', 'hello'].forEach((ev) => ch.on('broadcast', { event: ev }, (m) => onMsg(ev, m?.payload)));
+  ch.subscribe((status, err) => onStatus(status, err));
   return {
     send: (event, payload) => { const p = ch.send({ type: 'broadcast', event, payload }); p?.catch?.(() => {}); },
     close: () => { try { rt.removeChannel(ch); } catch { /* abaikan */ } },
@@ -38,6 +38,8 @@ function localTransport(name, onMsg) {
 export const OnlineManager = {
   id: genId(),
   hasCloud: !!(URL && KEY),
+  host: (() => { try { return new URL(URL).host; } catch { return ''; } })(),
+  detail: '',
   settings: loadSettings(),
   status: 'off', // off | connecting | ok | error
   token: 0, t: null, ready: false, owner: null,
@@ -58,16 +60,23 @@ export const OnlineManager = {
     const name = `gaa:${this.settings.code}:${room}`;
     this.setStatus('connecting');
     try {
-      const status = (s) => {
+      const status = (s, err) => {
         if (token !== this.token) return;
-        if (s === 'SUBSCRIBED') { this.ready = true; this.setStatus('ok'); }
-        else if (['CHANNEL_ERROR', 'TIMED_OUT', 'CLOSED'].includes(s)) { this.ready = false; this.setStatus('error'); }
+        if (s === 'SUBSCRIBED') { this.ready = true; this.detail = ''; this.setStatus('ok'); }
+        else if (['CHANNEL_ERROR', 'TIMED_OUT', 'CLOSED'].includes(s)) {
+          this.ready = false;
+          this.detail = String(err?.message || s);
+          console.warn('[online]', s, err?.message || '');
+          this.setStatus('error');
+        }
       };
       const t = this.hasCloud ? await cloudTransport(name, onMsg, status) : localTransport(name, onMsg);
       if (token !== this.token) { t.close(); return; }
       this.t = t;
       if (!this.hasCloud) status('SUBSCRIBED');
-    } catch { if (token === this.token) this.setStatus('error'); }
+    } catch (e) {
+      if (token === this.token) { this.detail = String(e?.message || e); console.warn('[online]', e); this.setStatus('error'); }
+    }
   },
   send(event, payload) { if (this.t && this.ready) this.t.send(event, payload); },
   // Jika owner diberikan, hanya pemilik koneksi yang boleh menutupnya.

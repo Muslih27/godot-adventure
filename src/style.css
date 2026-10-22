@@ -310,3 +310,5 @@ input, textarea { -webkit-user-select: text; user-select: text; }
 @media (pointer: coarse) { .emote-pop { right: calc(100px + env(safe-area-inset-right, 0px)); bottom: calc(176px + env(safe-area-inset-bottom, 0px)); } }
 .force-touch .emote-pop { right: calc(100px + env(safe-area-inset-right, 0px)); bottom: calc(176px + env(safe-area-inset-bottom, 0px)); }
 .online { font-size: 12px; font-weight: 800; color: var(--green); padding: 2px 8px; border: 2px solid var(--green); border-radius: 999px; white-space: nowrap; }
+
+.ver { margin: 14px 0 0; text-align: center; font-size: 12px; color: #6f9bb8; }

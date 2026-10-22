@@ -29,6 +29,7 @@ new Phaser.Game({
   width: '100%',
   height: '100%',
   pixelArt: true,
+  disableVisibilityChange: true,
   backgroundColor: '#071a30',
   scale: { mode: Phaser.Scale.RESIZE },
   physics: { default: 'arcade', arcade: { debug: false } },

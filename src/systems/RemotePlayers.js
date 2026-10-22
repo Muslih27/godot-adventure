@@ -18,7 +18,11 @@ export class RemotePlayers {
     this.wasMoving = false;
     this.last = { vx: 0, vy: 0 };
     this.onChanged = () => this.connect();
-    this.onStatus = () => this.label();
+    this.onStatus = () => {
+      this.label();
+      if (OnlineManager.status === 'ok') { OnlineManager.send('hello', { i: OnlineManager.id }); this.sendNow(false); }
+    };
+    this.hb = setInterval(() => this.sendNow(this.wasMoving), 3000); // tetap hidup walau tab tersembunyi
     bus.on('online:changed', this.onChanged);
     bus.on('online:status', this.onStatus);
     this.connect();
@@ -54,6 +58,8 @@ export class RemotePlayers {
       const peer = this.peers.get(typeof p?.i === 'string' ? p.i : '');
       const text = emotes[Number(p?.e)];
       if (peer && text) this.bubble(peer, text);
+    } else if (type === 'hello') {
+      this.sendNow(this.wasMoving);
     } else if (type === 'bye') {
       this.remove(typeof p?.i === 'string' ? p.i : '');
     }
@@ -117,15 +123,20 @@ export class RemotePlayers {
   // Kirim paket jarang: bergerak 2x per detik, diam hanya detak jantung tiap 4 detik.
   broadcastSelf(time) {
     if (!OnlineManager.active() || !OnlineManager.ready) return;
-    const pl = this.scene.player, v = pl.body.velocity;
+    const v = this.scene.player.body.velocity;
     const moving = Math.hypot(v.x, v.y) > 5;
     const dirChanged = Math.abs(v.x - this.last.vx) > 30 || Math.abs(v.y - this.last.vy) > 30;
     const since = time - this.lastSent;
     const stopped = this.wasMoving && !moving;
     const send = stopped || (moving ? since > 500 || (dirChanged && since > 200) : since > 4000);
     this.wasMoving = moving;
-    if (!send) return;
-    this.lastSent = time;
+    if (send) { this.lastSent = time; this.sendNow(moving); }
+  }
+
+  sendNow(moving) {
+    const pl = this.scene.player;
+    if (!OnlineManager.active() || !OnlineManager.ready || !pl || !pl.body) return;
+    const v = pl.body.velocity;
     this.last = { vx: v.x, vy: v.y };
     const eq = state.data.equip;
     const title = titles.find((x) => x.id === eq.title && titleUnlocked(x, state.data.flags)) || titles[0];
@@ -142,6 +153,7 @@ export class RemotePlayers {
   destroy() {
     bus.off('online:changed', this.onChanged);
     bus.off('online:status', this.onStatus);
+    clearInterval(this.hb);
     OnlineManager.send('bye', { i: OnlineManager.id });
     this.clear();
     OnlineManager.leave(this);

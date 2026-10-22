@@ -86,7 +86,8 @@ class UIManager {
         <button class="btn" data-a="cont" ${hasSave() ? '' : 'disabled title="Belum ada progres tersimpan"'}>Continue</button>
         <button class="btn" data-a="set">Pengaturan</button>
         <button class="btn" data-a="credit">Credit</button>
-      </div></div>`;
+      </div>
+      <p class="ver">Versi ${__APP_VERSION__} · build ${__BUILD_TIME__}</p></div>`;
     s.onclick = (e) => {
       const a = e.target.closest('button')?.dataset.a;
       if (!a) return;

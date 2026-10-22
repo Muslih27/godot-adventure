@@ -93,3 +93,13 @@ Buka Menu > Online, isi kode kelas, lalu Aktifkan.
 ## Kebun Akademi (terinspirasi Harvest Moon)
 
 Pintu di sisi timur halaman sekolah. Tanam benih di petak tanah, siram **sekali per hari** dengan menjawab satu soal ulasan dari bab yang sudah dibaca (latihan mengingat berkala), dan panen kristal setelah 3 hari disiram (+20 koin). Tanaman tidak layu. Tanggal mengikuti jam perangkat.
+
+### Menyiapkan Supabase (langkah singkat)
+
+1. Daftar di supabase.com, buat proyek baru (pilih region terdekat, misalnya Singapore).
+2. Buka Project Settings > API. Salin **Project URL** dan **anon public key** (atau publishable key; jika koneksi gagal dengan publishable key, coba anon key lama di bagian Legacy API Keys).
+3. Di folder proyek: `copy .env.example .env.local`, lalu isi dua nilai itu memakai Notepad.
+4. **Hentikan dan jalankan ulang** `npm run dev` (variabel hanya dibaca saat Vite mulai).
+5. Di dasbor Supabase cari Realtime Settings dan pastikan akses publik (public access) diizinkan.
+6. Di game: Menu > Online. Status koneksi harus berubah menjadi "tersambung". Uji dengan dua perangkat atau dua jendela.
+7. Untuk versi online: tambahkan variabel yang sama di Vercel (Settings > Environment Variables, untuk Production dan Preview), lalu **Redeploy** (perubahan variabel baru berlaku pada deployment berikutnya).
