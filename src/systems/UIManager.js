@@ -338,7 +338,11 @@ class UIManager {
 
   /* ---------- Keyboard UI ---------- */
   onKey(e) {
-    if (e.target.matches('input, textarea')) return; // jangan ganggu pengetikan
+    if (e.target.matches('input, textarea')) { // jangan ganggu pengetikan
+      if (e.key === 'Escape') e.target.blur();
+      return;
+    }
+    if (this.inGame && !this.modals.length && !this.dlg && [' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) e.preventDefault();
     if (this.dlg) {
       if (['e', 'E', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); this.advance(); }
       else if (e.key === 'Escape') this.closeDialog(null);

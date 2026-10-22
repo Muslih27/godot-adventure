@@ -92,8 +92,8 @@ export default class WorldScene extends Phaser.Scene {
 
     this.hint = this.add.text(0, 0, '', { fontFamily: 'Nunito, sans-serif', fontSize: '13px', fontStyle: 'bold', color: '#06202e', backgroundColor: '#7ee7ff', padding: { x: 6, y: 3 } })
       .setOrigin(0.5, 1).setDepth(10000).setVisible(false);
-    this.keys = this.input.keyboard.addKeys('W,A,S,D,UP,DOWN,LEFT,RIGHT,E,SPACE,SHIFT,F,ONE,TWO,THREE,FOUR,FIVE,SIX');
-    this.input.keyboard.addCapture('UP,DOWN,LEFT,RIGHT,SPACE');
+    // enableCapture=false: Phaser tidak memblokir tombol, sehingga mengetik di kolom input tetap normal.
+    this.keys = this.input.keyboard.addKeys('W,A,S,D,UP,DOWN,LEFT,RIGHT,E,SPACE,SHIFT,F,ONE,TWO,THREE,FOUR,FIVE,SIX', false);
     this.nextStep = 0; this.nextMm = 0;
 
     ui.showHud(true);
