@@ -3,6 +3,7 @@ import { state } from '../systems/GameState.js';
 import { QuestManager } from '../systems/QuestManager.js';
 import { bus } from '../core/bus.js';
 import { interactRobo, interactArenaDoor } from '../systems/LearningManager.js';
+import { talk } from '../systems/FriendManager.js';
 import WorldScene from './WorldScene.js';
 
 export default class CodeScene extends WorldScene {
@@ -32,7 +33,7 @@ export default class CodeScene extends WorldScene {
     this.enemyDefs = [{ x: 170, y: 170, axis: 'x', range: 70, tint: 0x9dffb5, hp: 2 }, { x: 630, y: 170, axis: 'x', range: 70, tint: 0x9dffb5, hp: 2 }, { x: 760, y: 300, axis: 'y', range: 50, tint: 0x9dffb5, hp: 2 }];
     this.coinDefs = [['p1', 40, 440], ['p2', 760, 150]];
     this.things = [
-      { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan RoboGuard', run: () => interactRobo(ui) },
+      { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan RoboGuard', run: () => talk(ui, 'robo', interactRobo) },
       { x: 600, y: 125, r: 55, hy: 95, label: 'Masuk Arena Gim', run: () => interactArenaDoor(ui) },
       { x: 400, y: 450, r: 50, hy: 415, label: 'Kembali ke Laboratorium', run: () => bus.emit('goto:scene', 'Lab', { x: 620, y: 135 }) },
     ];

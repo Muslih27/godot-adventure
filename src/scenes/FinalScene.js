@@ -3,6 +3,7 @@ import { state } from '../systems/GameState.js';
 import { QuestManager } from '../systems/QuestManager.js';
 import { bus } from '../core/bus.js';
 import { interactKepala } from '../systems/LearningManager.js';
+import { talk } from '../systems/FriendManager.js';
 import WorldScene from './WorldScene.js';
 
 export default class FinalScene extends WorldScene {
@@ -31,7 +32,7 @@ export default class FinalScene extends WorldScene {
     this.enemyDefs = [{ x: 170, y: 170, axis: 'x', range: 70, tint: 0xffd24a, hp: 3 }, { x: 630, y: 170, axis: 'x', range: 70, tint: 0xffd24a, hp: 3 }, { x: 760, y: 300, axis: 'y', range: 50, tint: 0xffd24a, hp: 3 }, { x: 40, y: 300, axis: 'y', range: 50, tint: 0xffd24a, hp: 3 }];
     this.coinDefs = [['f1', 40, 440], ['f2', 760, 440]];
     this.things = [
-      { x: 400, y: 200, r: 60, hy: 155, label: 'Bicara dengan Bu Kepala Akademi', run: () => interactKepala(ui) },
+      { x: 400, y: 200, r: 60, hy: 155, label: 'Bicara dengan Bu Kepala Akademi', run: () => talk(ui, 'kepala', interactKepala) },
       { x: 400, y: 450, r: 50, hy: 415, label: 'Kembali ke Ruang Pengujian', run: () => bus.emit('goto:scene', 'Test', { x: 620, y: 135 }) },
     ];
     this.mmBg = (c, k) => {

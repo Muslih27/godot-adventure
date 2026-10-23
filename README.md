@@ -103,3 +103,7 @@ Pintu di sisi timur halaman sekolah. Tanam benih di petak tanah, siram **sekali 
 5. Di dasbor Supabase cari Realtime Settings dan pastikan akses publik (public access) diizinkan.
 6. Di game: Menu > Online. Status koneksi harus berubah menjadi "tersambung". Uji dengan dua perangkat atau dua jendela.
 7. Untuk versi online: tambahkan variabel yang sama di Vercel (Settings > Environment Variables, untuk Production dan Preview), lalu **Redeploy** (perubahan variabel baru berlaku pada deployment berikutnya).
+
+## Persahabatan dan barang (terinspirasi Harvest Moon)
+
+Panen di Kebun Akademi menghasilkan **Buah Kristal** (selain 20 koin). Setelah bercakap-cakap dengan seorang mentor, pemain ditawari memberikan satu buah sebagai hadiah (maksimal satu per mentor per hari). Persahabatan naik 1 hati sampai 5 hati: 1 hati membuka tips belajar, 3 hati membuka cerita mentor, 5 hati memberi 30 koin. Lihat di Profil > Teman. Ada quest "Teman Baru", dua prestasi, dan gelar "Sahabat Mentor".

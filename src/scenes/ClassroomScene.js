@@ -3,6 +3,7 @@ import { state } from '../systems/GameState.js';
 import { QuestManager } from '../systems/QuestManager.js';
 import { bus } from '../core/bus.js';
 import { interactKak, interactLabDoor } from '../systems/LearningManager.js';
+import { talk } from '../systems/FriendManager.js';
 import WorldScene from './WorldScene.js';
 
 export default class ClassroomScene extends WorldScene {
@@ -36,7 +37,7 @@ export default class ClassroomScene extends WorldScene {
       const kak = this.add.sprite(400, 200, 'kak', 'f0').setOrigin(0.5, 1).setDepth(200);
       this.tweens.add({ targets: kak, y: 198, duration: 700, yoyo: true, repeat: -1 });
       this.wall(390, 190, 20, 10);
-      this.things.push({ x: 400, y: 200, r: 60, hy: 155, label: 'Bicara dengan Kak Syntax', run: () => interactKak(ui) });
+      this.things.push({ x: 400, y: 200, r: 60, hy: 155, label: 'Bicara dengan Kak Syntax', run: () => talk(ui, 'kak', interactKak) });
     }
     this.mmBg = (c, k) => {
       c.fillStyle = '#8fb3d1'; c.fillRect(0, 0, W * k, H * k);

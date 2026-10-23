@@ -7,6 +7,7 @@ import { AudioManager as A } from '../systems/AudioManager.js';
 import { achievements, COIN_IDS } from '../data/achievements.js';
 import { cosmetics } from '../data/cosmetics.js';
 import { glossary } from '../data/glossary.js';
+import { mentors } from '../data/mentors.js';
 import { curriculum } from '../data/curriculum.js';
 import { chapters, chapterById } from '../data/chapters.js';
 import { bus } from '../core/bus.js';
@@ -30,12 +31,23 @@ export function openProfile(ui) {
     Inventaris(el, redraw) {
       const d = state.data;
       el.innerHTML = `<div class="stat-grid"><div><b>${d.crystals}</b><span>Godot Crystal</span></div><div><b>${d.coins}</b><span>Koin Akademi</span></div></div>
-        <h3>Badge kompetensi</h3><div class="chips">${d.badges.length ? d.badges.map((b) => `<span>${esc(b)}</span>`).join('') : '<p class="muted">Belum ada badge. Lulus kuis bab untuk mendapatkannya.</p>'}</div>
+        <h3>Barang</h3><div class="chips"><span>Buah Kristal × ${d.items.fruit}</span></div><p class="muted">Didapat dari panen di Kebun Akademi. Berikan ke mentor setelah bercakap-cakap dengannya untuk mempererat persahabatan.</p><h3>Badge kompetensi</h3><div class="chips">${d.badges.length ? d.badges.map((b) => `<span>${esc(b)}</span>`).join('') : '<p class="muted">Belum ada badge. Lulus kuis bab untuk mendapatkannya.</p>'}</div>
         <h3>Kosmetik karakter</h3><div class="cos">${cosmetics.map((c) => {
           const ok = d.crystals >= c.need, on = d.cosmetic === c.id;
           return `<button class="btn ${on ? 'primary' : ''}" data-c="${c.id}" ${ok ? '' : 'disabled'}>${esc(c.name)}<small>${on ? 'Dipakai' : ok ? 'Pakai' : `Butuh ${c.need} Godot Crystal`}</small></button>`;
         }).join('')}</div><p class="muted">Kosmetik hanya mengubah tampilan, tidak mempengaruhi permainan.</p>`;
       el.querySelectorAll('[data-c]').forEach((b) => (b.onclick = () => { A.sfx('ok'); state.setCosmetic(b.dataset.c); redraw(); }));
+    },
+    Teman(el) {
+      const f = state.data.friends;
+      el.innerHTML = `<p>Beri Buah Kristal kepada mentor setelah bercakap-cakap dengannya (maksimal satu hadiah per mentor per hari). Kamu punya <b>${state.data.items.fruit}</b> buah.</p>` + mentors.map((m) => {
+        const h = f[m.id]?.h || 0;
+        return `<div class="card ${h >= 5 ? 'done' : ''}"><h3>${esc(m.name)} <small>${esc(m.room)}</small></h3>
+          <div class="hearts">${Array.from({ length: 5 }, (_, i) => `<i class="heart ${i < h ? '' : 'off'}"></i>`).join('')}</div>
+          <p>${h >= 1 ? esc(m.tip) : '<span class="muted">Beri 1 hadiah untuk membuka tips belajar.</span>'}</p>
+          <p>${h >= 3 ? esc(m.story) : '<span class="muted">Capai 3 hati untuk membuka ceritanya.</span>'}</p>
+          ${h >= 5 ? '<p class="muted">Hadiah persahabatan sudah diterima.</p>' : ''}</div>`;
+      }).join('');
     },
     Statistik(el) {
       const d = state.data;

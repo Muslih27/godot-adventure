@@ -3,6 +3,7 @@ import { state } from '../systems/GameState.js';
 import { QuestManager } from '../systems/QuestManager.js';
 import { bus } from '../core/bus.js';
 import { interactArsi, interactAudioDoor } from '../systems/LearningManager.js';
+import { talk } from '../systems/FriendManager.js';
 import WorldScene from './WorldScene.js';
 
 export default class AIScene extends WorldScene {
@@ -32,7 +33,7 @@ export default class AIScene extends WorldScene {
     this.enemyDefs = [{ x: 170, y: 170, axis: 'x', range: 70, tint: 0xe0b0ff, hp: 2 }, { x: 630, y: 170, axis: 'x', range: 70, tint: 0xe0b0ff, hp: 2 }, { x: 760, y: 300, axis: 'y', range: 50, tint: 0xe0b0ff, hp: 2 }];
     this.coinDefs = [['i1', 40, 440], ['i2', 760, 150]];
     this.things = [
-      { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Dr. Arsitek', run: () => interactArsi(ui) },
+      { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Dr. Arsitek', run: () => talk(ui, 'arsi', interactArsi) },
       { x: 620, y: 125, r: 55, hy: 95, label: 'Masuk Ruang Audio', run: () => interactAudioDoor(ui) },
       { x: 400, y: 450, r: 50, hy: 415, label: 'Kembali ke Ruang Desain Level', run: () => bus.emit('goto:scene', 'Level', { x: 620, y: 135 }) },
     ];

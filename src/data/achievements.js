@@ -20,5 +20,7 @@ export const achievements = [
   { id: 'bug10', title: 'Pembasmi Bug', desc: 'Kalahkan 10 bug.', test: (s) => s.bugs >= 10 },
   { id: 'bug50', title: 'Penakluk Bug', desc: 'Kalahkan 50 bug.', test: (s) => s.bugs >= 50 },
   { id: 'harvest5', title: 'Petani Kode', desc: 'Panen 5 tanaman di Kebun Akademi.', test: (s) => s.farm.harvests >= 5 },
+  { id: 'friend3', title: 'Sahabat Mentor', desc: 'Capai 3 hati persahabatan dengan 3 mentor.', test: (s) => Object.values(s.friends).filter((f) => f.h >= 3).length >= 3 },
+  { id: 'friend5', title: 'Sahabat Sejati', desc: 'Capai 5 hati persahabatan dengan seorang mentor.', test: (s) => Object.values(s.friends).some((f) => f.h >= 5) },
   { id: 'cr6', title: 'Master Kristal', desc: 'Kumpulkan 6 Godot Crystal.', test: (s) => s.crystals >= 6 },
 ];

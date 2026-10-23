@@ -3,6 +3,7 @@ import { state } from '../systems/GameState.js';
 import { QuestManager } from '../systems/QuestManager.js';
 import { bus } from '../core/bus.js';
 import { interactCoach, interactAnimDoor } from '../systems/LearningManager.js';
+import { talk } from '../systems/FriendManager.js';
 import WorldScene from './WorldScene.js';
 
 // Rintangan balok: [x, y, jumlah, arah]
@@ -36,7 +37,7 @@ export default class ArenaScene extends WorldScene {
     this.enemyDefs = [{ x: 170, y: 170, axis: 'x', range: 70, tint: 0xffb27a, hp: 2 }, { x: 630, y: 170, axis: 'x', range: 70, tint: 0xffb27a, hp: 2 }, { x: 760, y: 300, axis: 'y', range: 50, tint: 0xffb27a, hp: 2 }];
     this.coinDefs = [['a1', 60, 300], ['a2', 740, 200]];
     this.things = [
-      { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Coach Vektor', run: () => interactCoach(ui) },
+      { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Coach Vektor', run: () => talk(ui, 'coach', interactCoach) },
       { x: 640, y: 125, r: 55, hy: 95, label: 'Masuk Studio Animasi', run: () => interactAnimDoor(ui) },
       { x: 400, y: 450, r: 50, hy: 415, label: 'Kembali ke Ruang Pemrograman', run: () => bus.emit('goto:scene', 'Code', { x: 600, y: 135 }) },
     ];

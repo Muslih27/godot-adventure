@@ -3,6 +3,7 @@ import { state } from '../systems/GameState.js';
 import { QuestManager } from '../systems/QuestManager.js';
 import { bus } from '../core/bus.js';
 import { interactKakLab, interactCodeDoor } from '../systems/LearningManager.js';
+import { talk } from '../systems/FriendManager.js';
 import WorldScene from './WorldScene.js';
 
 export default class LabScene extends WorldScene {
@@ -32,7 +33,7 @@ export default class LabScene extends WorldScene {
     this.enemyDefs = [{ x: 170, y: 170, axis: 'x', range: 70, tint: 0x9fe8ff, hp: 2 }, { x: 630, y: 170, axis: 'x', range: 70, tint: 0x9fe8ff, hp: 2 }, { x: 760, y: 300, axis: 'y', range: 50, tint: 0x9fe8ff, hp: 2 }];
     this.coinDefs = [['l1', 40, 150], ['l2', 760, 420]];
     this.things = [
-      { x: 400, y: 200, r: 60, hy: 155, label: 'Bicara dengan Kak Syntax', run: () => interactKakLab(ui) },
+      { x: 400, y: 200, r: 60, hy: 155, label: 'Bicara dengan Kak Syntax', run: () => talk(ui, 'kak', interactKakLab) },
       { x: 620, y: 125, r: 55, hy: 95, label: 'Masuk Ruang Pemrograman', run: () => interactCodeDoor(ui) },
       { x: 400, y: 450, r: 50, hy: 415, label: 'Kembali ke Ruang Kelas', run: () => bus.emit('goto:scene', 'Classroom', { x: 610, y: 135 }) },
     ];

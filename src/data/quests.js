@@ -295,6 +295,13 @@ export const quests = [
     reward: { xp: 30, coins: 20 },
   },
   {
+    id: 'q_friend', type: 'Sampingan', title: 'Teman Baru',
+    desc: 'Beri Buah Kristal (hasil panen di Kebun Akademi) kepada 3 mentor berbeda setelah bercakap-cakap dengan mereka.',
+    progress: (s) => `${Math.min(Object.values(s.friends).filter((f) => f.h >= 1).length, 3)}/3 mentor`,
+    done: (s) => Object.values(s.friends).filter((f) => f.h >= 1).length >= 3,
+    reward: { xp: 30, coins: 25 },
+  },
+  {
     id: 'q_coins', type: 'Sampingan', title: 'Koin Berserakan',
     desc: 'Temukan 3 Koin Akademi yang tersebar di halaman sekolah.',
     progress: (s) => `${coinsFound(s)}/3 koin`,

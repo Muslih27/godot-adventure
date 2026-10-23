@@ -3,6 +3,7 @@ import { state } from '../systems/GameState.js';
 import { QuestManager } from '../systems/QuestManager.js';
 import { bus } from '../core/bus.js';
 import { interactLevel, interactAIDoor } from '../systems/LearningManager.js';
+import { talk } from '../systems/FriendManager.js';
 import WorldScene from './WorldScene.js';
 
 // Susunan balok seperti "tile": [x, y, jumlah, arah]
@@ -36,7 +37,7 @@ export default class LevelScene extends WorldScene {
     this.enemyDefs = [{ x: 170, y: 170, axis: 'x', range: 60, tint: 0x9fd0ff, hp: 2 }, { x: 630, y: 170, axis: 'x', range: 60, tint: 0x9fd0ff, hp: 2 }, { x: 760, y: 300, axis: 'y', range: 50, tint: 0x9fd0ff, hp: 2 }];
     this.coinDefs = [['t1', 40, 440], ['t2', 760, 440]];
     this.things = [
-      { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Mas Level', run: () => interactLevel(ui) },
+      { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Mas Level', run: () => talk(ui, 'lvl', interactLevel) },
       { x: 620, y: 125, r: 55, hy: 95, label: 'Masuk Laboratorium AI', run: () => interactAIDoor(ui) },
       { x: 400, y: 450, r: 50, hy: 415, label: 'Kembali ke Perpustakaan', run: () => bus.emit('goto:scene', 'Library', { x: 620, y: 135 }) },
     ];

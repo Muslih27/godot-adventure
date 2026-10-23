@@ -3,6 +3,7 @@ import { state } from '../systems/GameState.js';
 import { QuestManager } from '../systems/QuestManager.js';
 import { bus } from '../core/bus.js';
 import { interactBu, interactLibDoor } from '../systems/LearningManager.js';
+import { talk } from '../systems/FriendManager.js';
 import WorldScene from './WorldScene.js';
 
 export default class AnimScene extends WorldScene {
@@ -33,7 +34,7 @@ export default class AnimScene extends WorldScene {
     this.enemyDefs = [{ x: 170, y: 170, axis: 'x', range: 70, tint: 0xffd0f0, hp: 2 }, { x: 630, y: 170, axis: 'x', range: 70, tint: 0xffd0f0, hp: 2 }, { x: 760, y: 300, axis: 'y', range: 50, tint: 0xffd0f0, hp: 2 }];
     this.coinDefs = [['n1', 40, 440], ['n2', 760, 150]];
     this.things = [
-      { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Bu Animasi', run: () => interactBu(ui) },
+      { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Bu Animasi', run: () => talk(ui, 'bu', interactBu) },
       { x: 640, y: 125, r: 55, hy: 95, label: 'Masuk Perpustakaan', run: () => interactLibDoor(ui) },
       { x: 400, y: 450, r: 50, hy: 415, label: 'Kembali ke Arena Gim', run: () => bus.emit('goto:scene', 'Arena', { x: 640, y: 135 }) },
     ];

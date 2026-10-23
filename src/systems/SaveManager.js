@@ -1,4 +1,6 @@
 // SaveManager: baca/tulis LocalStorage dengan validasi dan versi struktur data.
+import { mentorIds } from '../data/mentors.js';
+
 const KEY = 'godot-adventure-academy:save';
 const AUDIO_KEY = 'godot-adventure-academy:audio';
 export const SAVE_VERSION = 1;
@@ -18,6 +20,8 @@ export const defaultSave = () => ({
   badges: [],
   cosmetic: 'none',
   bugs: 0,
+  items: { fruit: 0 },
+  friends: {},
   owned: [],
   equip: { hat: '', pet: '', title: 'pemula' },
   daily: { last: '', streak: 0 },
@@ -59,6 +63,8 @@ export function validate(raw) {
       }),
       harvests: num(raw.farm?.harvests),
     },
+    items: { fruit: num(raw.items?.fruit) },
+    friends: Object.fromEntries(mentorIds.filter((id) => isObj(raw.friends?.[id])).map((id) => [id, { h: Math.min(5, num(raw.friends[id].h)), last: typeof raw.friends[id].last === 'string' ? raw.friends[id].last : '' }])),
     owned: strs(raw.owned),
     equip: {
       hat: typeof raw.equip?.hat === 'string' ? raw.equip.hat : '',

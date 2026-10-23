@@ -3,6 +3,7 @@ import { state } from '../systems/GameState.js';
 import { QuestManager } from '../systems/QuestManager.js';
 import { bus } from '../core/bus.js';
 import { interactDebug, interactFinalDoor } from '../systems/LearningManager.js';
+import { talk } from '../systems/FriendManager.js';
 import WorldScene from './WorldScene.js';
 
 const BARS = [[120, 280, 4, 'h'], [560, 280, 4, 'h'], [250, 180, 3, 'v'], [518, 180, 3, 'v']];
@@ -35,7 +36,7 @@ export default class TestScene extends WorldScene {
     this.enemyDefs = [{ x: 170, y: 170, axis: 'x', range: 60, tint: 0xffffff, hp: 2 }, { x: 630, y: 170, axis: 'x', range: 60, tint: 0xffffff, hp: 2 }, { x: 760, y: 300, axis: 'y', range: 50, tint: 0xffffff, hp: 2 }];
     this.coinDefs = [['x1', 40, 440], ['x2', 760, 440]];
     this.things = [
-      { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Pak Debug', run: () => interactDebug(ui) },
+      { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Pak Debug', run: () => talk(ui, 'debug', interactDebug) },
       { x: 620, y: 125, r: 55, hy: 95, label: 'Masuk Ruang Final Project', run: () => interactFinalDoor(ui) },
       { x: 400, y: 450, r: 50, hy: 415, label: 'Kembali ke Server Room', run: () => bus.emit('goto:scene', 'Server', { x: 620, y: 135 }) },
     ];

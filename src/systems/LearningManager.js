@@ -585,7 +585,7 @@ export async function interactTani(ui) {
     pages: first ? [
       `Selamat datang di Kebun Akademi, ${state.data.name}! Aku Pak Tani.`,
       'Di sini tanaman tumbuh dari kebiasaan belajar. Tanam benih di petak tanah, lalu siram setiap hari dengan menjawab satu soal ulasan dari bab yang sudah kamu baca.',
-      'Setelah disiram di 3 hari yang berbeda, tanaman berbuah kristal dan siap dipanen untuk 20 koin. Tidak ada tanaman yang layu, jadi tenang saja kalau kamu absen sehari.',
+      'Setelah disiram di 3 hari yang berbeda, tanaman berbuah kristal dan siap dipanen: kamu mendapat 20 koin dan 1 Buah Kristal. Buah itu bisa kamu berikan kepada para mentor untuk mempererat persahabatan. Tidak ada tanaman yang layu, jadi tenang saja kalau kamu absen sehari.',
     ] : [
       'Ingat: satu siraman per tanaman per hari. Mengulang sedikit demi sedikit secara teratur membantu ingatan bertahan lebih lama.',
       'Awas hama berwarna hijau yang berkeliaran di kebun. Serang dengan tombol F atau tombol Serang.',

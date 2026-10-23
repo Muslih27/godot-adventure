@@ -2,6 +2,7 @@ import { ui } from '../systems/UIManager.js';
 import { state } from '../systems/GameState.js';
 import { bus } from '../core/bus.js';
 import { interactProf, interactDoor, interactSign } from '../systems/LearningManager.js';
+import { talk } from '../systems/FriendManager.js';
 import WorldScene from './WorldScene.js';
 
 const TREES = [[120, 220], [820, 200], [200, 440], [760, 450], [110, 560], [860, 560], [300, 210], [660, 215]];
@@ -35,7 +36,7 @@ export default class SchoolScene extends WorldScene {
     this.enemyDefs = [{ x: 200, y: 300, axis: 'x', range: 70, tint: 0xffffff, hp: 2 }, { x: 760, y: 300, axis: 'x', range: 70, tint: 0xffffff, hp: 2 }, { x: 680, y: 410, axis: 'x', range: 60, tint: 0xffffff, hp: 2 }];
     this.coinDefs = [['c1', 90, 330], ['c2', 880, 330], ['c3', 150, 595]];
     this.things = [
-      { x: 480, y: 330, r: 60, hy: 285, label: 'Bicara dengan Profesor Pixel', run: () => interactProf(ui) },
+      { x: 480, y: 330, r: 60, hy: 285, label: 'Bicara dengan Profesor Pixel', run: () => talk(ui, 'prof', interactProf) },
       { x: 480, y: 172, r: 64, hy: 160, label: 'Masuk / periksa pintu Ruang Kelas', run: () => interactDoor(ui) },
       { x: 925, y: 262, r: 55, hy: 205, label: 'Masuk Kebun Akademi', run: () => bus.emit('goto:scene', 'Garden') },
       { x: 392, y: 570, r: 50, hy: 530, label: 'Baca papan informasi', run: () => interactSign(ui) },

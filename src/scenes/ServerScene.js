@@ -3,6 +3,7 @@ import { state } from '../systems/GameState.js';
 import { QuestManager } from '../systems/QuestManager.js';
 import { bus } from '../core/bus.js';
 import { interactSrv, interactTestDoor } from '../systems/LearningManager.js';
+import { talk } from '../systems/FriendManager.js';
 import WorldScene from './WorldScene.js';
 
 const RACKS = [[100, 230], [100, 330], [700, 230], [700, 330]];
@@ -36,7 +37,7 @@ export default class ServerScene extends WorldScene {
     this.enemyDefs = [{ x: 170, y: 170, axis: 'x', range: 70, tint: 0x8ff5e8, hp: 2 }, { x: 630, y: 170, axis: 'x', range: 70, tint: 0x8ff5e8, hp: 2 }, { x: 760, y: 300, axis: 'y', range: 50, tint: 0x8ff5e8, hp: 2 }];
     this.coinDefs = [['v1', 40, 440], ['v2', 760, 150]];
     this.things = [
-      { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Mas Server', run: () => interactSrv(ui) },
+      { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Mas Server', run: () => talk(ui, 'srv', interactSrv) },
       { x: 620, y: 125, r: 55, hy: 95, label: 'Masuk Ruang Pengujian', run: () => interactTestDoor(ui) },
       { x: 400, y: 450, r: 50, hy: 415, label: 'Kembali ke Ruang Audio', run: () => bus.emit('goto:scene', 'Audio', { x: 620, y: 135 }) },
     ];

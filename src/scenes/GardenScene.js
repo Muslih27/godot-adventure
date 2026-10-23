@@ -5,6 +5,7 @@ import { AudioManager as A } from '../systems/AudioManager.js';
 import { dateKey } from '../systems/DailyManager.js';
 import { bus } from '../core/bus.js';
 import { interactTani, openReview } from '../systems/LearningManager.js';
+import { talk } from '../systems/FriendManager.js';
 import WorldScene from './WorldScene.js';
 
 const COLS = [280, 360, 440, 520];
@@ -47,7 +48,7 @@ export default class GardenScene extends WorldScene {
     this.enemyDefs = [170, 630].map((x) => ({ x, y: 170, axis: 'x', range: 70, tint: 0xa3e635, hp: 2 })).concat([{ x: 760, y: 300, axis: 'y', range: 50, tint: 0xa3e635, hp: 2 }]);
     this.coinDefs = [['g1', 40, 440], ['g2', 760, 150]];
     this.things.push(
-      { x: 160, y: 300, r: 60, hy: 250, label: 'Bicara dengan Pak Tani', run: () => interactTani(ui) },
+      { x: 160, y: 300, r: 60, hy: 250, label: 'Bicara dengan Pak Tani', run: () => talk(ui, 'tani', interactTani) },
       { x: 400, y: 450, r: 50, hy: 415, label: 'Kembali ke halaman sekolah', run: () => bus.emit('goto:scene', 'School', { x: 900, y: 262 }) },
     );
     this.mmBg = (c, k) => {
@@ -81,7 +82,7 @@ export default class GardenScene extends WorldScene {
       const fx = ui.lowFx ? null : this.add.particles(v.soil.x, v.soil.y, 'spark', { speed: { min: 40, max: 130 }, lifespan: 500, scale: { start: 1.6, end: 0 }, tint: 0x22d3ee, emitting: false }).setDepth(9999);
       fx?.explode(14);
       this.time.delayedCall(700, () => fx?.destroy());
-      ui.toast('Panen! +20 koin', 'good');
+      ui.toast('Panen! +20 koin dan 1 Buah Kristal', 'good');
       QuestManager.check();
     } else if (p.last === today) {
       ui.toast('Sudah disiram hari ini. Kembali besok untuk menyiram lagi.');

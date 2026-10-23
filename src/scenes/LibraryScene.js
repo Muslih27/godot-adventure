@@ -3,6 +3,7 @@ import { state } from '../systems/GameState.js';
 import { QuestManager } from '../systems/QuestManager.js';
 import { bus } from '../core/bus.js';
 import { interactPus, interactLevelDoor } from '../systems/LearningManager.js';
+import { talk } from '../systems/FriendManager.js';
 import WorldScene from './WorldScene.js';
 
 const SHELVES = [[100, 230], [100, 330], [700, 230], [700, 330]];
@@ -36,7 +37,7 @@ export default class LibraryScene extends WorldScene {
     this.enemyDefs = [{ x: 170, y: 170, axis: 'x', range: 70, tint: 0xd4c0ff, hp: 2 }, { x: 630, y: 170, axis: 'x', range: 70, tint: 0xd4c0ff, hp: 2 }, { x: 760, y: 300, axis: 'y', range: 50, tint: 0xd4c0ff, hp: 2 }];
     this.coinDefs = [['b1', 40, 440], ['b2', 760, 150]];
     this.things = [
-      { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Pustakawan Data', run: () => interactPus(ui) },
+      { x: 400, y: 210, r: 60, hy: 165, label: 'Bicara dengan Pustakawan Data', run: () => talk(ui, 'pus', interactPus) },
       { x: 620, y: 125, r: 55, hy: 95, label: 'Masuk Ruang Desain Level', run: () => interactLevelDoor(ui) },
       { x: 400, y: 450, r: 50, hy: 415, label: 'Kembali ke Studio Animasi', run: () => bus.emit('goto:scene', 'Anim', { x: 640, y: 135 }) },
     ];

@@ -46,8 +46,18 @@ class GameState {
   harvestPlot(i) {
     this.data.farm.plots[i] = { c: 0, last: '', n: 0 };
     this.data.farm.harvests += 1;
+    this.data.items.fruit += 1;
     this.data.coins += 20;
     this.commit();
+  }
+  // Mengembalikan jumlah hati baru, atau -1 jika hadiah tidak bisa diberikan.
+  giveGift(id, day) {
+    const f = this.data.friends[id] || { h: 0, last: '' };
+    if (this.data.items.fruit < 1 || f.last === day || f.h >= 5) return -1;
+    this.data.items.fruit -= 1;
+    this.data.friends[id] = { h: f.h + 1, last: day };
+    this.commit();
+    return f.h + 1;
   }
   buy(item) {
     if (this.data.owned.includes(item.id) || this.data.coins < item.price) return false;
