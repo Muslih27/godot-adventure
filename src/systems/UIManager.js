@@ -45,6 +45,18 @@ class UIManager {
     this.buildRotateHint();
     this.initFullscreenUi();
     this.initFx();
+    this.initPerf();
+    this.lowCount = 0;
+    setInterval(() => this.watchdog(), 1000);
+    let lastErr = 0;
+    const showErr = (msg) => {
+      const now = Date.now();
+      if (now - lastErr < 8000) return;
+      lastErr = now;
+      this.toast(`Galat: ${String(msg || 'tidak diketahui').slice(0, 90)}`, 'bad');
+    };
+    window.addEventListener('error', (e) => { console.error(e.error || e.message); showErr(e.message); });
+    window.addEventListener('unhandledrejection', (e) => { console.error(e.reason); showErr(e.reason?.message || e.reason); });
     this.daylightEl = $('<div class="daylight"></div>');
     this.root.prepend(this.daylightEl);
     window.addEventListener('keydown', (e) => this.onKey(e));
@@ -104,7 +116,9 @@ class UIManager {
       if (a === 'credit') this.showCredit();
     };
   }
-  start(fn) { this.screenEl.classList.add('hidden'); this.screenEl.innerHTML = ''; fn(); }
+  start(fn) {
+    document.activeElement?.blur?.(); // tutup keyboard layar agar kontrol tidak tertutup
+    this.screenEl.classList.add('hidden'); this.screenEl.innerHTML = ''; fn(); }
   showCharacterSelect() {
     const s = this.screenEl;
     const overwrite = hasSave();
@@ -154,6 +168,7 @@ class UIManager {
       <div class="menu"><button class="btn primary" data-a="join">Gabung dan main</button><button class="btn" data-a="make">Buat kode baru</button><button class="btn" data-a="back">Kembali</button></div>
       ${cloud ? '' : '<p class="muted">Server online belum dikonfigurasi, sehingga kode hanya bekerja antar jendela browser di perangkat ini.</p>'}</div>`;
     const input = s.querySelector('#kode'), msg = s.querySelector('#kmsg');
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); s.querySelector('[data-a=join]').click(); } });
     s.onclick = (e) => {
       const a = e.target.closest('button')?.dataset.a;
       if (!a) return;
@@ -166,6 +181,7 @@ class UIManager {
       if (a === 'join') {
         const c = normalizeCode(input.value);
         if (!validCode(c)) { A.sfx('bad'); msg.textContent = 'Kode harus 3 sampai 12 huruf atau angka.'; return; }
+        input.blur();
         OnlineManager.setSettings({ on: true, code: c });
         proceed();
       }
@@ -315,10 +331,10 @@ class UIManager {
       this.touch = mag < 0.18 ? { x: 0, y: 0 } : { x: (dx / R), y: (dy / R) };
     };
     zone.addEventListener('pointerdown', (e) => {
-      if (pid !== null) return;
       e.preventDefault();
+      if (pid !== null) reset(); // ambil alih jika ada sentuhan lama yang macet
       pid = e.pointerId;
-      zone.setPointerCapture(pid);
+      try { zone.setPointerCapture(pid); } catch { /* abaikan */ }
       cx = e.clientX; cy = e.clientY;
       base.classList.add('active');
       base.style.bottom = 'auto';
@@ -327,7 +343,11 @@ class UIManager {
       move(e);
     });
     zone.addEventListener('pointermove', (e) => { if (e.pointerId === pid) move(e); });
-    ['pointerup', 'pointercancel', 'lostpointercapture'].forEach((ev) => zone.addEventListener(ev, (e) => { if (e.pointerId === pid || ev === 'lostpointercapture') reset(); }));
+    const end = (e) => { if (pid !== null && e.pointerId === pid) reset(); };
+    ['pointerup', 'pointercancel'].forEach((ev) => { zone.addEventListener(ev, end); window.addEventListener(ev, end); });
+    zone.addEventListener('lostpointercapture', end);
+    window.addEventListener('blur', reset);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) reset(); });
     this.touchEl.querySelectorAll('.tb').forEach((b) => {
       b.addEventListener('pointerdown', (e) => {
         e.preventDefault();
@@ -339,6 +359,35 @@ class UIManager {
     });
   }
   // Gabungkan pembaruan HUD dalam satu frame agar tidak boros.
+  initPerf() {
+    let on = false;
+    try { on = localStorage.getItem('gaa.perf') === '1'; } catch { /* abaikan */ }
+    this.setPerfHud(on);
+  }
+  setPerfHud(on) {
+    this.perfOn = on;
+    try { localStorage.setItem('gaa.perf', on ? '1' : '0'); } catch { /* abaikan */ }
+    if (!this.perfEl) { this.perfEl = $('<div class="perf"></div>'); this.root.append(this.perfEl); }
+    this.perfEl.style.display = on ? 'block' : 'none';
+  }
+  // Tiap detik: pastikan kontrol tidak hilang, ukur FPS, hemat otomatis jika berat, tampilkan info performa.
+  watchdog() {
+    const fps = this.game && !document.hidden ? this.game.loop.actualFps : 0;
+    const net = OnlineManager.stats();
+    if (this.inGame) {
+      this.syncClasses();
+      if (!this.dlg && !this.modals.length) {
+        this.touchEl.classList.remove('hidden');
+        this.hudEl.classList.remove('hidden');
+      }
+      this.lowCount = fps > 0 && fps < 30 ? this.lowCount + 1 : 0;
+      if (this.lowCount >= 6 && this.fxMode === 'auto' && !this.lowFx) {
+        this.lowFx = true;
+        this.toast('Mode hemat diaktifkan otomatis karena game terasa berat.');
+      }
+    }
+    if (this.perfOn) this.perfEl.textContent = `FPS ${Math.round(fps)} · efek ${this.lowFx ? 'hemat' : 'penuh'} · online ${OnlineManager.status} · lawan ${OnlineManager.peerCount || 0} · kirim ${net.out}/s · terima ${net.in}/s`;
+  }
   scheduleHud() {
     if (this.hudQueued) return;
     this.hudQueued = true;

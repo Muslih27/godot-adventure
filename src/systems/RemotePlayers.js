@@ -5,6 +5,7 @@ import { shopItems } from '../data/shop.js';
 import { titles, titleUnlocked } from '../data/titles.js';
 import { emotes } from '../data/emotes.js';
 import { bus } from '../core/bus.js';
+import { ui } from './UIManager.js';
 
 const HAT_IDS = shopItems.filter((i) => i.cat === 'hat').map((i) => i.id);
 const TAG = { fontFamily: 'Nunito, sans-serif', fontSize: '11px', fontStyle: 'bold', color: '#7ee7ff', align: 'center', stroke: '#06202e', strokeThickness: 3 };
@@ -20,7 +21,9 @@ export class RemotePlayers {
     this.onChanged = () => this.connect();
     this.onStatus = () => {
       this.label();
-      if (OnlineManager.status === 'ok') { OnlineManager.send('hello', { i: OnlineManager.id }); this.sendNow(false); }
+      const s = OnlineManager.status;
+      if (s === 'ok' && this.lastStatus !== 'ok') { OnlineManager.send('hello', { i: OnlineManager.id }); this.sendNow(false); }
+      this.lastStatus = s;
     };
     this.hb = setInterval(() => this.sendNow(this.wasMoving), 3000); // tetap hidup walau tab tersembunyi
     bus.on('online:changed', this.onChanged);
@@ -35,18 +38,24 @@ export class RemotePlayers {
   }
 
   label() {
+    OnlineManager.peerCount = this.peers.size;
     const s = OnlineManager.status;
     const text = !OnlineManager.active() ? '' : s === 'ok' ? `Online · ${this.peers.size + 1}` : s === 'error' ? 'Online: gagal' : 'Online: menghubungkan';
     bus.emit('online:label', text);
   }
 
   onMsg(type, p) {
+    if (this.destroyed) return;
+    try { this.handle(type, p); } catch (e) { console.warn('[online] paket diabaikan', e); }
+  }
+
+  handle(type, p) {
     if (type === 'pos') {
       const d = sanitizePacket(p, this.scene.W, this.scene.H, HAT_IDS);
       if (!d || d.i === OnlineManager.id) return;
       let peer = this.peers.get(d.i);
       if (!peer) {
-        if (this.peers.size >= MAX_PEERS) return;
+        if (this.peers.size >= (ui.lowFx ? 4 : MAX_PEERS)) return;
         peer = this.create(d);
         this.peers.set(d.i, peer);
         this.label();
@@ -152,6 +161,7 @@ export class RemotePlayers {
   sendEmote(i) { OnlineManager.send('emote', { i: OnlineManager.id, e: i }); }
 
   destroy() {
+    this.destroyed = true;
     bus.off('online:changed', this.onChanged);
     bus.off('online:status', this.onStatus);
     clearInterval(this.hb);

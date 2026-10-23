@@ -107,3 +107,9 @@ Pintu di sisi timur halaman sekolah. Tanam benih di petak tanah, siram **sekali 
 ## Persahabatan dan barang (terinspirasi Harvest Moon)
 
 Panen di Kebun Akademi menghasilkan **Buah Kristal** (selain 20 koin). Setelah bercakap-cakap dengan seorang mentor, pemain ditawari memberikan satu buah sebagai hadiah (maksimal satu per mentor per hari). Persahabatan naik 1 hati sampai 5 hati: 1 hati membuka tips belajar, 3 hati membuka cerita mentor, 5 hati memberi 30 koin. Lihat di Profil > Teman. Ada quest "Teman Baru", dua prestasi, dan gelar "Sahabat Mentor".
+
+## Diagnosis performa dan kontrol
+
+- Menu Jeda > **Info performa: Nyala** menampilkan FPS, mode efek, status online, jumlah pemain lain, serta pesan terkirim dan terima per detik.
+- Jika FPS di bawah 30 selama sekitar 6 detik dan efek visual "Otomatis", game beralih sendiri ke mode hemat.
+- Galat JavaScript ditampilkan sebagai toast singkat (maks. satu per 8 detik) agar mudah difoto saat melapor.

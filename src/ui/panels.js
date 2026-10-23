@@ -62,6 +62,7 @@ export function openPause(ui) {
       <button class="btn" data-a="touch">Kontrol layar sentuh: ${ui.touchMode === 'always' ? 'Selalu tampil' : 'Otomatis'}</button>
       ${document.fullscreenEnabled ? '<button class="btn" data-a="full">Layar penuh</button>' : ''}
       <button class="btn" data-a="fx">Efek visual: ${{ auto: 'Otomatis', low: 'Hemat', full: 'Penuh' }[ui.fxMode]}</button>
+      <button class="btn" data-a="perf">Info performa: ${ui.perfOn ? 'Nyala' : 'Mati'}</button>
       <button class="btn" data-a="menu">Kembali ke menu utama</button></div>`;
   };
   draw();
@@ -74,6 +75,7 @@ export function openPause(ui) {
     if (a === 'save') { state.save(); ui.toast('Progres tersimpan.', 'good'); }
     if (a === 'touch') { ui.setTouchMode(ui.touchMode === 'always' ? 'auto' : 'always'); draw(); }
     if (a === 'full') ui.toggleFullscreen();
+    if (a === 'perf') { ui.setPerfHud(!ui.perfOn); draw(); }
     if (a === 'fx') { ui.setFxMode({ auto: 'low', low: 'full', full: 'auto' }[ui.fxMode]); draw(); }
     if (a === 'menu') { state.save(); m.close(); bus.emit('goto:menu'); }
   };

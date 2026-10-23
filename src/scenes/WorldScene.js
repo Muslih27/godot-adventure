@@ -134,6 +134,17 @@ export default class WorldScene extends Phaser.Scene {
     cam.setBounds(-padX, -padY, this.W + padX * 2, this.H + padY * 2);
   }
 
+  // Galat pada fitur online tidak boleh menghentikan permainan.
+  safeRemote(time) {
+    if (!this.remote || this.remoteBroken) return;
+    try { this.remote.update(time); }
+    catch (e) {
+      this.remoteBroken = true;
+      console.error('[online] dimatikan karena galat', e);
+      ui.toast('Fitur online dimatikan sementara karena galat. Game tetap bisa dimainkan.', 'bad');
+    }
+  }
+
   syncVisuals(time) {
     const p = this.player;
     this.tag.setPosition(p.x, p.y - 36 - (this.hat ? 12 : 0));
@@ -198,7 +209,7 @@ export default class WorldScene extends Phaser.Scene {
     const atk = JustDown(k.F) || ui.touchAttack;
     const em = ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'].map((n) => JustDown(k[n])).indexOf(true);
     this.syncVisuals(time);
-    this.remote.update(time);
+    this.safeRemote(time);
     ui.touchAct = false;
     ui.touchAttack = false;
     if (this.needFit) { this.needFit = false; this.fitCamera(); }

@@ -40,6 +40,8 @@ export const OnlineManager = {
   hasCloud: !!(URL && KEY),
   host: (() => { try { return new URL(URL).host; } catch { return ''; } })(),
   detail: '',
+  sent: 0, recv: 0, peerCount: 0,
+  stats() { const s = { out: this.sent, in: this.recv }; this.sent = 0; this.recv = 0; return s; },
   settings: loadSettings(),
   status: 'off', // off | connecting | ok | error
   token: 0, t: null, ready: false, owner: null,
@@ -58,6 +60,7 @@ export const OnlineManager = {
     if (!this.active()) { this.setStatus('off'); return; }
     const token = ++this.token;
     const name = `gaa:${this.settings.code}:${room}`;
+    const handler = (ev, p) => { this.recv++; onMsg(ev, p); };
     this.setStatus('connecting');
     try {
       const status = (s, err) => {
@@ -70,7 +73,7 @@ export const OnlineManager = {
           this.setStatus('error');
         }
       };
-      const t = this.hasCloud ? await cloudTransport(name, onMsg, status) : localTransport(name, onMsg);
+      const t = this.hasCloud ? await cloudTransport(name, handler, status) : localTransport(name, handler);
       if (token !== this.token) { t.close(); return; }
       this.t = t;
       if (!this.hasCloud) status('SUBSCRIBED');
@@ -78,7 +81,7 @@ export const OnlineManager = {
       if (token === this.token) { this.detail = String(e?.message || e); console.warn('[online]', e); this.setStatus('error'); }
     }
   },
-  send(event, payload) { if (this.t && this.ready) this.t.send(event, payload); },
+  send(event, payload) { if (this.t && this.ready) { this.sent++; this.t.send(event, payload); } },
   // Jika owner diberikan, hanya pemilik koneksi yang boleh menutupnya.
   leave(owner) {
     if (owner && this.owner !== owner) return;

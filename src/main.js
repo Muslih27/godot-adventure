@@ -4,6 +4,7 @@ import BootScene from './scenes/BootScene.js';
 import PreloadScene from './scenes/PreloadScene.js';
 import MainMenuScene from './scenes/MainMenuScene.js';
 import { AchievementManager } from './systems/AchievementManager.js';
+import { ui } from './systems/UIManager.js';
 import { DailyManager } from './systems/DailyManager.js';
 import SchoolScene from './scenes/SchoolScene.js';
 import ClassroomScene from './scenes/ClassroomScene.js';
@@ -23,7 +24,7 @@ import GardenScene from './scenes/GardenScene.js';
 AchievementManager.init();
 DailyManager.init();
 
-new Phaser.Game({
+const game = new Phaser.Game({
   type: Phaser.AUTO,
   parent: 'game',
   width: '100%',
@@ -36,3 +37,5 @@ new Phaser.Game({
   physics: { default: 'arcade', arcade: { debug: false } },
   scene: [BootScene, PreloadScene, MainMenuScene, SchoolScene, ClassroomScene, LabScene, CodeScene, ArenaScene, AnimScene, LibraryScene, LevelScene, AIScene, AudioScene, ServerScene, TestScene, FinalScene, GardenScene],
 });
+
+ui.game = game;

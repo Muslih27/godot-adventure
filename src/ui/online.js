@@ -25,6 +25,7 @@ export function openOnline(ui) {
       const code = normalizeCode(m.body.querySelector('#kode').value);
       if (!validCode(code)) { A.sfx('bad'); ui.toast('Kode kelas harus 3 sampai 12 huruf atau angka.', 'bad'); return; }
       A.sfx('ok');
+      m.body.querySelector('#kode').blur();
       OnlineManager.setSettings({ on: true, code });
       ui.toast(`Mode online aktif dengan kode ${code}.`, 'good');
       draw();
