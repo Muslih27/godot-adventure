@@ -21,6 +21,7 @@ export const locations = [
   { id: 'gate', name: 'Gerbang Sekolah' },
   { id: 'school', name: 'Halaman Sekolah' },
   { id: 'garden', name: 'Kebun Akademi' },
+  { id: 'secret', name: 'Ruang Rahasia' },
   { id: 'classroom', name: 'Ruang Kelas' },
   { id: 'lab', name: 'Laboratorium Komputer' },
   { id: 'library', name: 'Perpustakaan' },

@@ -2,7 +2,7 @@ import { ui } from '../systems/UIManager.js';
 import { state } from '../systems/GameState.js';
 import { QuestManager } from '../systems/QuestManager.js';
 import { bus } from '../core/bus.js';
-import { interactPus, interactLevelDoor } from '../systems/LearningManager.js';
+import { interactPus, interactLevelDoor, interactSecretDoor } from '../systems/LearningManager.js';
 import { talk } from '../systems/FriendManager.js';
 import WorldScene from './WorldScene.js';
 
@@ -41,6 +41,12 @@ export default class LibraryScene extends WorldScene {
       { x: 620, y: 125, r: 55, hy: 95, label: 'Masuk Ruang Desain Level', run: () => interactLevelDoor(ui) },
       { x: 400, y: 450, r: 50, hy: 415, label: 'Kembali ke Studio Animasi', run: () => bus.emit('goto:scene', 'Anim', { x: 640, y: 135 }) },
     ];
+    if (state.hasFlag('ach_friend3')) this.add.image(190, 102, 'sdoor2').setOrigin(0.5, 1).setDepth(151);
+    this.things.push({
+      x: 190, y: 125, r: 55, hy: 95,
+      label: () => (state.hasFlag('ach_friend3') ? 'Masuk Ruang Rahasia' : 'Periksa rak buku tua'),
+      run: () => interactSecretDoor(ui),
+    });
     this.mmBg = (c, k) => {
       c.fillStyle = '#a8977a'; c.fillRect(0, 0, W * k, H * k);
       c.fillStyle = '#2d3f55'; c.fillRect(0, 0, W * k, 100 * k);

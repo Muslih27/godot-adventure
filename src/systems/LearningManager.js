@@ -17,6 +17,7 @@ import { chapter14 } from '../data/chapter14.js';
 import { chapter15 } from '../data/chapter15.js';
 import { chapters } from '../data/chapters.js';
 import { openCertificate } from '../ui/profile.js';
+import { dateKey } from './DailyManager.js';
 import { state } from './GameState.js';
 import { QuestManager } from './QuestManager.js';
 import { AudioManager as A } from './AudioManager.js';
@@ -35,6 +36,7 @@ const SRV = { name: 'Mas Server', portrait: 'srv' };
 const DBG = { name: 'Pak Debug', portrait: 'debug' };
 const KEPALA = { name: 'Bu Kepala Akademi', portrait: 'kepala' };
 const TANI = { name: 'Pak Tani', portrait: 'tani' };
+const SAGE = { name: 'Penjaga Rahasia', portrait: 'sage' };
 
 /* ---------- Materi ---------- */
 export function openChapter(ui, ch) {
@@ -591,6 +593,83 @@ export async function interactTani(ui) {
       'Awas hama berwarna hijau yang berkeliaran di kebun. Serang dengan tombol F atau tombol Serang.',
     ],
   });
+}
+
+// Tantangan Kilat: 8 soal acak dari semua bab, 15 detik per soal. Ringkasan jawaban salah ditampilkan di akhir.
+export function openBlitz(ui) {
+  const TIME = 15;
+  const pool = shuffle(chapters.flatMap((c) => c.quiz.map((q) => ({ ...q, ch: c.id })))).slice(0, 8);
+  const m = ui.openModal({ title: 'Tantangan Kilat' });
+  let n = 0, score = 0, t = TIME, timer = null, gone = false;
+  const wrong = [];
+  const stop = () => { clearInterval(timer); timer = null; };
+  m.closed.then(() => { gone = true; stop(); });
+  const next = () => { if (gone) return; n++; if (n < pool.length) ask(); else finish(); };
+  const ask = () => {
+    const q = pool[n];
+    const base = q.a.map((x, i) => ({ t: x, ok: i === q.c }));
+    const opts = q.a.length === 2 ? base : shuffle(base);
+    t = TIME;
+    m.body.innerHTML = `<p class="muted">Soal ${n + 1} / ${pool.length} · skor ${score}</p><div class="bar"><i id="tb" style="width:100%"></i></div>
+      <h3>${esc(q.q)}</h3><div class="pool col">${opts.map((o, i) => `<button class="btn" data-i="${i}">${esc(o.t)}</button>`).join('')}</div><p class="fb"></p>`;
+    const bar = m.body.querySelector('#tb'), fb = m.body.querySelector('.fb');
+    const lock = (pick) => {
+      stop();
+      m.body.querySelectorAll('[data-i]').forEach((b, k) => { b.disabled = true; if (opts[k].ok) b.classList.add('right'); else if (k === pick) b.classList.add('wrong'); });
+    };
+    timer = setInterval(() => {
+      t -= 0.1;
+      bar.style.width = `${Math.max(0, (t / TIME) * 100)}%`;
+      if (t <= 0) { lock(-1); wrong.push({ q, ok: opts.find((o) => o.ok).t }); A.sfx('bad'); fb.className = 'fb bad'; fb.textContent = 'Waktu habis!'; setTimeout(next, 1100); }
+    }, 100);
+    m.body.querySelectorAll('[data-i]').forEach((b) => (b.onclick = () => {
+      const i = Number(b.dataset.i), ok = opts[i].ok;
+      lock(i);
+      if (ok) { score++; A.sfx('ok'); fb.className = 'fb good'; fb.textContent = 'Benar!'; }
+      else { wrong.push({ q, ok: opts.find((o) => o.ok).t }); A.sfx('bad'); fb.className = 'fb bad'; fb.textContent = 'Belum tepat.'; }
+      setTimeout(next, 900);
+    }));
+  };
+  const finish = () => {
+    stop();
+    bus.emit('track', 'quiz');
+    const coins = state.finishBlitz(score, dateKey());
+    const hat = score >= 7;
+    m.body.innerHTML = `<h3>Skor: ${score} / ${pool.length}</h3><p>Rekor terbaikmu: <b>${state.data.blitz.best} / 8</b>.</p>
+      <p>${coins ? `+${coins} koin (hadiah harian pertama).` : 'Hadiah koin hari ini sudah diambil, tetapi rekor tetap bisa dipecahkan.'}</p>
+      ${hat ? '<p class="fb good">Topi Penyihir Kode terbuka di Toko > Topi!</p>' : '<p class="muted">Capai skor 7 atau lebih untuk membuka Topi Penyihir Kode.</p>'}
+      ${wrong.length ? `<h3>Yang perlu diulang</h3><ul>${wrong.map((w) => `<li>${esc(w.q.q)}<br><small class="muted">Jawaban: ${esc(w.ok)}. ${esc(w.q.why)}</small></li>`).join('')}</ul>` : '<p class="fb good">Sempurna, tanpa kesalahan!</p>'}
+      <div class="nav"><button class="btn" data-again="1">Main lagi</button><button class="btn primary" data-close="1">Tutup</button></div>`;
+    m.body.querySelector('[data-close]').onclick = () => m.close();
+    m.body.querySelector('[data-again]').onclick = () => { m.close(); openBlitz(ui); };
+  };
+  ask();
+  return m.closed;
+}
+
+export async function interactSage(ui) {
+  const first = !state.hasFlag('sage_met');
+  state.setFlag('sage_met');
+  const c = await ui.dialog({
+    who: SAGE,
+    pages: first ? [
+      `Kamu menemukan ruang yang jarang diketahui orang, ${state.data.name}. Hanya sahabat para mentor yang bisa masuk ke sini.`,
+      'Ada dua tantangan opsional. Pertama, kumpulkan 5 pecahan kristal ungu yang tersebar di ruangan ini dan jagalah dari bug. Hadiahnya Naga Mini.',
+      'Kedua, Tantangan Kilat: 8 soal acak dari semua bab, 15 detik per soal. Skor 7 ke atas membuka Topi Penyihir Kode. Berani mencoba?',
+    ] : [`Rekor Tantangan Kilat-mu saat ini ${state.data.blitz.best} dari 8. Mau mencoba memecahkannya?`],
+    choices: ['Mulai Tantangan Kilat', 'Nanti saja'],
+  });
+  if (c === 0) await openBlitz(ui);
+}
+
+export async function interactSecretDoor(ui) {
+  const who = { name: 'Rak Buku Tua', portrait: 'pus' };
+  if (!state.hasFlag('ach_friend3')) {
+    A.sfx('bad');
+    await ui.dialog({ who, pages: ['Rak buku tua ini terasa aneh, seperti ada celah di baliknya. Mungkin para mentor yang akrab denganmu tahu rahasianya.'] });
+  } else {
+    bus.emit('goto:scene', 'Secret');
+  }
 }
 
 export async function interactKepala(ui) {

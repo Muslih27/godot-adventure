@@ -22,5 +22,7 @@ export const achievements = [
   { id: 'harvest5', title: 'Petani Kode', desc: 'Panen 5 tanaman di Kebun Akademi.', test: (s) => s.farm.harvests >= 5 },
   { id: 'friend3', title: 'Sahabat Mentor', desc: 'Capai 3 hati persahabatan dengan 3 mentor.', test: (s) => Object.values(s.friends).filter((f) => f.h >= 3).length >= 3 },
   { id: 'friend5', title: 'Sahabat Sejati', desc: 'Capai 5 hati persahabatan dengan seorang mentor.', test: (s) => Object.values(s.friends).some((f) => f.h >= 5) },
+  { id: 'shards', title: 'Penemu Rahasia', desc: 'Kumpulkan 5 pecahan kristal di Ruang Rahasia.', test: (s) => ['s1', 's2', 's3', 's4', 's5'].every((id) => s.collected.includes(id)) },
+  { id: 'kilat8', title: 'Si Kilat', desc: 'Jawab 8 dari 8 benar di Tantangan Kilat.', test: (s) => s.blitz.best >= 8 },
   { id: 'cr6', title: 'Master Kristal', desc: 'Kumpulkan 6 Godot Crystal.', test: (s) => s.crystals >= 6 },
 ];

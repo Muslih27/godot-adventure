@@ -19,6 +19,7 @@ const LOOKS = {
   debug: { skin: '#c68642', hair: '#9ca3af', shirt: '#dc2626', pants: '#1e293b', glasses: true },
   kepala: { skin: '#f1c27d', hair: '#4b5563', shirt: '#1e3a8a', pants: '#111827', long: true, glasses: true },
   tani: { skin: '#c68642', hair: '#b45309', shirt: '#16a34a', pants: '#92400e' },
+  sage: { skin: '#f1c27d', hair: '#e5e7eb', shirt: '#6d28d9', pants: '#1e1b4b', long: true },
   prof: { skin: '#f1c27d', hair: '#d1d5db', shirt: '#ffffff', pants: '#334155', glasses: true, coat: true },
 };
 
@@ -423,6 +424,37 @@ export function generateTextures(scene) {
     c.fillStyle = '#7a4a21'; c.fillRect(2, 6, 5, 54); c.fillRect(13, 6, 5, 54);
     c.fillStyle = '#a9713a'; c.fillRect(0, 4, 20, 6);
     c.fillStyle = '#34d399'; c.fillRect(4, 0, 12, 5);
+  });
+
+  canvasTex(scene, 'hat_wizard', 24, 22, (c) => {
+    c.fillStyle = '#7c3aed'; c.beginPath(); c.moveTo(12, 0); c.lineTo(3, 16); c.lineTo(21, 16); c.fill();
+    c.fillStyle = '#5b21b6'; c.beginPath(); c.ellipse(12, 18, 12, 3, 0, 0, 7); c.fill();
+    c.fillStyle = '#fde047'; c.fillRect(10, 8, 3, 3); c.fillRect(15, 12, 2, 2);
+  });
+  canvasTex(scene, 'pet_dragon', 22, 18, (c) => {
+    c.fillStyle = '#a78bfa'; c.beginPath(); c.moveTo(5, 8); c.lineTo(1, 1); c.lineTo(10, 6); c.fill();
+    c.fillStyle = '#34d399'; c.beginPath(); c.ellipse(11, 11, 8, 5, 0, 0, 7); c.fill();
+    c.fillRect(16, 5, 5, 5);
+    c.beginPath(); c.moveTo(4, 12); c.lineTo(0, 16); c.lineTo(5, 15); c.fill();
+    c.fillStyle = '#fff'; c.fillRect(18, 6, 2, 2); c.fillStyle = '#111'; c.fillRect(19, 7, 1, 1);
+    c.fillStyle = '#fde047'; c.fillRect(9, 15, 2, 3); c.fillRect(13, 15, 2, 3);
+  });
+  canvasTex(scene, 'shard', 16, 18, (c) => {
+    c.fillStyle = '#7c3aed'; c.beginPath(); c.moveTo(8, 0); c.lineTo(15, 9); c.lineTo(8, 18); c.lineTo(1, 9); c.fill();
+    c.fillStyle = '#c4b5fd'; c.fillRect(6, 4, 3, 6);
+  });
+  canvasTex(scene, 'swall', 800, 110, (c) => {
+    c.fillStyle = '#241046'; c.fillRect(0, 0, 800, 100);
+    c.fillStyle = '#1a0b33'; for (let y = 14; y < 100; y += 18) c.fillRect(0, y, 800, 2);
+    for (let i = 0; i < 40; i++) { c.fillStyle = rnd() > 0.5 ? '#7c3aed' : '#22d3ee'; c.fillRect(Math.floor(rnd() * 780), 10 + Math.floor(rnd() * 80), 3, 3); }
+    c.fillStyle = '#150a2b'; c.fillRect(0, 100, 800, 10);
+    c.fillStyle = '#3b1f6b'; c.fillRect(280, 30, 240, 34);
+    c.fillStyle = '#c4b5fd'; c.font = 'bold 14px monospace'; c.textAlign = 'center'; c.fillText('RUANG RAHASIA', 400, 53);
+  });
+  canvasTex(scene, 'sdoor2', 48, 34, (c) => {
+    c.fillStyle = '#7c3aed'; c.fillRect(0, 0, 48, 34);
+    c.fillStyle = '#1a0b33'; c.fillRect(5, 5, 38, 29);
+    c.fillStyle = '#c4b5fd'; c.font = 'bold 16px monospace'; c.textAlign = 'center'; c.fillText('?', 24, 26);
   });
 
   for (const key of Object.keys(LOOKS)) {

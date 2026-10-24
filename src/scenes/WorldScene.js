@@ -12,7 +12,7 @@ import { titles, titleUnlocked } from '../data/titles.js';
 import { emotes } from '../data/emotes.js';
 import { RemotePlayers } from '../systems/RemotePlayers.js';
 
-const LOCATION = { School: 'school', Classroom: 'classroom', Lab: 'lab', Code: 'code', Arena: 'arena', Anim: 'anim', Library: 'library', Level: 'level', AI: 'ai', Audio: 'audio', Server: 'server', Test: 'test', Final: 'final', Garden: 'garden' };
+const LOCATION = { School: 'school', Classroom: 'classroom', Lab: 'lab', Code: 'code', Arena: 'arena', Anim: 'anim', Library: 'library', Level: 'level', AI: 'ai', Audio: 'audio', Server: 'server', Test: 'test', Final: 'final', Garden: 'garden', Secret: 'secret' };
 
 // Kelas dasar semua area yang dapat dijelajahi.
 // Subclass mengisi build(): W, H, minY, spawn, things, coinDefs, enemyDefs, mmBg.
@@ -85,9 +85,9 @@ export default class WorldScene extends Phaser.Scene {
 
     this.enemies = new EnemyManager(this, this.enemyDefs);
 
-    this.coinDefs.forEach(([id, x, y]) => {
+    this.coinDefs.forEach(([id, x, y, tex]) => {
       if (state.data.collected.includes(id)) return;
-      const c = this.physics.add.image(x, y, 'coin').setDepth(y);
+      const c = this.physics.add.image(x, y, tex || 'coin').setDepth(y);
       this.tweens.add({ targets: c, y: y - 4, duration: 600, yoyo: true, repeat: -1 });
       this.physics.add.overlap(this.player, c, () => this.collect(id, c));
     });

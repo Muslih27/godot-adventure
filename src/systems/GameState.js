@@ -59,6 +59,16 @@ class GameState {
     this.commit();
     return f.h + 1;
   }
+  // Hasil Tantangan Kilat: koin hanya dibayar sekali per hari agar tidak bisa diulang untuk mengumpulkan koin.
+  finishBlitz(score, day) {
+    const b = this.data.blitz;
+    b.best = Math.max(b.best, score);
+    let coins = 0;
+    if (b.paid !== day) { coins = score * 2; b.paid = day; this.data.coins += coins; }
+    if (score >= 7) this.data.flags.kilatTop = true;
+    this.commit();
+    return coins;
+  }
   buy(item) {
     if (this.data.owned.includes(item.id) || this.data.coins < item.price) return false;
     this.data.coins -= item.price;

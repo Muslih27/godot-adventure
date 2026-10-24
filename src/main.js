@@ -20,6 +20,7 @@ import ServerScene from './scenes/ServerScene.js';
 import TestScene from './scenes/TestScene.js';
 import FinalScene from './scenes/FinalScene.js';
 import GardenScene from './scenes/GardenScene.js';
+import SecretScene from './scenes/SecretScene.js';
 
 AchievementManager.init();
 DailyManager.init();
@@ -35,7 +36,7 @@ const game = new Phaser.Game({
   scale: { mode: Phaser.Scale.RESIZE, resizeInterval: 100 },
   render: { powerPreference: 'high-performance' },
   physics: { default: 'arcade', arcade: { debug: false } },
-  scene: [BootScene, PreloadScene, MainMenuScene, SchoolScene, ClassroomScene, LabScene, CodeScene, ArenaScene, AnimScene, LibraryScene, LevelScene, AIScene, AudioScene, ServerScene, TestScene, FinalScene, GardenScene],
+  scene: [BootScene, PreloadScene, MainMenuScene, SchoolScene, ClassroomScene, LabScene, CodeScene, ArenaScene, AnimScene, LibraryScene, LevelScene, AIScene, AudioScene, ServerScene, TestScene, FinalScene, GardenScene, SecretScene],
 });
 
 ui.game = game;

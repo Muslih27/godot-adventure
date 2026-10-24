@@ -113,3 +113,9 @@ Panen di Kebun Akademi menghasilkan **Buah Kristal** (selain 20 koin). Setelah b
 - Menu Jeda > **Info performa: Nyala** menampilkan FPS, mode efek, status online, jumlah pemain lain, serta pesan terkirim dan terima per detik.
 - Jika FPS di bawah 30 selama sekitar 6 detik dan efek visual "Otomatis", game beralih sendiri ke mode hemat.
 - Galat JavaScript ditampilkan sebagai toast singkat (maks. satu per 8 detik) agar mudah difoto saat melapor.
+
+## Ruang Rahasia dan tantangan bonus
+
+Terbuka setelah prestasi **Sahabat Mentor** (3 hati dengan 3 mentor). Pintunya di balik "rak buku tua" di dinding kiri Perpustakaan. Isinya:
+- **5 pecahan kristal ungu** tersembunyi (dijaga bug). Mengumpulkan semuanya membuka **Naga Mini** (peliharaan) di Toko.
+- **Tantangan Kilat:** 8 soal acak dari semua bab, 15 detik per soal, dengan ringkasan jawaban yang salah. Skor 7 atau lebih membuka **Topi Penyihir Kode**. Hadiah koin hanya sekali per hari; rekor tetap tercatat. 8 dari 8 memberi prestasi dan gelar "Si Kilat".

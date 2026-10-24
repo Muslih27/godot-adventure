@@ -21,6 +21,7 @@ export const defaultSave = () => ({
   cosmetic: 'none',
   bugs: 0,
   items: { fruit: 0 },
+  blitz: { best: 0, paid: '' },
   friends: {},
   owned: [],
   equip: { hat: '', pet: '', title: 'pemula' },
@@ -64,6 +65,7 @@ export function validate(raw) {
       harvests: num(raw.farm?.harvests),
     },
     items: { fruit: num(raw.items?.fruit) },
+    blitz: { best: Math.min(8, num(raw.blitz?.best)), paid: typeof raw.blitz?.paid === 'string' ? raw.blitz.paid : '' },
     friends: Object.fromEntries(mentorIds.filter((id) => isObj(raw.friends?.[id])).map((id) => [id, { h: Math.min(5, num(raw.friends[id].h)), last: typeof raw.friends[id].last === 'string' ? raw.friends[id].last : '' }])),
     owned: strs(raw.owned),
     equip: {
