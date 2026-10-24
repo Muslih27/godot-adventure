@@ -250,6 +250,10 @@ class UIManager {
     const hq = this.hudEl.querySelector('#hq');
     if (this.isTouch) hq.classList.add('collapsed');
     hq.addEventListener('click', () => hq.classList.toggle('collapsed'));
+    document.addEventListener('click', (e) => {
+      const b = e.target.closest('.hud button, .emote-pop button, .touch button');
+      if (b) b.blur();
+    });
     document.addEventListener('pointerdown', (e) => {
       if (!md.contains(e.target) && !e.target.closest('.menu-btn')) md.classList.add('hidden');
       if (this.emotePop && !this.emotePop.contains(e.target) && !e.target.closest('.emote-fab')) { this.emotePop.remove(); this.emotePop = null; }
@@ -338,8 +342,9 @@ class UIManager {
       cx = e.clientX; cy = e.clientY;
       base.classList.add('active');
       base.style.bottom = 'auto';
-      base.style.left = `${cx - 60}px`;
-      base.style.top = `${cy - 60}px`;
+      const r = zone.getBoundingClientRect(), half = base.offsetWidth / 2;
+      base.style.left = `${cx - r.left - half}px`;
+      base.style.top = `${cy - r.top - half}px`;
       move(e);
     });
     zone.addEventListener('pointermove', (e) => { if (e.pointerId === pid) move(e); });
@@ -467,7 +472,6 @@ class UIManager {
       if (e.key === 'Escape') e.target.blur();
       return;
     }
-    if (this.inGame && !this.modals.length && !this.dlg && [' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) e.preventDefault();
     if (this.dlg) {
       if (['e', 'E', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); this.advance(); }
       else if (e.key === 'Escape') this.closeDialog(null);
