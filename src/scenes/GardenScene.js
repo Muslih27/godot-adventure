@@ -3,6 +3,7 @@ import { state } from '../systems/GameState.js';
 import { QuestManager } from '../systems/QuestManager.js';
 import { AudioManager as A } from '../systems/AudioManager.js';
 import { dateKey } from '../systems/DailyManager.js';
+import { festivalNow, festBonus } from '../data/festival.js';
 import { bus } from '../core/bus.js';
 import { interactTani, openReview } from '../systems/LearningManager.js';
 import { talk } from '../systems/FriendManager.js';
@@ -82,7 +83,7 @@ export default class GardenScene extends WorldScene {
       const fx = ui.lowFx ? null : this.add.particles(v.soil.x, v.soil.y, 'spark', { speed: { min: 40, max: 130 }, lifespan: 500, scale: { start: 1.6, end: 0 }, tint: 0x22d3ee, emitting: false }).setDepth(9999);
       fx?.explode(14);
       this.time.delayedCall(700, () => fx?.destroy());
-      ui.toast('Panen! +20 koin dan 1 Buah Kristal', 'good');
+      ui.toast(`Panen! +${20 + festBonus('harvest')} koin dan 1 Buah Kristal`, 'good');
       QuestManager.check();
     } else if (p.last === today) {
       ui.toast('Sudah disiram hari ini. Kembali besok untuk menyiram lagi.');
@@ -96,6 +97,7 @@ export default class GardenScene extends WorldScene {
 
   onReady() {
     this.refreshPlots();
+    this.add.text(400, 64, `Festival: ${festivalNow().theme.name}`, { fontFamily: 'Nunito, sans-serif', fontSize: '12px', fontStyle: 'bold', color: '#ffe08a', stroke: '#06202e', strokeThickness: 3 }).setOrigin(0.5).setDepth(160);
     // Siang malam mengikuti jam perangkat (visual saja)
     const h = new Date().getHours();
     const tone = h >= 20 || h < 5 ? 'rgba(11,16,48,.35)' : h >= 17 ? 'rgba(255,138,61,.12)' : h < 8 ? 'rgba(255,224,138,.08)' : null;

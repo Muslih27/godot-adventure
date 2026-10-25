@@ -4,6 +4,7 @@ import { state } from './GameState.js';
 import { PlayerStatus } from './PlayerStatus.js';
 import { AudioManager as A } from './AudioManager.js';
 import { QuestManager } from './QuestManager.js';
+import { festBonus } from '../data/festival.js';
 
 const DETECT = 130;       // jarak deteksi pemain
 const LEASH = 230;        // jarak maksimal sebelum musuh menyerah
@@ -151,7 +152,7 @@ export class EnemyManager {
     const fx = ui.lowFx ? null : sc.add.particles(x, y, 'spark', { speed: { min: 40, max: 140 }, lifespan: 450, scale: { start: 1.6, end: 0 }, tint: 0xef4444, emitting: false }).setDepth(9999);
     fx?.explode(14);
     sc.time.delayedCall(600, () => fx?.destroy());
-    const t = sc.add.text(x, y - 10, '+1 koin', { fontFamily: 'Silkscreen, monospace', fontSize: '12px', color: '#ffe08a' }).setOrigin(0.5).setDepth(9999);
+    const t = sc.add.text(x, y - 10, `+${1 + festBonus('bug')} koin`, { fontFamily: 'Silkscreen, monospace', fontSize: '12px', color: '#ffe08a' }).setOrigin(0.5).setDepth(9999);
     sc.tweens.add({ targets: t, y: y - 40, alpha: 0, duration: 800, onComplete: () => t.destroy() });
     state.defeatBug();
     QuestManager.check();

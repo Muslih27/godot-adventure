@@ -24,5 +24,6 @@ export const achievements = [
   { id: 'friend5', title: 'Sahabat Sejati', desc: 'Capai 5 hati persahabatan dengan seorang mentor.', test: (s) => Object.values(s.friends).some((f) => f.h >= 5) },
   { id: 'shards', title: 'Penemu Rahasia', desc: 'Kumpulkan 5 pecahan kristal di Ruang Rahasia.', test: (s) => ['s1', 's2', 's3', 's4', 's5'].every((id) => s.collected.includes(id)) },
   { id: 'kilat8', title: 'Si Kilat', desc: 'Jawab 8 dari 8 benar di Tantangan Kilat.', test: (s) => s.blitz.best >= 8 },
+  { id: 'stamp4', title: 'Penggemar Festival', desc: 'Kumpulkan 4 stempel festival.', test: (s) => s.stamps >= 4 },
   { id: 'cr6', title: 'Master Kristal', desc: 'Kumpulkan 6 Godot Crystal.', test: (s) => s.crystals >= 6 },
 ];

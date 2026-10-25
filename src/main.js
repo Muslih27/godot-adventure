@@ -6,6 +6,7 @@ import MainMenuScene from './scenes/MainMenuScene.js';
 import { AchievementManager } from './systems/AchievementManager.js';
 import { ui } from './systems/UIManager.js';
 import { DailyManager } from './systems/DailyManager.js';
+import { FestivalManager } from './systems/FestivalManager.js';
 import SchoolScene from './scenes/SchoolScene.js';
 import ClassroomScene from './scenes/ClassroomScene.js';
 import LabScene from './scenes/LabScene.js';
@@ -24,6 +25,7 @@ import SecretScene from './scenes/SecretScene.js';
 
 AchievementManager.init();
 DailyManager.init();
+FestivalManager.init();
 
 const game = new Phaser.Game({
   type: Phaser.AUTO,

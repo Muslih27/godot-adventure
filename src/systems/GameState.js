@@ -1,5 +1,6 @@
 // GameState: sumber kebenaran tunggal untuk progres pemain (XP, koin, flag, dll).
 import { bus } from '../core/bus.js';
+import { festBonus, blitzMultiplier } from '../data/festival.js';
 import { defaultSave, load, persist, clearSave } from './SaveManager.js';
 
 class GameState {
@@ -34,7 +35,7 @@ class GameState {
   hasFlag(k) { return !!this.data.flags[k]; }
   collect(id) { if (!this.data.collected.includes(id)) { this.data.collected.push(id); this.commit(); } }
   setCosmetic(c) { this.data.cosmetic = c; this.commit(); bus.emit('cosmetic', c); }
-  defeatBug() { this.data.bugs += 1; this.data.coins += 1; this.commit(); bus.emit('track', 'bugs'); }
+  defeatBug() { this.data.bugs += 1; this.data.coins += 1 + festBonus('bug'); this.commit(); bus.emit('track', 'bugs'); }
   plantPlot(i) { this.data.farm.plots[i] = { c: 1, last: '', n: 0 }; this.commit(); }
   waterPlot(i, day) {
     const p = this.data.farm.plots[i];
@@ -47,8 +48,9 @@ class GameState {
     this.data.farm.plots[i] = { c: 0, last: '', n: 0 };
     this.data.farm.harvests += 1;
     this.data.items.fruit += 1;
-    this.data.coins += 20;
+    this.data.coins += 20 + festBonus('harvest');
     this.commit();
+    bus.emit('track', 'harvest');
   }
   // Mengembalikan jumlah hati baru, atau -1 jika hadiah tidak bisa diberikan.
   giveGift(id, day) {
@@ -56,7 +58,9 @@ class GameState {
     if (this.data.items.fruit < 1 || f.last === day || f.h >= 5) return -1;
     this.data.items.fruit -= 1;
     this.data.friends[id] = { h: f.h + 1, last: day };
+    this.data.coins += festBonus('gift');
     this.commit();
+    bus.emit('track', 'gift');
     return f.h + 1;
   }
   // Hasil Tantangan Kilat: koin hanya dibayar sekali per hari agar tidak bisa diulang untuk mengumpulkan koin.
@@ -64,9 +68,10 @@ class GameState {
     const b = this.data.blitz;
     b.best = Math.max(b.best, score);
     let coins = 0;
-    if (b.paid !== day) { coins = score * 2; b.paid = day; this.data.coins += coins; }
+    if (b.paid !== day) { coins = score * 2 * blitzMultiplier(); b.paid = day; this.data.coins += coins; }
     if (score >= 7) this.data.flags.kilatTop = true;
     this.commit();
+    bus.emit('track', 'blitz');
     return coins;
   }
   buy(item) {

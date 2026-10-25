@@ -9,6 +9,7 @@ export const titles = [
   { id: 'sahabat', name: 'Sahabat Mentor', ach: 'friend3', hint: 'Capai 3 hati dengan 3 mentor' },
   { id: 'penemu', name: 'Penemu Rahasia', ach: 'shards', hint: 'Kumpulkan 5 pecahan kristal di Ruang Rahasia' },
   { id: 'kilat', name: 'Si Kilat', ach: 'kilat8', hint: 'Jawab 8 dari 8 benar di Tantangan Kilat' },
+  { id: 'festival', name: 'Penggemar Festival', ach: 'stamp4', hint: 'Kumpulkan 4 stempel festival' },
   { id: 'lulusan', name: 'Lulusan Akademi', ach: 'graduate', hint: 'Lulus Ujian Akhir' },
 ];
 export const titleUnlocked = (t, flags) => !t.ach || !!flags['ach_' + t.ach];

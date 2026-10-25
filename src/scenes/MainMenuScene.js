@@ -4,6 +4,7 @@ import { state } from '../systems/GameState.js';
 import { AudioManager as A } from '../systems/AudioManager.js';
 import { getAudioPref } from '../systems/SaveManager.js';
 import { AchievementManager } from '../systems/AchievementManager.js';
+import { festivalNow } from '../data/festival.js';
 
 const W = 800, H = 480; // area logis latar menu; kamera menyesuaikan ukuran layar
 
@@ -42,6 +43,8 @@ export default class MainMenuScene extends Phaser.Scene {
     A.setEnabled(state.data.settings.audio);
     A.startMusic();
     AchievementManager.check();
+    const f = festivalNow();
+    setTimeout(() => ui.toast(`Festival pekan ini: ${f.theme.name}. ${f.theme.mod}`), 2500);
     this.scene.start({ school: 'School', classroom: 'Classroom', lab: 'Lab', code: 'Code', arena: 'Arena', anim: 'Anim', library: 'Library', level: 'Level', ai: 'AI', audio: 'Audio', server: 'Server', test: 'Test', final: 'Final', garden: 'Garden', secret: 'Secret' }[state.data.location] || 'School');
   }
 }

@@ -431,6 +431,12 @@ export function generateTextures(scene) {
     c.fillStyle = '#5b21b6'; c.beginPath(); c.ellipse(12, 18, 12, 3, 0, 0, 7); c.fill();
     c.fillStyle = '#fde047'; c.fillRect(10, 8, 3, 3); c.fillRect(15, 12, 2, 2);
   });
+  canvasTex(scene, 'hat_festival', 22, 22, (c) => {
+    c.fillStyle = '#ff8a3d'; c.beginPath(); c.moveTo(11, 3); c.lineTo(2, 20); c.lineTo(20, 20); c.fill();
+    c.fillStyle = '#22d3ee'; c.beginPath(); c.moveTo(11, 3); c.lineTo(8, 10); c.lineTo(14, 10); c.fill();
+    c.fillRect(5, 14, 12, 2);
+    c.fillStyle = '#fde047'; c.beginPath(); c.arc(11, 3, 3, 0, 7); c.fill();
+  });
   canvasTex(scene, 'pet_dragon', 22, 18, (c) => {
     c.fillStyle = '#a78bfa'; c.beginPath(); c.moveTo(5, 8); c.lineTo(1, 1); c.lineTo(10, 6); c.fill();
     c.fillStyle = '#34d399'; c.beginPath(); c.ellipse(11, 11, 8, 5, 0, 0, 7); c.fill();

@@ -3,6 +3,7 @@ import { state } from './GameState.js';
 import { dateKey } from './DailyManager.js';
 import { AudioManager as A } from './AudioManager.js';
 import { mentorById, HEARTS_MAX } from '../data/mentors.js';
+import { festBonus } from '../data/festival.js';
 
 // Jalankan percakapan mentor seperti biasa, lalu tawarkan hadiah jika pemain punya Buah Kristal.
 export async function talk(ui, id, fn) {
@@ -27,6 +28,7 @@ async function offerGift(ui, id) {
   if (h < 0) return;
   A.sfx('ok');
   const pages = [`${m.name} senang sekali menerima Buah Kristal! Persahabatan naik menjadi ${h}/${HEARTS_MAX}.`];
+  if (festBonus('gift')) pages.push(`Bonus festival pekan ini: +${festBonus('gift')} koin!`);
   if (h === 1) pages.push(`Tips belajar: ${m.tip}`);
   if (h === 3) pages.push(m.story);
   if (h === HEARTS_MAX) {

@@ -8,5 +8,6 @@ export const shopItems = [
   { id: 'pet_cat', cat: 'pet', name: 'Kucing Piksel', price: 140, tex: 'pet_cat' },
   // Barang rahasia: gratis, tetapi hanya terbuka lewat tantangan di Ruang Rahasia.
   { id: 'hat_wizard', cat: 'hat', name: 'Topi Penyihir Kode', price: 0, tex: 'hat_wizard', req: { flag: 'kilatTop', hint: 'skor 7 atau lebih di Tantangan Kilat (Ruang Rahasia)' } },
+  { id: 'hat_festival', cat: 'hat', name: 'Topi Festival', price: 0, tex: 'hat_festival', req: { flag: 'ach_stamp4', hint: 'kumpulkan 4 stempel festival (selesaikan tantangan mingguan)' } },
   { id: 'pet_dragon', cat: 'pet', name: 'Naga Mini', price: 0, tex: 'pet_dragon', req: { flag: 'ach_shards', hint: 'kumpulkan 5 pecahan kristal di Ruang Rahasia' } },
 ];

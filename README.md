@@ -119,3 +119,7 @@ Panen di Kebun Akademi menghasilkan **Buah Kristal** (selain 20 koin). Setelah b
 Terbuka setelah prestasi **Sahabat Mentor** (3 hati dengan 3 mentor). Pintunya di balik "rak buku tua" di dinding kiri Perpustakaan. Isinya:
 - **5 pecahan kristal ungu** tersembunyi (dijaga bug). Mengumpulkan semuanya membuka **Naga Mini** (peliharaan) di Toko.
 - **Tantangan Kilat:** 8 soal acak dari semua bab, 15 detik per soal, dengan ringkasan jawaban yang salah. Skor 7 atau lebih membuka **Topi Penyihir Kode**. Hadiah koin hanya sekali per hari; rekor tetap tercatat. 8 dari 8 memberi prestasi dan gelar "Si Kilat".
+
+## Festival mingguan
+
+Tema bergilir tiap pekan (Senin sampai Minggu, dihitung dari tanggal perangkat): **Pekan Panen** (+10 koin tiap panen), **Pekan Pembasmi** (+1 koin tiap bug), **Pekan Kilat** (koin harian Tantangan Kilat dua kali lipat), dan **Pekan Sahabat** (+10 koin tiap hadiah ke mentor). Tiap pekan ada satu tantangan di Menu > Misi dan Festival; hadiahnya 50 koin dan 1 stempel. Empat stempel membuka **Topi Festival** dan gelar "Penggemar Festival". Progres pekan ini di-reset otomatis saat pekan berganti.

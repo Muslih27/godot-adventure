@@ -13,6 +13,7 @@ import { openShop } from '../ui/shop.js';
 import { openDaily } from '../ui/daily.js';
 import { openOnline } from '../ui/online.js';
 import { DailyManager } from './DailyManager.js';
+import { FestivalManager } from './FestivalManager.js';
 import { emotes } from '../data/emotes.js';
 import { OnlineManager } from './OnlineManager.js';
 import { normalizeCode, validCode, generateCode } from './netcode.js';
@@ -232,7 +233,7 @@ class UIManager {
         <button data-a="quest">Quest</button><button data-a="map">Peta</button>
         <button data-a="learn">Materi</button><button data-a="journal">Jurnal</button>
         <button data-a="profile">Profil</button><button data-a="shop">Toko</button>
-        <button data-a="daily">Misi Harian</button><button data-a="online">Online</button>
+        <button data-a="daily">Misi dan Festival</button><button data-a="online">Online</button>
         <button data-a="pause" class="wide">Jeda</button></div>
       <button class="emote-fab" data-a="emote" aria-label="Emote" title="Emote (tombol 1 sampai 6)">Emote</button>
       <div class="questbox" id="hq"></div>
@@ -281,7 +282,7 @@ class UIManager {
     q('#hc').textContent = d.coins;
     this.refreshHearts();
     q('#hcr').textContent = d.crystals;
-    q('.menu-btn .dot')?.classList.toggle('hidden', !DailyManager.hasClaimable());
+    q('.menu-btn .dot')?.classList.toggle('hidden', !(DailyManager.hasClaimable() || FestivalManager.claimable()));
     const aq = QuestManager.active();
     const side = QuestManager.all().find((x) => x.type === 'Sampingan' && !QuestManager.isDone(x));
     q('#hq').innerHTML = (aq ? `<b>${esc(aq.title)}</b><span>${esc(aq.steps ? aq.steps.find((s) => !s.done(d))?.t || '' : aq.desc)}</span>` : '<b>Semua quest yang tersedia sudah selesai</b>')
