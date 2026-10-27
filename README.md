@@ -75,6 +75,10 @@ Setiap ruangan berisi bug yang berpatroli dan mengejar saat pemain dekat. Hati p
 - **Emote:** tombol 1-6 di keyboard atau Menu > Emote.
 - Belum ada: papan peringkat dan fitur sosial lintas pemain (butuh backend).
 
+## Tampilan kaca (glassmorphism)
+
+Menu, panel, dialog, dan layar judul memakai tema kaca. Blur hanya di permukaan besar; **Menu Jeda > Efek visual: Hemat** (atau hemat otomatis saat FPS rendah) mematikan blur dan memakai latar solid.
+
 ## Mode Online (multiplayer)
 
 Pemain dengan **kode kelas** yang sama di **ruangan yang sama** saling terlihat (nama, gelar, topi, gerakan, emote). Tidak ada chat bebas.

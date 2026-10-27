@@ -389,6 +389,7 @@ class UIManager {
       this.lowCount = fps > 0 && fps < 30 ? this.lowCount + 1 : 0;
       if (this.lowCount >= 6 && this.fxMode === 'auto' && !this.lowFx) {
         this.lowFx = true;
+        this.root.classList.add('lowfx'); // matikan blur kaca agar lebih ringan
         this.toast('Mode hemat diaktifkan otomatis karena game terasa berat.');
       }
     }
@@ -415,6 +416,7 @@ class UIManager {
     try { localStorage.setItem('gaa.fx', m); } catch { /* abaikan */ }
     const weak = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 3;
     this.lowFx = m === 'low' || (m === 'auto' && weak && this.isTouch);
+    this.root.classList.toggle('lowfx', this.lowFx);
   }
   openEmotes() {
     if (this.emotePop) { this.emotePop.remove(); this.emotePop = null; return; }
